@@ -1,0 +1,20 @@
+import { Permission, hasPermission } from "../../config/rbac";
+import { AuthenticatedUser } from "../../middleware/auth";
+import { ForbiddenError } from "../http/errors";
+
+export function requirePermission(actor: AuthenticatedUser, permission: Permission): void {
+  if (!hasPermission(actor.role, permission)) {
+    throw new ForbiddenError(`Role '${actor.role}' does not have required permission '${permission}'.`);
+  }
+}
+
+export function requireSameSchool(actor: AuthenticatedUser, schoolId: string): void {
+  if (actor.schoolId !== schoolId) {
+    throw new ForbiddenError("Cross-school access is not allowed.");
+  }
+}
+
+export function requireSchoolPermission(actor: AuthenticatedUser, schoolId: string, permission: Permission): void {
+  requireSameSchool(actor, schoolId);
+  requirePermission(actor, permission);
+}
