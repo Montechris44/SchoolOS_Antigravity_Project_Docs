@@ -15,10 +15,22 @@ export function buildApp(): FastifyInstance {
     },
   });
 
+  // Preserve the raw JSON body alongside the parsed one so webhook handlers
+  // (Paystack) can verify an HMAC signature computed over the exact bytes sent.
+  app.addContentTypeParser("application/json", { parseAs: "string" }, (request, body, done) => {
+    request.rawBody = body as string;
+    try {
+      done(null, body ? JSON.parse(body as string) : {});
+    } catch (error) {
+      done(error as Error, undefined);
+    }
+  });
+
   app.register(helmet);
   app.register(cors, {
     origin: env.CORS_ORIGINS,
     credentials: true,
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
   });
   app.register(rateLimit, {
     max: 300,

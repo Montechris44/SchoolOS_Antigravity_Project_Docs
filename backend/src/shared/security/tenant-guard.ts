@@ -8,6 +8,14 @@ export function requirePermission(actor: AuthenticatedUser, permission: Permissi
   }
 }
 
+export function requireAnyPermission(actor: AuthenticatedUser, permissions: Permission[]): void {
+  if (!permissions.some((permission) => hasPermission(actor.role, permission))) {
+    throw new ForbiddenError(
+      `Role '${actor.role}' does not have any of the required permissions: ${permissions.join(", ")}.`
+    );
+  }
+}
+
 export function requireSameSchool(actor: AuthenticatedUser, schoolId: string): void {
   if (actor.schoolId !== schoolId) {
     throw new ForbiddenError("Cross-school access is not allowed.");

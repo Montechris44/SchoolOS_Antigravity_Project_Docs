@@ -25,7 +25,33 @@ Private primary and secondary schools in Nigeria, approximately 100–1,500 stud
 - WhatsApp/SMS-ready communication architecture
 
 ## Recommended stack
-Next.js + TypeScript + Tailwind CSS + shadcn/ui + Supabase/PostgreSQL + Paystack + LLM API + WhatsApp/SMS provider.
+Next.js + TypeScript + Tailwind CSS + shadcn/ui + PostgreSQL + Paystack + LLM API + WhatsApp/SMS provider.
 
 ## Build principle
 Use a modular monolith. Build in phases. Do not advance a phase until its checkpoint passes.
+
+## Repository layout
+
+```text
+frontend/   Next.js app (App Router) — see frontend/README.md if present, or just `npm install && npm run dev`
+backend/    Fastify + PostgreSQL API — see backend/README.md and backend/docs/
+```
+
+Root-level `.md` files (this one included) are product/spec documentation, not code — they don't
+move when the app's structure changes.
+
+### Running locally
+
+```bash
+# Backend
+cd backend
+npm install
+cp .env.example .env   # fill in DATABASE_URL and a real JWT_SECRET
+npm run migrate
+npm run dev             # http://localhost:4000
+
+# Frontend (separate terminal)
+cd frontend
+npm install
+npm run dev              # http://localhost:3000, calls the backend via NEXT_PUBLIC_API_URL in .env.local
+```
