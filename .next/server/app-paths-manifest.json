@@ -1,0 +1,11 @@
+{
+  "/academics/page": "app/academics/page.js",
+  "/attendance/page": "app/attendance/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/people/page": "app/people/page.js",
+  "/actions/page": "app/actions/page.js",
+  "/finance/page": "app/finance/page.js",
+  "/payments/page": "app/payments/page.js",
+  "/ai/page": "app/ai/page.js",
+  "/communication/page": "app/communication/page.js"
+}
