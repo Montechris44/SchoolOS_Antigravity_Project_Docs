@@ -159,7 +159,11 @@ export default function LandingPage() {
       </section>
 
       <footer className="mx-auto max-w-7xl px-4 py-10 text-center text-xs text-slate-400 lg:px-8">
-        © {new Date().getFullYear()} SchoolOS. Built for Nigerian schools.
+        © {new Date().getFullYear()}{" "}
+        <Link href="/super-admin/login" className="hover:text-slate-500">
+          SchoolOS
+        </Link>
+        . Built for Nigerian schools.
       </footer>
     </div>
   );

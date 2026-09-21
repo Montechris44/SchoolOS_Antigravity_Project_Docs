@@ -3,18 +3,20 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { GraduationCap, ArrowRight } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useAuth } from "@/lib/auth/auth-context";
 import { ApiError } from "@/lib/api/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Alert } from "@/components/ui/portal";
+import { AuthShell } from "@/components/auth/auth-shell";
+import { homeRouteFor } from "@/components/layout/nav-config";
 
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -24,8 +26,9 @@ export default function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      await login(email, password);
-      router.push("/dashboard");
+      const session = await login(email.trim(), password);
+      // Accounts issued with a temporary password must choose their own before anything else.
+      router.push(session.mustChangePassword ? "/force-change-password" : homeRouteFor(session.role));
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Unable to sign in. Please try again.");
     } finally {
@@ -34,61 +37,75 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
-      <div className="w-full max-w-md">
-        <Link href="/" className="mb-8 flex items-center justify-center gap-2 text-slate-900">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white">
-            <GraduationCap className="h-5 w-5" />
+    <AuthShell
+      title="Welcome back"
+      subtitle="Sign in to your school's workspace. Administrators, teachers, students and parents all use this page."
+      footer={
+        <>
+          Registering your school for the first time?{" "}
+          <Link href="/register" className="font-semibold text-blue-600 hover:underline">
+            Create your school account
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="space-y-1.5">
+          <label htmlFor="email" className="text-sm font-semibold text-slate-700">
+            Email address
+          </label>
+          <div className="relative">
+            <Mail className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+            <input
+              id="email"
+              type="email"
+              autoComplete="username"
+              required
+              placeholder="name@school.edu.ng"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-xl border border-slate-300 bg-white py-3.5 pl-12 pr-4 text-sm font-medium outline-none transition-all focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
+            />
           </div>
-          <span className="text-lg font-bold">SchoolOS</span>
-        </Link>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <h1 className="text-xl font-bold text-slate-900">Welcome back</h1>
-            <p className="text-sm text-slate-500">Sign in to your school&apos;s workspace.</p>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                id="email"
-                label="Email address"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <Input
-                id="password"
-                label="Password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label htmlFor="password" className="text-sm font-semibold text-slate-700">
+              Password
+            </label>
+            <Link href="/forgot-password" className="text-xs font-semibold text-blue-600 hover:underline">
+              Forgot password?
+            </Link>
+          </div>
+          <div className="relative">
+            <Lock className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-xl border border-slate-300 bg-white py-3.5 pl-12 pr-12 text-sm font-medium outline-none transition-all focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-blue-600"
+            >
+              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
 
-              {error && (
-                <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 border border-rose-200">
-                  {error}
-                </p>
-              )}
+        {error && <Alert tone="error">{error}</Alert>}
 
-              <Button type="submit" className="w-full" isLoading={isSubmitting}>
-                Sign in <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </form>
-
-            <p className="mt-6 text-center text-sm text-slate-500">
-              Registering your school for the first time?{" "}
-              <Link href="/register" className="font-semibold text-blue-600 hover:underline">
-                Create your school account
-              </Link>
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+        <Button type="submit" size="lg" className="w-full rounded-xl" isLoading={isSubmitting}>
+          Sign in <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
+      </form>
+    </AuthShell>
   );
 }

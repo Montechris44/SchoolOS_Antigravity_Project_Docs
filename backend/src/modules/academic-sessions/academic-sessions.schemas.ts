@@ -8,3 +8,6 @@ export const createAcademicSessionSchema = z.object({
 });
 
 export type CreateAcademicSessionInput = z.infer<typeof createAcademicSessionSchema>;
+
+export const sessionIdParamsSchema = z.object({ sessionId: z.string().uuid() });
+export const termIdParamsSchema = z.object({ termId: z.string().uuid() });

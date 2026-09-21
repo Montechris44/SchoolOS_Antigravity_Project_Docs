@@ -1,11 +1,28 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { User, School, UserRole } from "@/types";
-import { fetchCurrentSession, login as loginRequest, registerSchool as registerSchoolRequest } from "@/lib/api/auth";
-import { RegisterSchoolPayload } from "@/lib/api/auth";
-import { getStoredToken, setStoredToken } from "@/lib/api/client";
-import { Permission, hasPermission } from "./types";
+import {
+  AuthSession,
+  Permission,
+  hasPermission,
+} from "./types";
+import {
+  RegisterSchoolPayload,
+  fetchCurrentSession,
+  forceUpdatePassword as forceUpdatePasswordRequest,
+  login as loginRequest,
+  logoutRequest,
+  registerSchool as registerSchoolRequest,
+} from "@/lib/api/auth";
+import {
+  PASSWORD_CHANGE_REQUIRED_EVENT,
+  SESSION_EXPIRED_EVENT,
+  getStoredRefreshToken,
+  getStoredToken,
+  setStoredRefreshToken,
+  setStoredToken,
+} from "@/lib/api/client";
 
 interface AuthContextType {
   user: User | null;
@@ -13,8 +30,11 @@ interface AuthContextType {
   role: UserRole;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  /** True while the account still has an admin-issued temporary password. */
+  mustChangePassword: boolean;
+  login: (email: string, password: string) => Promise<AuthSession>;
   registerSchool: (payload: RegisterSchoolPayload) => Promise<void>;
+  forceUpdatePassword: (newPassword: string) => Promise<void>;
   logout: () => void;
   updateSchoolInSession: (school: School) => void;
   can: (permission: Permission) => boolean;
@@ -28,10 +48,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [school, setSchool] = useState<School | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [mustChangePassword, setMustChangePassword] = useState<boolean>(false);
+
+  const clearSession = useCallback(() => {
+    setStoredToken(null);
+    setStoredRefreshToken(null);
+    setUser(null);
+    setSchool(null);
+    setIsAuthenticated(false);
+    setMustChangePassword(false);
+  }, []);
 
   useEffect(() => {
-    const token = getStoredToken();
-    if (!token) {
+    if (!getStoredToken() && !getStoredRefreshToken()) {
       setIsLoading(false);
       return;
     }
@@ -41,38 +70,53 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(session.user);
         setSchool(session.school);
         setRole(session.role);
+        setMustChangePassword(session.mustChangePassword);
         setIsAuthenticated(true);
       })
-      .catch(() => {
-        setStoredToken(null);
-        setIsAuthenticated(false);
-      })
+      .catch(() => clearSession())
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [clearSession]);
 
-  const applySession = (session: { user: User; school: School; role: UserRole; token: string }) => {
+  // The API client tells us when a session can no longer be renewed, or a password change is required.
+  useEffect(() => {
+    const onExpired = () => clearSession();
+    const onPasswordChange = () => setMustChangePassword(true);
+    window.addEventListener(SESSION_EXPIRED_EVENT, onExpired);
+    window.addEventListener(PASSWORD_CHANGE_REQUIRED_EVENT, onPasswordChange);
+    return () => {
+      window.removeEventListener(SESSION_EXPIRED_EVENT, onExpired);
+      window.removeEventListener(PASSWORD_CHANGE_REQUIRED_EVENT, onPasswordChange);
+    };
+  }, [clearSession]);
+
+  const applySession = (session: AuthSession) => {
     setStoredToken(session.token);
+    setStoredRefreshToken(session.refreshToken);
     setUser(session.user);
     setSchool(session.school);
     setRole(session.role);
+    setMustChangePassword(session.mustChangePassword);
     setIsAuthenticated(true);
   };
 
   const login = async (email: string, password: string) => {
     const session = await loginRequest({ email, password });
     applySession(session);
+    return session;
   };
 
   const registerSchool = async (payload: RegisterSchoolPayload) => {
-    const session = await registerSchoolRequest(payload);
-    applySession(session);
+    applySession(await registerSchoolRequest(payload));
+  };
+
+  const forceUpdatePassword = async (newPassword: string) => {
+    applySession(await forceUpdatePasswordRequest(newPassword));
   };
 
   const logout = () => {
-    setStoredToken(null);
-    setUser(null);
-    setSchool(null);
-    setIsAuthenticated(false);
+    // Revoke the refresh token server-side; the local session ends regardless of the outcome.
+    void logoutRequest(getStoredRefreshToken()).catch(() => undefined);
+    clearSession();
   };
 
   const updateSchoolInSession = (updatedSchool: School) => {
@@ -91,8 +135,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         role,
         isAuthenticated,
         isLoading,
+        mustChangePassword,
         login,
         registerSchool,
+        forceUpdatePassword,
         logout,
         updateSchoolInSession,
         can,

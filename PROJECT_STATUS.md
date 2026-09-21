@@ -26,6 +26,14 @@ DONE — MVP PRODUCTION READY
   - AI Assistant Gateway (`/ai`): authenticated sessions with approved server-side tools (`get_school_overview`, `get_attendance_risks`, `get_outstanding_balances`, `draft_parent_message`) and strict permission guardrails.
   - Settings (`/settings`): institutional identity, Paystack integration keys, and academic grading policies.
 
+## School Portal Integration (Nexora features → SchoolOS)
+Brought over from the Nexora school system without changing it and without subdomains (one login page for every role):
+- **Backend** (`backend/`, migrations `0008`, `0009`): school admin, teacher, student, parent and non-academic staff portals; classes/arms/subjects and teacher assignments; student and staff attendance (server-clock sign-in); timetable; homework; leave passes and staff leave; events; messages and notifications; grading bands and school settings; the full results workflow (CA scheme → scores → class teacher → admin approval → release with positions and report cards). Endpoints are listed in `backend/docs/api.md`.
+- **Frontend** (`frontend/`): role dashboards, staff/student/class/subject management, attendance, timetable, homework, results (entry, class-teacher review, approval queue, report card), leave, events, messages, account/security pages, password reset and forced password change — all wired to the API through `lib/api/portal-*.ts`.
+- **Security carried over or added**: refresh-token rotation with reuse detection, hashed tokens, forced change of temporary (now random) passwords, lockout, audit logs, ownership checks on every foreign id, role-scoped visibility for students / guardians / invoices / payments (this closed leaks that existed before), locked scores after submission, portal on/off switches, upload magic-byte checks.
+- **Not ported**: Nexora's organisations/multi-school groups and subdomains, billing/subscriptions, inventory, expenses, curriculum/lesson plans, advanced assessment config, contact form, legacy result endpoints. Dark mode is not implemented.
+- **Verification**: backend `tsc` clean and 53/53 tests pass (`npm test` in `backend/`, run serially against Postgres; includes `portal-isolation` cross-school tests). Frontend `tsc` clean. The new UI has been type-checked and built but not yet checked visually in a browser.
+
 ## Test Results
 - **Automated Tests**: 25/25 passing (`npm test`):
   - 5/5 Tenant Isolation & RBAC security tests

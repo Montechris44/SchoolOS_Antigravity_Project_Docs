@@ -12,7 +12,7 @@ export async function listGuardiansHandler(request: FastifyRequest, reply: Fasti
   const actor = getAuthContext(request);
   requirePermission(actor, "students:view");
 
-  const guardians = await listGuardians(actor.schoolId);
+  const guardians = await listGuardians(actor);
   reply.status(200).send(ok(toCamelCase(guardians)));
 }
 

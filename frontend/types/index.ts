@@ -3,7 +3,7 @@
  * Single source of truth for the multi-tenant school operating system
  */
 
-export type UserRole = "owner" | "admin" | "bursar" | "teacher" | "parent" | "student";
+export type UserRole = "owner" | "admin" | "bursar" | "teacher" | "parent" | "student" | "non_academic";
 
 export interface User {
   id: string;
@@ -26,6 +26,7 @@ export interface School {
   name: string;
   slug: string;
   logoUrl?: string;
+  themeColor?: string | null;
   address: string;
   city: string;
   state: string; // e.g. Lagos, Abuja FCT, Rivers

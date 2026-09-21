@@ -1,4 +1,4 @@
-import { Permission, hasPermission } from "../../config/rbac";
+import { Permission, UserRole, hasPermission } from "../../config/rbac";
 import { AuthenticatedUser } from "../../middleware/auth";
 import { ForbiddenError } from "../http/errors";
 
@@ -25,4 +25,10 @@ export function requireSameSchool(actor: AuthenticatedUser, schoolId: string): v
 export function requireSchoolPermission(actor: AuthenticatedUser, schoolId: string, permission: Permission): void {
   requireSameSchool(actor, schoolId);
   requirePermission(actor, permission);
+}
+
+export function requireRole(actor: AuthenticatedUser, roles: UserRole[]): void {
+  if (!roles.includes(actor.role)) {
+    throw new ForbiddenError(`Role '${actor.role}' is not allowed to perform this action.`);
+  }
 }

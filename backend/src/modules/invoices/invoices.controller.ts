@@ -14,7 +14,7 @@ export async function listInvoicesHandler(request: FastifyRequest, reply: Fastif
   requirePermission(actor, "finance:view");
 
   const { studentId } = validateQuery(request, listInvoicesQuerySchema);
-  const invoices = await listInvoices(actor.schoolId, studentId);
+  const invoices = await listInvoices(actor.schoolId, studentId, actor);
   reply.status(200).send(ok(toCamelCase(invoices)));
 }
 

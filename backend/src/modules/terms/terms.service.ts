@@ -2,7 +2,7 @@ import { withTransaction, query } from "../../db/pool";
 import { ConflictError, NotFoundError } from "../../shared/http/errors";
 import { CreateTermInput } from "./terms.schemas";
 
-const TERM_SELECT = "id, school_id, session_id, name, start_date, end_date, is_current";
+const TERM_SELECT = "id, school_id, session_id, name, start_date, end_date, is_current, is_active";
 
 export async function listTerms(schoolId: string, sessionId?: string) {
   const conditions = ["school_id = $1"];

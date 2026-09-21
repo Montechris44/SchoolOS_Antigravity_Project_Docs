@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { newPasswordSchema } from "../../shared/security/password-policy";
+
 export const registerSchoolSchema = z.object({
   school: z.object({
     name: z.string().min(2).max(200),
@@ -28,3 +30,29 @@ export const loginSchema = z.object({
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;
+
+export const refreshSchema = z.object({
+  refreshToken: z.string().min(20).max(300),
+});
+
+export const logoutSchema = z.object({
+  refreshToken: z.string().min(20).max(300).optional(),
+});
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1),
+  newPassword: newPasswordSchema,
+});
+
+export const forceUpdatePasswordSchema = z.object({
+  newPassword: newPasswordSchema,
+});
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(20).max(200),
+  newPassword: newPasswordSchema,
+});

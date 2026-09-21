@@ -16,7 +16,7 @@ const isLocalDatabase = /localhost|127\.0\.0\.1/.test(env.DATABASE_URL);
 
 export const pool = new Pool({
   connectionString: env.DATABASE_URL,
-  max: 10,
+  max: env.DB_POOL_MAX,
   idleTimeoutMillis: 30_000,
   connectionTimeoutMillis: 10_000,
   ssl: isLocalDatabase ? undefined : { rejectUnauthorized: false },

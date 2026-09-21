@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth/auth-context";
 import { listClasses } from "@/lib/api/classes";
 import { listStudents } from "@/lib/api/students";
 import { listAttendance, markAttendance } from "@/lib/api/attendance";
+import { listTeacherAssignments } from "@/lib/api/portal-academics";
 import { ApiError } from "@/lib/api/client";
 import { Student, SchoolClass, AttendanceStatus } from "@/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -30,7 +31,7 @@ function todayIsoDate(): string {
 }
 
 export default function AttendancePage() {
-  const { school } = useAuth();
+  const { school, role, user } = useAuth();
   const [classes, setClasses] = useState<SchoolClass[]>([]);
   const [selectedClassId, setSelectedClassId] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>(todayIsoDate());
@@ -46,8 +47,10 @@ export default function AttendancePage() {
   useEffect(() => {
     if (!school) return;
     setIsLoading(true);
-    listClasses()
-      .then((cl) => {
+    // Teachers only take the register of classes they teach or are class teacher of.
+    Promise.all([listClasses(), role === "teacher" ? listTeacherAssignments() : Promise.resolve(null)])
+      .then(([all, mine]) => {
+        const cl = mine ? all.filter((c) => mine.some((a) => a.classId === c.id) || c.classTeacherId === user?.id) : all;
         setClasses(cl);
         if (cl.length > 0 && !selectedClassId) {
           setSelectedClassId(cl[0].id);

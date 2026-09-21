@@ -20,6 +20,11 @@ npm run migrate        # applies db/migrations/*.sql in order, tracked in schema
 npm run dev            # ts-node-dev, auto-restarts on change
 ```
 
+Notable environment variables (all documented in `.env.example`): `JWT_EXPIRES_IN` (access token,
+default `30m`), `REFRESH_TOKEN_DAYS` (default 7), `DB_POOL_MAX`, `FRONTEND_URL` (links in e-mails),
+`STUDENT_EMAIL_FALLBACK_DOMAIN`, `RESEND_*` (e-mail; without a key mails are logged, not sent) and
+`CLOUDINARY_*` (logo/photo/homework uploads; without them uploads return 503).
+
 `DATABASE_URL` needs SSL for any non-localhost host (e.g. Supabase's pooler) — `src/db/pool.ts`
 enables it automatically unless the host is `localhost`/`127.0.0.1`.
 
@@ -39,7 +44,7 @@ npm run seed:super-admin -- --email you@example.com --password "a-real-password"
 | `npm start` | Run the compiled build (`dist/server.js`) |
 | `npm run migrate` | Apply any not-yet-applied `db/migrations/*.sql` files |
 | `npm run seed:super-admin` | Create a super admin account (operator-only, no public endpoint) |
-| `npm test` | Run the integration test suite against the configured database |
+| `npm test` | Run the integration test suite against the configured database (test files share one database, so run them serially: `--test-concurrency=1`) |
 
 ## Project layout
 
@@ -65,6 +70,14 @@ Every module after `health` follows the same four-file pattern; copy an existing
 Every authenticated route reads `schoolId` from the JWT, not from the URL or body — there is no
 way for a request to address another school's data by ID. The one exception is
 `schools/:schoolId`, which addresses the caller's own school explicitly.
+
+## School portal (admin, teacher, student, parent, staff)
+
+One login for everyone; the role is attached to the user's membership. Feature areas — dashboards,
+class/arm/subject management, teacher assignments, attendance, staff attendance, timetable,
+homework, the multi-step results workflow, leave, events, messages and notifications — are listed in
+`docs/api.md`. Security behaviour (refresh-token rotation, forced password change, role scoping,
+ownership checks) is summarised at the end of that file.
 
 ## Super admin
 

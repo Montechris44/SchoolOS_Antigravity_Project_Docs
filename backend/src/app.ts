@@ -1,6 +1,7 @@
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import jwt from "@fastify/jwt";
+import multipart from "@fastify/multipart";
 import rateLimit from "@fastify/rate-limit";
 import Fastify, { FastifyInstance } from "fastify";
 
@@ -12,7 +13,12 @@ export function buildApp(): FastifyInstance {
   const app = Fastify({
     logger: {
       level: env.LOG_LEVEL,
+      // Never write credentials or session tokens to logs.
+      redact: ["req.headers.authorization", "req.headers.cookie", "req.body.password", "req.body.refreshToken"],
     },
+    // Only trust X-Forwarded-For when deployed behind a reverse proxy, otherwise rate limits key on the proxy.
+    trustProxy: env.TRUST_PROXY,
+    bodyLimit: 2 * 1024 * 1024,
   });
 
   // Preserve the raw JSON body alongside the parsed one so webhook handlers
@@ -31,7 +37,9 @@ export function buildApp(): FastifyInstance {
     origin: env.CORS_ORIGINS,
     credentials: true,
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   });
+  app.register(multipart, { limits: { fileSize: 5 * 1024 * 1024, files: 1, fields: 10 } });
   app.register(rateLimit, {
     max: 300,
     timeWindow: "1 minute",

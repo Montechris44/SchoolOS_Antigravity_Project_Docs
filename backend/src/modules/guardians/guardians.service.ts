@@ -20,10 +20,39 @@ export interface GuardianRecord {
 
 const GUARDIAN_SELECT = "id, school_id, first_name, last_name, relationship, phone, email, address";
 
-export async function listGuardians(schoolId: string): Promise<GuardianRecord[]> {
+/**
+ * Owners, administrators and bursars see every guardian; a teacher the guardians of students in their classes;
+ * a parent only themselves; a student only their own guardian. (Parent and student roles previously received
+ * the whole school's guardian directory — names, phones and e-mails.)
+ */
+export async function listGuardians(actor: { schoolId: string; role: string; userId: string }): Promise<GuardianRecord[]> {
+  const params: unknown[] = [actor.schoolId];
+  let scope = "TRUE";
+
+  if (actor.role !== "owner" && actor.role !== "admin" && actor.role !== "bursar") {
+    params.push(actor.userId);
+    const user = `$${params.length}`;
+    if (actor.role === "parent") {
+      scope = `user_id = ${user}`;
+    } else if (actor.role === "student") {
+      scope = `id IN (SELECT guardian_id FROM students WHERE user_id = ${user} AND guardian_id IS NOT NULL)`;
+    } else if (actor.role === "teacher") {
+      scope = `id IN (
+        SELECT s.guardian_id FROM students s
+        WHERE s.school_id = guardians.school_id AND s.guardian_id IS NOT NULL AND (
+          EXISTS (SELECT 1 FROM teacher_assignments ta WHERE ta.school_id = s.school_id AND ta.teacher_id = ${user} AND ta.is_active
+                  AND ta.class_id = s.current_class_id AND (ta.arm_id IS NULL OR ta.arm_id = s.arm_id))
+          OR s.current_class_id IN (SELECT id FROM classes WHERE school_id = s.school_id AND class_teacher_id = ${user})
+          OR s.arm_id IN (SELECT id FROM class_arms WHERE school_id = s.school_id AND class_teacher_id = ${user})
+        ))`;
+    } else {
+      scope = "FALSE";
+    }
+  }
+
   const result = await query<GuardianRecord>(
-    `SELECT ${GUARDIAN_SELECT} FROM guardians WHERE school_id = $1 ORDER BY last_name ASC`,
-    [schoolId]
+    `SELECT ${GUARDIAN_SELECT} FROM guardians WHERE school_id = $1 AND ${scope} ORDER BY last_name ASC`,
+    params
   );
   return result.rows;
 }

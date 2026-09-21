@@ -19,7 +19,7 @@ export async function listTermsHandler(request: FastifyRequest, reply: FastifyRe
 
 export async function createTermHandler(request: FastifyRequest, reply: FastifyReply): Promise<void> {
   const actor = getAuthContext(request);
-  requirePermission(actor, "school:manage");
+  requirePermission(actor, "classes:manage");
 
   const input = validateBody(request, createTermSchema);
   const term = await createTerm(actor.schoolId, input);

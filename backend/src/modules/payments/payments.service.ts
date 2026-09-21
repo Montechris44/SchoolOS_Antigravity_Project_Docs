@@ -5,6 +5,7 @@ import { PoolClient } from "pg";
 import { env } from "../../config/env";
 import { query, withTransaction } from "../../db/pool";
 import { BadRequestError, NotFoundError } from "../../shared/http/errors";
+import { FinanceActor, financeVisibility } from "../../shared/security/finance-scope";
 import { RecordManualPaymentInput } from "./payments.schemas";
 
 const DEFAULT_SANDBOX_SECRET = "sk_test_mock_paystack_schoolos_secret_key";
@@ -40,14 +41,21 @@ interface PaymentRecord {
   created_at: string;
 }
 
-export async function listPayments(schoolId: string): Promise<PaymentRecord[]> {
-  const result = await query<PaymentRecord>(`${PAYMENT_SELECT} WHERE p.school_id = $1 ORDER BY p.paid_at DESC`, [
-    schoolId,
-  ]);
+export async function listPayments(schoolId: string, actor?: FinanceActor): Promise<PaymentRecord[]> {
+  const params: unknown[] = [schoolId];
+  const scope = actor
+    ? financeVisibility(actor, params, "(SELECT i.student_id FROM invoices i WHERE i.id = p.invoice_id)")
+    : "TRUE";
+  const result = await query<PaymentRecord>(
+    `${PAYMENT_SELECT} WHERE p.school_id = $1 AND ${scope} ORDER BY p.paid_at DESC`,
+    params
+  );
   return result.rows;
 }
 
-export async function listReceipts(schoolId: string) {
+export async function listReceipts(schoolId: string, actor?: FinanceActor) {
+  const params: unknown[] = [schoolId];
+  const scope = actor ? financeVisibility(actor, params, "i.student_id") : "TRUE";
   const result = await query(
     `SELECT
        p.id, p.school_id, p.receipt_number, p.id AS payment_id, p.invoice_id,
@@ -59,9 +67,9 @@ export async function listReceipts(schoolId: string) {
      JOIN invoices i ON i.id = p.invoice_id
      JOIN students s ON s.id = i.student_id
      LEFT JOIN profiles pr ON pr.id = p.recorded_by_user_id
-     WHERE p.school_id = $1 AND p.status = 'VERIFIED_SUCCESS'
+     WHERE p.school_id = $1 AND p.status = 'VERIFIED_SUCCESS' AND ${scope}
      ORDER BY p.paid_at DESC`,
-    [schoolId]
+    params
   );
   return result.rows;
 }

@@ -22,7 +22,7 @@ export async function listPaymentsHandler(request: FastifyRequest, reply: Fastif
   const actor = getAuthContext(request);
   requirePermission(actor, "finance:view");
 
-  const payments = await listPayments(actor.schoolId);
+  const payments = await listPayments(actor.schoolId, actor);
   reply.status(200).send(ok(toCamelCase(payments)));
 }
 
@@ -30,7 +30,7 @@ export async function listReceiptsHandler(request: FastifyRequest, reply: Fastif
   const actor = getAuthContext(request);
   requirePermission(actor, "finance:view");
 
-  const receipts = await listReceipts(actor.schoolId);
+  const receipts = await listReceipts(actor.schoolId, actor);
   reply.status(200).send(ok(toCamelCase(receipts)));
 }
 

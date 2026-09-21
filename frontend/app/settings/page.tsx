@@ -9,6 +9,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { PortalSettings } from "@/components/portal/portal-settings";
 import {
   Settings,
   Building2,
@@ -88,6 +89,8 @@ export default function SettingsPage() {
             {errorMsg}
           </div>
         )}
+
+        <PortalSettings />
 
         <form onSubmit={handleSaveSettings} className="space-y-6">
           {/* Institutional Profile */}

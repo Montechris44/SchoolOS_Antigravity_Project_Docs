@@ -1,4 +1,11 @@
-export type UserRole = "owner" | "admin" | "bursar" | "teacher" | "parent" | "student";
+export type UserRole = "owner" | "admin" | "bursar" | "teacher" | "parent" | "student" | "non_academic";
+
+/** Roles that run the school day to day (Nexora's SCHOOL_ADMIN). */
+export const ADMIN_ROLES: UserRole[] = ["owner", "admin"];
+
+export function isAdminRole(role: UserRole): boolean {
+  return ADMIN_ROLES.includes(role);
+}
 
 export type Permission =
   | "school:manage"
@@ -18,7 +25,14 @@ export type Permission =
   | "dashboard:view_management"
   | "intelligence:view"
   | "actions:manage"
-  | "ai:query";
+  | "ai:query"
+  | "results:review"
+  | "grading:manage"
+  | "timetable:manage"
+  | "events:manage"
+  | "leave:manage"
+  | "staff_attendance:manage"
+  | "assignments:manage";
 
 export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   owner: [
@@ -40,6 +54,13 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "intelligence:view",
     "actions:manage",
     "ai:query",
+    "results:review",
+    "grading:manage",
+    "timetable:manage",
+    "events:manage",
+    "leave:manage",
+    "staff_attendance:manage",
+    "assignments:manage",
   ],
   admin: [
     "staff:manage",
@@ -57,6 +78,13 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "intelligence:view",
     "actions:manage",
     "ai:query",
+    "results:review",
+    "grading:manage",
+    "timetable:manage",
+    "events:manage",
+    "leave:manage",
+    "staff_attendance:manage",
+    "assignments:manage",
   ],
   bursar: [
     "students:view",
@@ -76,9 +104,11 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     "academics:enter_scores",
     "communication:send",
     "ai:query",
+    "assignments:manage",
   ],
   parent: ["students:view", "finance:view"],
   student: ["students:view"],
+  non_academic: [],
 };
 
 export function hasPermission(role: UserRole, permission: Permission): boolean {

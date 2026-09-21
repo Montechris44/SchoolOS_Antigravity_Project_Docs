@@ -1,5 +1,6 @@
 import { withTransaction, query } from "../../db/pool";
 import { NotFoundError } from "../../shared/http/errors";
+import { FinanceActor, financeVisibility } from "../../shared/security/finance-scope";
 import { getCurrentTermId } from "../terms/terms.service";
 import { CreateInvoiceInput } from "./invoices.schemas";
 
@@ -75,13 +76,16 @@ function toInvoiceRecord(row: InvoiceRow) {
   };
 }
 
-export async function listInvoices(schoolId: string, studentId?: string) {
+export async function listInvoices(schoolId: string, studentId?: string, actor?: FinanceActor) {
   const conditions = ["i.school_id = $1"];
   const params: unknown[] = [schoolId];
 
   if (studentId) {
     params.push(studentId);
     conditions.push(`i.student_id = $${params.length}`);
+  }
+  if (actor) {
+    conditions.push(financeVisibility(actor, params, "i.student_id"));
   }
 
   const result = await query<InvoiceRow>(

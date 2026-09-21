@@ -45,6 +45,11 @@ const config: Config = {
           DEFAULT: "var(--destructive)",
           foreground: "var(--destructive-foreground)",
         },
+        brand: {
+          DEFAULT: "var(--brand)",
+          soft: "var(--brand-soft)",
+          strong: "var(--brand-strong)",
+        },
         border: "var(--border)",
         input: "var(--input)",
         ring: "var(--ring)",
@@ -63,6 +68,9 @@ const config: Config = {
           50: "#fef2f2",
           700: "#b91c1c",
         },
+      },
+      fontFamily: {
+        heading: ["var(--font-heading)", "system-ui", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
