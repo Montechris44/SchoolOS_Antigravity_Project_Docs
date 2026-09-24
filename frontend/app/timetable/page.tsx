@@ -25,20 +25,58 @@ function Week({ entries, canDelete, onDelete, showClass }: { entries: TimetableE
     <div className="grid grid-cols-1 gap-4 md:grid-cols-5 xl:grid-cols-6">
       {days.map((name, index) => {
         const day = index + 1;
+        const isCurrentDay = day === today;
         const items = entries.filter((e) => e.dayOfWeek === day).sort((a, b) => a.startTime.localeCompare(b.startTime));
         return (
-          <div key={name} className={`rounded-3xl border p-3 ${day === today ? "border-brand bg-brand-soft" : "border-slate-200 bg-white"}`}>
-            <p className={`mb-3 px-1 text-xs font-bold uppercase tracking-wider ${day === today ? "text-brand" : "text-slate-400"}`}>{name}</p>
-            <div className="space-y-2">
-              {items.length === 0 && <p className="px-1 py-4 text-center text-xs text-slate-300">—</p>}
+          <div
+            key={name}
+            className={`rounded-3xl border p-3.5 transition-all ${
+              isCurrentDay
+                ? "border-brand/40 bg-gradient-to-b from-brand-soft/50 via-white to-white shadow-card"
+                : "border-slate-200/80 bg-white shadow-subtle"
+            }`}
+          >
+            <div className="mb-3.5 flex items-center justify-between px-1">
+              <p className={`text-xs font-bold uppercase tracking-wider ${isCurrentDay ? "text-brand" : "text-slate-500"}`}>
+                {name}
+              </p>
+              {isCurrentDay && (
+                <span className="rounded-full bg-brand px-2 py-0.5 text-[10px] font-bold text-white shadow-2xs">
+                  Today
+                </span>
+              )}
+            </div>
+            <div className="space-y-2.5">
+              {items.length === 0 && (
+                <div className="rounded-2xl border border-dashed border-slate-100 py-6 text-center text-xs text-slate-300">
+                  No lessons scheduled
+                </div>
+              )}
               {items.map((entry) => (
-                <div key={entry.id} className={`group rounded-2xl border p-3 text-sm ${entry.isBreak || entry.isLunch ? "border-dashed border-slate-200 bg-slate-50 text-slate-400" : "border-slate-100 bg-white shadow-sm"}`}>
+                <div
+                  key={entry.id}
+                  className={`group relative rounded-2xl border p-3.5 text-sm transition-all ${
+                    entry.isBreak || entry.isLunch
+                      ? "border-dashed border-slate-200 bg-slate-50/70 text-slate-500"
+                      : "border-slate-200/70 bg-white shadow-2xs hover:border-brand/40 hover:shadow-subtle"
+                  }`}
+                >
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-[11px] font-bold text-brand">{entry.startTime}–{entry.endTime}</p>
-                    {canDelete && <button onClick={() => onDelete?.(entry.id)} aria-label="Delete lesson" className="opacity-0 transition-opacity group-hover:opacity-100"><Trash2 className="h-3.5 w-3.5 text-rose-500" /></button>}
+                    <p className="font-mono text-[11px] font-bold text-brand bg-brand-soft/70 px-2 py-0.5 rounded-md inline-block">
+                      {entry.startTime}–{entry.endTime}
+                    </p>
+                    {canDelete && (
+                      <button
+                        onClick={() => onDelete?.(entry.id)}
+                        aria-label="Delete lesson"
+                        className="opacity-0 transition-opacity group-hover:opacity-100 p-1 hover:bg-rose-50 rounded"
+                      >
+                        <Trash2 className="h-3.5 w-3.5 text-rose-500" />
+                      </button>
+                    )}
                   </div>
-                  <p className="mt-0.5 font-bold text-slate-800">{entry.displayTitle}</p>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="mt-2 font-bold text-slate-900">{entry.displayTitle}</p>
+                  <p className="mt-0.5 text-[11px] text-slate-500">
                     {[showClass ? `${entry.className}${entry.armName ? ` ${entry.armName}` : ""}` : null, entry.teacherName, entry.room].filter(Boolean).join(" · ")}
                   </p>
                 </div>

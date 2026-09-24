@@ -141,7 +141,7 @@ export default function SuperAdminDashboardPage() {
 
   if (isCheckingSession) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-100">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
         <div className="flex items-center gap-3 text-slate-500 font-medium">
           <div className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
           Verifying session...
@@ -153,27 +153,27 @@ export default function SuperAdminDashboardPage() {
   if (!admin) return null;
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 lg:px-8">
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white">
+    <div className="min-h-screen bg-slate-50/70">
+      <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/95 backdrop-blur-md px-4 lg:px-8 shadow-2xs">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-2xs">
             <ShieldCheck className="h-5 w-5" />
           </div>
-          <span className="text-lg font-bold text-slate-900">SchoolOS Platform Admin</span>
+          <span className="font-heading text-lg font-bold text-slate-900 tracking-tight">SchoolOS Platform Admin</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold text-slate-500">{admin.fullName}</span>
+          <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">{admin.fullName}</span>
           <button
             onClick={handleLogout}
             title="Sign out"
-            className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-rose-600 transition-colors"
+            className="rounded-xl p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-colors cursor-pointer"
           >
             <LogOut className="h-4 w-4" />
           </button>
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl space-y-6 p-4 md:p-8">
+      <main className="mx-auto max-w-7xl space-y-7 p-4 md:p-8">
         {isLoading ? (
           <LoadingSkeleton count={5} />
         ) : loadError ? (
@@ -181,42 +181,42 @@ export default function SuperAdminDashboardPage() {
         ) : (
           <>
             {actionSuccessMsg && (
-              <div className="flex items-center gap-2 rounded-xl bg-emerald-50 p-4 text-xs font-bold text-emerald-800 border border-emerald-200">
+              <div className="flex items-center gap-2.5 rounded-2xl bg-emerald-50 p-4 text-xs font-bold text-emerald-800 border border-emerald-200 shadow-2xs animate-in fade-in">
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
                 {actionSuccessMsg}
               </div>
             )}
             {actionErrorMsg && (
-              <div className="flex items-center gap-2 rounded-xl bg-rose-50 p-4 text-xs font-bold text-rose-800 border border-rose-200">
+              <div className="flex items-center gap-2.5 rounded-2xl bg-rose-50 p-4 text-xs font-bold text-rose-800 border border-rose-200 shadow-2xs animate-in fade-in">
                 <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
                 {actionErrorMsg}
               </div>
             )}
 
             {/* Platform analytics */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
               {[
-                { label: "Total Schools", value: analytics?.totalSchools },
-                { label: "Active", value: analytics?.activeSchools },
-                { label: "Suspended", value: analytics?.suspendedSchools },
-                { label: "Students", value: analytics?.totalStudents },
-                { label: "Staff", value: analytics?.totalStaff },
-                { label: "Memberships", value: analytics?.totalMemberships },
+                { label: "Total Schools", value: analytics?.totalSchools, color: "text-indigo-600" },
+                { label: "Active", value: analytics?.activeSchools, color: "text-emerald-600" },
+                { label: "Suspended", value: analytics?.suspendedSchools, color: "text-rose-600" },
+                { label: "Students", value: analytics?.totalStudents, color: "text-slate-800" },
+                { label: "Staff", value: analytics?.totalStaff, color: "text-slate-800" },
+                { label: "Memberships", value: analytics?.totalMemberships, color: "text-slate-800" },
               ].map((stat) => (
-                <Card key={stat.label} className="p-4">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                <Card key={stat.label} className="p-4 rounded-2xl border border-slate-200/80 bg-white shadow-subtle hover:shadow-card-hover transition-all">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                     {stat.label}
                   </span>
-                  <p className="text-2xl font-bold text-slate-900 mt-1">{stat.value ?? 0}</p>
+                  <p className={`font-heading text-2xl font-bold tracking-tight mt-1 ${stat.color}`}>{stat.value ?? 0}</p>
                 </Card>
               ))}
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b border-slate-200">
+            <div className="flex gap-2 border-b border-slate-200">
               <button
                 onClick={() => setTab("schools")}
-                className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-all ${
+                className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-heading font-bold transition-all ${
                   tab === "schools" ? "border-indigo-600 text-indigo-600" : "border-transparent text-slate-500 hover:text-slate-800"
                 }`}
               >
@@ -224,7 +224,7 @@ export default function SuperAdminDashboardPage() {
               </button>
               <button
                 onClick={() => setTab("users")}
-                className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-all ${
+                className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-heading font-bold transition-all ${
                   tab === "users" ? "border-indigo-600 text-indigo-600" : "border-transparent text-slate-500 hover:text-slate-800"
                 }`}
               >
@@ -232,7 +232,7 @@ export default function SuperAdminDashboardPage() {
               </button>
               <button
                 onClick={() => setTab("audit")}
-                className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-all ${
+                className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-heading font-bold transition-all ${
                   tab === "audit" ? "border-indigo-600 text-indigo-600" : "border-transparent text-slate-500 hover:text-slate-800"
                 }`}
               >
@@ -243,45 +243,45 @@ export default function SuperAdminDashboardPage() {
             {tab === "schools" && (
               <div className="space-y-4">
                 <div className="relative max-w-sm">
-                  <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                  <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
                   <Input
                     placeholder="Search by name, slug, or email..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9"
+                    className="pl-10 rounded-2xl"
                   />
                 </div>
 
                 {filteredSchools.length === 0 ? (
                   <EmptyState icon={Building2} title="No schools found" description="No schools match your search." />
                 ) : (
-                  <Card className="overflow-hidden">
+                  <Card className="rounded-3xl border border-slate-200/80 bg-white shadow-subtle overflow-hidden">
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-sm">
-                        <thead className="bg-slate-50 text-xs uppercase font-bold tracking-wider text-slate-500 border-b border-slate-200">
+                        <thead className="bg-slate-50/90 text-[11px] font-heading font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200/80">
                           <tr>
-                            <th className="px-6 py-3.5">School</th>
-                            <th className="px-6 py-3.5">Location</th>
-                            <th className="px-6 py-3.5">Members</th>
-                            <th className="px-6 py-3.5">Students</th>
-                            <th className="px-6 py-3.5">Status</th>
-                            <th className="px-6 py-3.5 text-right">Action</th>
+                            <th className="px-6 py-4">School</th>
+                            <th className="px-6 py-4">Location</th>
+                            <th className="px-6 py-4">Members</th>
+                            <th className="px-6 py-4">Students</th>
+                            <th className="px-6 py-4">Status</th>
+                            <th className="px-6 py-4 text-right">Action</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                           {filteredSchools.map((school) => (
-                            <tr key={school.id} className="hover:bg-slate-50/70 transition-colors">
+                            <tr key={school.id} className="hover:bg-slate-50/80 transition-colors">
                               <td className="px-6 py-4">
-                                <p className="font-semibold text-slate-900">{school.name}</p>
-                                <p className="text-xs text-slate-400">{school.email}</p>
+                                <p className="font-heading font-bold text-slate-900">{school.name}</p>
+                                <p className="text-xs text-slate-400 font-mono">{school.email}</p>
                               </td>
-                              <td className="px-6 py-4 text-xs text-slate-600">
+                              <td className="px-6 py-4 text-xs font-medium text-slate-600">
                                 {school.city}, {school.state}
                               </td>
-                              <td className="px-6 py-4 text-slate-700">{school.memberCount}</td>
-                              <td className="px-6 py-4 text-slate-700">{school.studentCount}</td>
+                              <td className="px-6 py-4 font-mono font-semibold text-slate-700">{school.memberCount}</td>
+                              <td className="px-6 py-4 font-mono font-semibold text-slate-700">{school.studentCount}</td>
                               <td className="px-6 py-4">
-                                <Badge variant={school.status === "ACTIVE" ? "success" : "destructive"}>
+                                <Badge variant={school.status === "ACTIVE" ? "success" : "destructive"} className="uppercase font-mono text-[10px]">
                                   {school.status}
                                 </Badge>
                               </td>
@@ -289,7 +289,7 @@ export default function SuperAdminDashboardPage() {
                                 <Button
                                   size="sm"
                                   variant={school.status === "ACTIVE" ? "destructive" : "outline"}
-                                  className="h-8 gap-1.5 text-xs"
+                                  className="h-8 gap-1.5 text-xs rounded-xl font-semibold cursor-pointer"
                                   onClick={() => {
                                     setSuspendTarget(school);
                                     setSuspendReason("");
@@ -317,28 +317,28 @@ export default function SuperAdminDashboardPage() {
             )}
 
             {tab === "users" && (
-              <Card className="overflow-hidden">
+              <Card className="rounded-3xl border border-slate-200/80 bg-white shadow-subtle overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-slate-50 text-xs uppercase font-bold tracking-wider text-slate-500 border-b border-slate-200">
+                    <thead className="bg-slate-50/90 text-[11px] font-heading font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200/80">
                       <tr>
-                        <th className="px-6 py-3.5">User</th>
-                        <th className="px-6 py-3.5">School</th>
-                        <th className="px-6 py-3.5">Role</th>
-                        <th className="px-6 py-3.5">Joined</th>
-                        <th className="px-6 py-3.5 text-right">Action</th>
+                        <th className="px-6 py-4">User</th>
+                        <th className="px-6 py-4">School</th>
+                        <th className="px-6 py-4">Role</th>
+                        <th className="px-6 py-4">Joined</th>
+                        <th className="px-6 py-4 text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {users.map((user) => (
-                        <tr key={user.membershipId} className="hover:bg-slate-50/70 transition-colors">
+                        <tr key={user.membershipId} className="hover:bg-slate-50/80 transition-colors">
                           <td className="px-6 py-4">
-                            <p className="font-semibold text-slate-900">{user.fullName}</p>
-                            <p className="text-xs text-slate-400">{user.email}</p>
+                            <p className="font-heading font-bold text-slate-900">{user.fullName}</p>
+                            <p className="text-xs text-slate-400 font-mono">{user.email}</p>
                           </td>
-                          <td className="px-6 py-4 text-xs text-slate-600">{user.schoolName}</td>
+                          <td className="px-6 py-4 text-xs font-medium text-slate-600">{user.schoolName}</td>
                           <td className="px-6 py-4">
-                            <Badge variant="secondary" className="capitalize">
+                            <Badge variant="secondary" className="capitalize font-mono text-[10px]">
                               {user.role}
                             </Badge>
                           </td>
@@ -347,7 +347,7 @@ export default function SuperAdminDashboardPage() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="h-8 gap-1.5 text-xs"
+                              className="h-8 gap-1.5 text-xs rounded-xl font-semibold cursor-pointer"
                               onClick={() => handleUnlock(user.id)}
                             >
                               <Unlock className="h-3.5 w-3.5" /> Unlock login
@@ -365,22 +365,22 @@ export default function SuperAdminDashboardPage() {
             )}
 
             {tab === "audit" && (
-              <Card className="overflow-hidden">
+              <Card className="rounded-3xl border border-slate-200/80 bg-white shadow-subtle overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-slate-50 text-xs uppercase font-bold tracking-wider text-slate-500 border-b border-slate-200">
+                    <thead className="bg-slate-50/90 text-[11px] font-heading font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200/80">
                       <tr>
-                        <th className="px-6 py-3.5">Action</th>
-                        <th className="px-6 py-3.5">School</th>
-                        <th className="px-6 py-3.5">Actor</th>
-                        <th className="px-6 py-3.5">When</th>
+                        <th className="px-6 py-4">Action</th>
+                        <th className="px-6 py-4">School</th>
+                        <th className="px-6 py-4">Actor</th>
+                        <th className="px-6 py-4">When</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {auditLogs.map((entry) => (
-                        <tr key={entry.id} className="hover:bg-slate-50/70 transition-colors">
-                          <td className="px-6 py-4 font-mono text-xs font-bold text-indigo-700">{entry.action}</td>
-                          <td className="px-6 py-4 text-xs text-slate-600">{entry.schoolName ?? "—"}</td>
+                        <tr key={entry.id} className="hover:bg-slate-50/80 transition-colors">
+                          <td className="px-6 py-4 font-mono text-xs font-bold text-indigo-700 bg-indigo-50/40">{entry.action}</td>
+                          <td className="px-6 py-4 text-xs font-medium text-slate-600">{entry.schoolName ?? "—"}</td>
                           <td className="px-6 py-4 text-xs text-slate-600">
                             {entry.superAdminName ? (
                               <span className="font-semibold text-indigo-700">{entry.superAdminName} (platform)</span>
@@ -425,19 +425,20 @@ export default function SuperAdminDashboardPage() {
                   rows={3}
                   value={suspendReason}
                   onChange={(e) => setSuspendReason(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 bg-white p-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-indigo-600"
+                  className="w-full rounded-2xl border border-slate-200 bg-white p-3.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-600 focus:outline-hidden focus:ring-2 focus:ring-indigo-600/20 shadow-2xs"
                   placeholder="e.g. Outstanding invoice, policy violation..."
                 />
               </div>
             )}
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-              <Button type="button" variant="outline" onClick={() => setSuspendTarget(null)}>
+            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+              <Button type="button" variant="outline" className="rounded-xl font-semibold" onClick={() => setSuspendTarget(null)}>
                 Cancel
               </Button>
               <Button
                 onClick={handleConfirmStatusChange}
                 isLoading={isSubmittingStatus}
                 variant={suspendTarget.status === "ACTIVE" ? "destructive" : "primary"}
+                className="rounded-xl font-semibold shadow-2xs"
               >
                 {suspendTarget.status === "ACTIVE" ? "Confirm suspension" : "Confirm reactivation"}
               </Button>

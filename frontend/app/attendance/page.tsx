@@ -189,7 +189,7 @@ export default function AttendancePage() {
         </div>
 
         {/* Controls Bar */}
-        <Card className="p-4">
+        <Card className="p-4 border-slate-200/80 bg-white/90 shadow-subtle backdrop-blur-sm">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
             <div>
               <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 block">
@@ -198,7 +198,7 @@ export default function AttendancePage() {
               <select
                 value={selectedClassId}
                 onChange={(e) => setSelectedClassId(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm font-medium text-slate-800 outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10"
               >
                 {classes.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -216,7 +216,7 @@ export default function AttendancePage() {
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm font-medium text-slate-800 outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10"
               />
             </div>
 
@@ -243,7 +243,7 @@ export default function AttendancePage() {
               <Button
                 onClick={handleSaveAttendance}
                 isLoading={isSaving}
-                className="w-full gap-2 bg-blue-600 hover:bg-blue-700 shadow-sm"
+                className="w-full gap-2 shadow-sm"
               >
                 <Save className="h-4 w-4" />
                 {isSaved ? "Saved Successfully!" : "Save Roll-Call"}
@@ -252,8 +252,8 @@ export default function AttendancePage() {
           </div>
 
           {saveError && (
-            <div className="mt-4 flex items-center gap-2 rounded-lg bg-rose-50 p-3 text-xs font-semibold text-rose-700 border border-rose-200">
-              <AlertCircle className="h-4 w-4 shrink-0" />
+            <div className="mt-4 flex items-center gap-2 rounded-xl bg-rose-50 p-3.5 text-xs font-semibold text-rose-800 border border-rose-200 shadow-2xs">
+              <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
               {saveError}
             </div>
           )}
@@ -261,48 +261,48 @@ export default function AttendancePage() {
 
         {/* Quick KPI Metrics */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
-            <span className="text-xs font-semibold text-slate-500">Enrolled Scholars</span>
-            <p className="text-2xl font-bold text-slate-900 mt-1">{totalStudents}</p>
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-subtle">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Enrolled Scholars</span>
+            <p className="text-2xl font-black text-slate-900 mt-1 font-heading">{totalStudents}</p>
           </div>
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4 shadow-xs">
-            <span className="text-xs font-semibold text-emerald-700">Present</span>
-            <p className="text-2xl font-bold text-emerald-700 mt-1">{presentCount}</p>
+          <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/40 p-4 shadow-subtle">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Present</span>
+            <p className="text-2xl font-black text-emerald-700 mt-1 font-heading">{presentCount}</p>
           </div>
-          <div className="rounded-xl border border-rose-200 bg-rose-50/50 p-4 shadow-xs">
-            <span className="text-xs font-semibold text-rose-700">Absent</span>
-            <p className="text-2xl font-bold text-rose-700 mt-1">{absentCount}</p>
+          <div className="rounded-2xl border border-rose-200/80 bg-rose-50/40 p-4 shadow-subtle">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-rose-700">Absent</span>
+            <p className="text-2xl font-black text-rose-700 mt-1 font-heading">{absentCount}</p>
           </div>
-          <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-4 shadow-xs">
-            <span className="text-xs font-semibold text-amber-700">Late</span>
-            <p className="text-2xl font-bold text-amber-700 mt-1">{lateCount}</p>
+          <div className="rounded-2xl border border-amber-200/80 bg-amber-50/40 p-4 shadow-subtle">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700">Late Arrival</span>
+            <p className="text-2xl font-black text-amber-700 mt-1 font-heading">{lateCount}</p>
           </div>
-          <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-4 shadow-xs">
-            <span className="text-xs font-semibold text-blue-700">Attendance Rate</span>
-            <p className="text-2xl font-bold text-blue-700 mt-1">{attendanceRate}%</p>
+          <div className="rounded-2xl border border-brand/30 bg-brand-soft/40 p-4 shadow-subtle">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-brand">Rate</span>
+            <p className="text-2xl font-black text-brand mt-1 font-heading">{attendanceRate}%</p>
           </div>
         </div>
 
         {/* View Mode: REGISTER */}
         {viewMode === "register" && (
-          <Card className="overflow-hidden">
-            <CardHeader className="py-4 border-b border-slate-100 bg-slate-50/50">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-bold text-slate-800">
+          <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-subtle">
+            <div className="py-4 px-6 border-b border-slate-100 bg-slate-50/60 flex items-center justify-between">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">
                   Attendance List for {classes.find((c) => c.id === selectedClassId)?.name}
-                </CardTitle>
-                <span className="text-xs font-mono font-medium text-slate-500">
-                  Date: {selectedDate}
-                </span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Roll-call register for <span className="font-mono font-medium text-slate-800">{selectedDate}</span>
+                </p>
               </div>
-            </CardHeader>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 text-xs uppercase font-bold tracking-wider text-slate-500 border-b border-slate-200">
+                <thead className="bg-slate-50/80 text-[11px] uppercase font-bold tracking-wider text-slate-500 border-b border-slate-200/80">
                   <tr>
                     <th className="px-6 py-3.5">Student Scholar</th>
                     <th className="px-6 py-3.5 text-center">Status Selection</th>
-                    <th className="px-6 py-3.5">Remark / Note</th>
+                    <th className="px-6 py-3.5">Remark / Absence Reason</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -312,7 +312,7 @@ export default function AttendancePage() {
                       <tr key={std.id} className="hover:bg-slate-50/60 transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100 text-blue-800 font-bold text-xs">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-soft text-brand font-bold text-xs">
                               {std.firstName[0]}
                               {std.lastName[0]}
                             </div>
@@ -329,11 +329,11 @@ export default function AttendancePage() {
 
                         {/* Status Radio Pills */}
                         <td className="px-6 py-4">
-                          <div className="flex items-center justify-center gap-2">
+                          <div className="flex items-center justify-center gap-1.5">
                             <button
                               type="button"
                               onClick={() => handleStatusChange(std.id, "PRESENT")}
-                              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
+                              className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all active:scale-95 ${
                                 currentStatus === "PRESENT"
                                   ? "bg-emerald-600 text-white shadow-xs"
                                   : "bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700"
@@ -344,7 +344,7 @@ export default function AttendancePage() {
                             <button
                               type="button"
                               onClick={() => handleStatusChange(std.id, "ABSENT")}
-                              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
+                              className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all active:scale-95 ${
                                 currentStatus === "ABSENT"
                                   ? "bg-rose-600 text-white shadow-xs"
                                   : "bg-slate-100 text-slate-600 hover:bg-rose-50 hover:text-rose-700"
@@ -355,7 +355,7 @@ export default function AttendancePage() {
                             <button
                               type="button"
                               onClick={() => handleStatusChange(std.id, "LATE")}
-                              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
+                              className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all active:scale-95 ${
                                 currentStatus === "LATE"
                                   ? "bg-amber-500 text-white shadow-xs"
                                   : "bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-700"
@@ -366,10 +366,10 @@ export default function AttendancePage() {
                             <button
                               type="button"
                               onClick={() => handleStatusChange(std.id, "EXCUSED")}
-                              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
+                              className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all active:scale-95 ${
                                 currentStatus === "EXCUSED"
-                                  ? "bg-blue-600 text-white shadow-xs"
-                                  : "bg-slate-100 text-slate-600 hover:bg-blue-50 hover:text-blue-700"
+                                  ? "bg-brand text-white shadow-xs"
+                                  : "bg-slate-100 text-slate-600 hover:bg-brand-soft hover:text-brand"
                               }`}
                             >
                               <HelpCircle className="h-3.5 w-3.5" /> Excused
@@ -383,7 +383,7 @@ export default function AttendancePage() {
                             placeholder="Reason if absent/late..."
                             value={attendanceMap[std.id]?.notes || ""}
                             onChange={(e) => handleNotesChange(std.id, e.target.value)}
-                            className="w-full rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-blue-600"
+                            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-1.5 text-xs text-slate-700 placeholder:text-slate-400 outline-none transition-all focus:border-brand focus:bg-white focus:ring-2 focus:ring-brand/20"
                           />
                         </td>
                       </tr>
@@ -392,7 +392,7 @@ export default function AttendancePage() {
                 </tbody>
               </table>
             </div>
-          </Card>
+          </div>
         )}
 
         {/* View Mode: HISTORY & RISK SUMMARY */}

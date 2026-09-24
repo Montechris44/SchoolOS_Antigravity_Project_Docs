@@ -254,7 +254,7 @@ export default function PeopleAndClassesPage() {
             <Button
               onClick={() => setIsEnrollModalOpen(true)}
               size="sm"
-              className="gap-1.5 bg-blue-600 hover:bg-blue-700"
+              className="gap-1.5"
             >
               <Plus className="h-4 w-4" /> Enroll Student
             </Button>
@@ -262,12 +262,12 @@ export default function PeopleAndClassesPage() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-slate-200">
+        <div className="flex border-b border-slate-200 gap-2">
           <button
             onClick={() => setActiveTab("students")}
             className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-all ${
               activeTab === "students"
-                ? "border-blue-600 text-blue-600"
+                ? "border-brand text-brand"
                 : "border-transparent text-slate-500 hover:text-slate-800"
             }`}
           >
@@ -277,7 +277,7 @@ export default function PeopleAndClassesPage() {
             onClick={() => setActiveTab("classes")}
             className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-all ${
               activeTab === "classes"
-                ? "border-blue-600 text-blue-600"
+                ? "border-brand text-brand"
                 : "border-transparent text-slate-500 hover:text-slate-800"
             }`}
           >
@@ -287,21 +287,21 @@ export default function PeopleAndClassesPage() {
             onClick={() => setActiveTab("staff")}
             className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-all ${
               activeTab === "staff"
-                ? "border-blue-600 text-blue-600"
+                ? "border-brand text-brand"
                 : "border-transparent text-slate-500 hover:text-slate-800"
             }`}
           >
-            <Briefcase className="h-4 w-4" /> Staff & Teachers ({staff.length})
+            <Briefcase className="h-4 w-4" /> Staff &amp; Faculty ({staff.length})
           </button>
           <button
             onClick={() => setActiveTab("sessions")}
             className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-all ${
               activeTab === "sessions"
-                ? "border-blue-600 text-blue-600"
+                ? "border-brand text-brand"
                 : "border-transparent text-slate-500 hover:text-slate-800"
             }`}
           >
-            <Calendar className="h-4 w-4" /> Sessions & Terms
+            <Calendar className="h-4 w-4" /> Sessions &amp; Terms
           </button>
         </div>
 
@@ -346,13 +346,13 @@ export default function PeopleAndClassesPage() {
                 onAction={() => setIsEnrollModalOpen(true)}
               />
             ) : (
-              <Card className="overflow-hidden">
+              <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-subtle">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-slate-50 text-xs uppercase font-bold tracking-wider text-slate-500 border-b border-slate-200">
+                    <thead className="bg-slate-50/80 text-[11px] uppercase font-bold tracking-wider text-slate-500 border-b border-slate-200/80">
                       <tr>
                         <th className="px-6 py-3.5">Admission No.</th>
-                        <th className="px-6 py-3.5">Student Name</th>
+                        <th className="px-6 py-3.5">Student Scholar</th>
                         <th className="px-6 py-3.5">Class</th>
                         <th className="px-6 py-3.5">Gender</th>
                         <th className="px-6 py-3.5">Parent / Guardian</th>
@@ -362,17 +362,19 @@ export default function PeopleAndClassesPage() {
                     <tbody className="divide-y divide-slate-100">
                       {filteredStudents.map((std) => (
                         <tr key={std.id} className="hover:bg-slate-50/80 transition-colors">
-                          <td className="px-6 py-4 font-mono font-bold text-xs text-blue-700">
-                            {std.admissionNumber}
+                          <td className="px-6 py-3.5">
+                            <span className="font-mono font-semibold text-xs text-slate-700 bg-slate-100 px-2 py-0.5 rounded">
+                              {std.admissionNumber}
+                            </span>
                           </td>
-                          <td className="px-6 py-4 font-semibold text-slate-900">
+                          <td className="px-6 py-3.5 font-semibold text-slate-900">
                             {std.firstName} {std.lastName}
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-3.5">
                             <Badge variant="secondary">{std.currentClassName}</Badge>
                           </td>
-                          <td className="px-6 py-4 capitalize text-slate-600">{std.gender}</td>
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-3.5 capitalize text-slate-600">{std.gender}</td>
+                          <td className="px-6 py-3.5">
                             <div>
                               <p className="font-medium text-slate-800">{std.guardianName || "Unassigned"}</p>
                               {std.guardianPhone && (
@@ -380,7 +382,7 @@ export default function PeopleAndClassesPage() {
                               )}
                             </div>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-3.5">
                             <Badge variant="success">Active</Badge>
                           </td>
                         </tr>
@@ -388,7 +390,7 @@ export default function PeopleAndClassesPage() {
                     </tbody>
                   </table>
                 </div>
-              </Card>
+              </div>
             )}
           </div>
         )}

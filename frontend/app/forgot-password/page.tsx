@@ -35,7 +35,7 @@ export default function ForgotPasswordPage() {
       title="Forgot your password?"
       subtitle="Enter the e-mail address you sign in with and we will send you a link to choose a new password."
       footer={
-        <Link href="/login" className="inline-flex items-center gap-1 font-semibold text-blue-600 hover:underline">
+        <Link href="/login" className="inline-flex items-center gap-1 font-semibold text-brand hover:underline">
           <ArrowLeft className="h-4 w-4" /> Back to sign in
         </Link>
       }
@@ -44,9 +44,9 @@ export default function ForgotPasswordPage() {
         <Alert tone="success">If an account exists for {email}, a reset link is on its way. The link works for one hour.</Alert>
       ) : (
         <form onSubmit={submit} className="space-y-4">
-          <Input id="email" label="Email address" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input id="email" label="Email address" type="email" required placeholder="name@school.edu.ng" value={email} onChange={(e) => setEmail(e.target.value)} />
           {error && <Alert tone="error">{error}</Alert>}
-          <Button type="submit" size="lg" className="w-full rounded-xl" isLoading={loading}>
+          <Button type="submit" size="lg" className="w-full rounded-2xl shadow-sm hover:shadow-md font-semibold" isLoading={loading}>
             <Send className="mr-2 h-4 w-4" /> Send reset link
           </Button>
         </form>

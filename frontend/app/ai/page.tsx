@@ -82,13 +82,13 @@ export default function AIAssistantPage() {
     <AppShell>
       <div className="space-y-6 max-w-5xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/80 pb-4">
           <div>
-            <div className="flex items-center gap-2">
-              <div className="rounded-xl bg-purple-600 p-2 text-white shadow-md shadow-purple-500/20">
+            <div className="flex items-center gap-2.5">
+              <div className="rounded-xl bg-gradient-to-tr from-brand to-brand-strong p-2 text-white shadow-md shadow-brand/20">
                 <Sparkles className="h-5 w-5" />
               </div>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+              <h1 className="text-2xl font-bold font-heading tracking-tight text-slate-900">
                 SchoolOS AI Intelligence Gateway
               </h1>
             </div>
@@ -97,15 +97,15 @@ export default function AIAssistantPage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="flex items-center gap-1.5 text-xs font-bold text-purple-800 bg-purple-50 border border-purple-200 px-3 py-1.5 rounded-xl">
-              <ShieldCheck className="h-4 w-4 text-purple-600" />
+            <span className="flex items-center gap-1.5 text-xs font-bold text-brand bg-brand-soft/70 border border-brand/20 px-3.5 py-1.5 rounded-xl">
+              <ShieldCheck className="h-4 w-4 text-brand" />
               Authorized as {role.toUpperCase()}
             </span>
           </div>
         </div>
 
         {/* Chat History Window */}
-        <Card className="min-h-[460px] max-h-[560px] flex flex-col justify-between overflow-hidden border-slate-200 shadow-sm">
+        <div className="min-h-[480px] max-h-[600px] flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/80 bg-white/95 shadow-elevated">
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {messages.map((m, idx) => (
               <div
@@ -115,7 +115,7 @@ export default function AIAssistantPage() {
                 }`}
               >
                 {m.role === "assistant" && (
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-700 shadow-xs mt-0.5">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-brand shadow-2xs mt-0.5">
                     <Bot className="h-5 w-5" />
                   </div>
                 )}
@@ -123,8 +123,8 @@ export default function AIAssistantPage() {
                 <div
                   className={`rounded-2xl px-5 py-4 max-w-2xl leading-relaxed ${
                     m.role === "user"
-                      ? "bg-blue-600 text-white rounded-br-none shadow-sm"
-                      : "bg-slate-50 text-slate-800 border border-slate-200/80 rounded-bl-none"
+                      ? "bg-brand text-white rounded-tr-xs shadow-subtle"
+                      : "bg-slate-50/90 text-slate-800 border border-slate-200/80 rounded-tl-xs shadow-2xs"
                   }`}
                 >
                   {/* Tool Pill if executed */}
@@ -133,7 +133,7 @@ export default function AIAssistantPage() {
                       <span
                         className={`inline-flex items-center gap-1 text-[11px] font-mono font-bold px-2 py-0.5 rounded-md ${
                           m.toolSuccess
-                            ? "bg-purple-100 text-purple-800 border border-purple-200"
+                            ? "bg-brand-soft text-brand border border-brand/20"
                             : "bg-rose-100 text-rose-800 border border-rose-200"
                         }`}
                       >
@@ -150,7 +150,7 @@ export default function AIAssistantPage() {
                 </div>
 
                 {m.role === "user" && (
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-700 shadow-xs mt-0.5 font-bold text-xs">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white shadow-2xs mt-0.5 font-bold text-xs font-mono">
                     {user?.fullName.slice(0, 2).toUpperCase()}
                   </div>
                 )}
@@ -159,13 +159,13 @@ export default function AIAssistantPage() {
 
             {isLoading && (
               <div className="flex gap-3 text-sm justify-start">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-700 animate-pulse">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-brand animate-pulse">
                   <Bot className="h-5 w-5" />
                 </div>
                 <div className="rounded-2xl bg-slate-50 px-5 py-4 border border-slate-200/80 text-slate-500 text-xs flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-purple-600 animate-bounce" />
-                  <span className="h-2 w-2 rounded-full bg-purple-600 animate-bounce [animation-delay:0.2s]" />
-                  <span className="h-2 w-2 rounded-full bg-purple-600 animate-bounce [animation-delay:0.4s]" />
+                  <span className="h-2 w-2 rounded-full bg-brand animate-bounce" />
+                  <span className="h-2 w-2 rounded-full bg-brand animate-bounce [animation-delay:0.2s]" />
+                  <span className="h-2 w-2 rounded-full bg-brand animate-bounce [animation-delay:0.4s]" />
                   Executing authorized tool query...
                 </div>
               </div>
@@ -173,15 +173,15 @@ export default function AIAssistantPage() {
           </div>
 
           {/* Quick Prompts Bar */}
-          <div className="p-3 bg-slate-50/80 border-t border-slate-200 flex flex-wrap gap-2 items-center">
+          <div className="p-3 bg-slate-50/70 border-t border-slate-200/70 flex flex-wrap gap-2 items-center">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider pl-2">
-              Suggested Questions:
+              Suggested Queries:
             </span>
             {quickPrompts.map((qp, i) => (
               <button
                 key={i}
                 onClick={() => handleSendMessage(qp)}
-                className="text-xs font-semibold bg-white text-slate-700 hover:text-blue-700 hover:border-blue-300 border border-slate-200 px-3 py-1.5 rounded-lg transition-colors shadow-2xs"
+                className="text-xs font-semibold bg-white text-slate-700 hover:text-brand hover:border-brand/40 border border-slate-200 px-3 py-1.5 rounded-xl transition-all shadow-2xs hover:shadow-subtle"
               >
                 {qp}
               </button>
@@ -197,22 +197,22 @@ export default function AIAssistantPage() {
               }}
               className="flex items-center gap-2"
             >
-              <Input
-                placeholder="Ask about attendance trends, fees, performance, or drafting notices..."
+              <input
+                placeholder="Ask about attendance trends, fee collection, student records, or notice drafts..."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="h-12 text-sm bg-slate-50 border-slate-200 focus-visible:ring-purple-600"
+                className="h-12 flex-1 rounded-xl border border-slate-200 bg-slate-50/60 px-4 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10"
               />
               <Button
                 type="submit"
                 isLoading={isLoading}
-                className="h-12 px-5 bg-purple-600 hover:bg-purple-700 text-white shrink-0 gap-1.5"
+                className="h-12 px-5 text-white shrink-0 gap-1.5"
               >
                 <span>Ask</span> <Send className="h-4 w-4" />
               </Button>
             </form>
           </div>
-        </Card>
+        </div>
       </div>
     </AppShell>
   );

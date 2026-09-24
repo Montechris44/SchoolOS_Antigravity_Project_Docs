@@ -256,19 +256,19 @@ export default function ResultsEntryPage() {
               )
             }>
               {sheet.students.length === 0 ? <p className="py-6 text-center text-sm text-slate-400">No active students in this class.</p> : (
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto rounded-xl border border-slate-200/80">
                   <table className="w-full min-w-[700px] text-sm">
-                    <thead className="text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    <thead className="bg-slate-50/90 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
                       <tr>
-                        <th className="pb-3 pr-3">Student</th>
-                        {sheet.scheme.components.map((c) => <th key={c.key} className="pb-3 pr-2 text-center">{c.name}<span className="block font-normal normal-case text-slate-400">/{c.max_score}</span></th>)}
-                        <th className="pb-3 pr-2 text-center">Exam<span className="block font-normal normal-case text-slate-400">/{sheet.scheme.examMaxScore}</span></th>
-                        <th className="pb-3 pr-2 text-center">Total</th>
-                        <th className="pb-3 text-center">Grade</th>
-                        <th className="pb-3 pl-3 text-center">Pos.</th>
+                        <th className="py-3 px-3">Student</th>
+                        {sheet.scheme.components.map((c) => <th key={c.key} className="py-3 px-2 text-center">{c.name}<span className="block font-normal normal-case text-slate-400">/{c.max_score}</span></th>)}
+                        <th className="py-3 px-2 text-center">Exam<span className="block font-normal normal-case text-slate-400">/{sheet.scheme.examMaxScore}</span></th>
+                        <th className="py-3 px-2 text-center">Total</th>
+                        <th className="py-3 text-center">Grade</th>
+                        <th className="py-3 px-3 text-center">Pos.</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-slate-100 bg-white">
                       {sheet.students.map((student) => {
                         const state = rows[student.studentId];
                         if (!state) return null;
@@ -276,22 +276,40 @@ export default function ResultsEntryPage() {
                         const grade = gradeFor(total, bands.data ?? []);
                         const problem = outOfRange(state);
                         return (
-                          <tr key={student.studentId} className={problem ? "bg-rose-50" : ""}>
-                            <td className="py-2 pr-3">
-                              <p className="font-semibold text-slate-800">{student.lastName} {student.firstName}</p>
-                              <p className="font-mono text-[10px] text-slate-400">{student.admissionNumber}</p>
+                          <tr key={student.studentId} className={`transition-colors hover:bg-slate-50/60 ${problem ? "bg-rose-50/80" : ""}`}>
+                            <td className="py-2.5 px-3">
+                              <p className="font-semibold text-slate-900">{student.lastName} {student.firstName}</p>
+                              <p className="font-mono text-[11px] text-slate-400">{student.admissionNumber}</p>
                             </td>
                             {sheet.scheme!.components.map((c) => (
-                              <td key={c.key} className="py-2 pr-2 text-center">
-                                <input type="number" inputMode="decimal" min={0} max={c.max_score} disabled={locked} value={state.ca[c.key] ?? ""} onChange={(e) => update(student.studentId, { ca: { ...state.ca, [c.key]: e.target.value } })} className="h-9 w-16 rounded-lg border border-slate-300 text-center disabled:bg-slate-50" />
+                              <td key={c.key} className="py-2.5 px-2 text-center">
+                                <input
+                                  type="number"
+                                  inputMode="decimal"
+                                  min={0}
+                                  max={c.max_score}
+                                  disabled={locked}
+                                  value={state.ca[c.key] ?? ""}
+                                  onChange={(e) => update(student.studentId, { ca: { ...state.ca, [c.key]: e.target.value } })}
+                                  className="h-9 w-16 rounded-xl border border-slate-200 bg-slate-50/50 text-center text-sm font-bold text-slate-800 outline-none transition-all focus:border-brand focus:bg-white focus:ring-2 focus:ring-brand/20 disabled:bg-slate-100/60"
+                                />
                               </td>
                             ))}
-                            <td className="py-2 pr-2 text-center">
-                              <input type="number" inputMode="decimal" min={0} max={sheet.scheme!.examMaxScore} disabled={locked} value={state.exam} onChange={(e) => update(student.studentId, { exam: e.target.value })} className="h-9 w-16 rounded-lg border border-slate-300 text-center disabled:bg-slate-50" />
+                            <td className="py-2.5 px-2 text-center">
+                              <input
+                                type="number"
+                                inputMode="decimal"
+                                min={0}
+                                max={sheet.scheme!.examMaxScore}
+                                disabled={locked}
+                                value={state.exam}
+                                onChange={(e) => update(student.studentId, { exam: e.target.value })}
+                                className="h-9 w-16 rounded-xl border border-slate-200 bg-slate-50/50 text-center text-sm font-bold text-slate-800 outline-none transition-all focus:border-brand focus:bg-white focus:ring-2 focus:ring-brand/20 disabled:bg-slate-100/60"
+                              />
                             </td>
-                            <td className="py-2 pr-2 text-center font-heading text-base font-bold text-slate-900">{total ?? "—"}</td>
-                            <td className={`py-2 text-center font-bold ${gradeColor(grade?.grade)}`}>{grade?.grade ?? "—"}</td>
-                            <td className="py-2 pl-3 text-center text-xs text-slate-500">{state.dirty ? "•" : student.subjectPositionLabel}</td>
+                            <td className="py-2.5 px-2 text-center font-heading text-base font-black text-slate-900">{total ?? "—"}</td>
+                            <td className={`py-2.5 text-center font-bold font-mono text-sm ${gradeColor(grade?.grade)}`}>{grade?.grade ?? "—"}</td>
+                            <td className="py-2.5 px-3 text-center text-xs font-semibold text-slate-500">{state.dirty ? "•" : student.subjectPositionLabel}</td>
                           </tr>
                         );
                       })}

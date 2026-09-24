@@ -10,21 +10,21 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", isLoading, children, disabled, ...props }, ref) => {
     const baseStyles =
-      "inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 rounded-lg select-none cursor-pointer";
+      "inline-flex items-center justify-center font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 disabled:pointer-events-none disabled:opacity-50 rounded-xl select-none cursor-pointer active:scale-[0.98]";
 
     const variants = {
-      primary: "bg-blue-600 text-white hover:bg-blue-700 shadow-sm active:bg-blue-800",
-      secondary: "bg-slate-100 text-slate-900 hover:bg-slate-200 active:bg-slate-300",
-      outline: "border border-slate-300 bg-transparent hover:bg-slate-50 text-slate-700",
-      ghost: "hover:bg-slate-100 text-slate-700",
-      destructive: "bg-red-600 text-white hover:bg-red-700 shadow-sm",
-      accent: "bg-sky-600 text-white hover:bg-sky-700 shadow-sm",
+      primary: "bg-brand text-white hover:bg-brand-strong shadow-sm hover:shadow-md hover:shadow-brand/20 active:bg-brand-strong",
+      secondary: "bg-slate-100/90 text-slate-800 hover:bg-slate-200/90 hover:text-slate-900 border border-slate-200/60",
+      outline: "border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:border-slate-300 shadow-xs",
+      ghost: "hover:bg-slate-100/80 text-slate-600 hover:text-slate-900",
+      destructive: "bg-rose-600 text-white hover:bg-rose-700 shadow-sm hover:shadow-rose-500/20 active:bg-rose-800",
+      accent: "bg-sky-600 text-white hover:bg-sky-700 shadow-sm hover:shadow-sky-500/20 active:bg-sky-800",
     };
 
     const sizes = {
-      sm: "h-8 px-3 text-xs",
-      md: "h-10 px-4 py-2 text-sm",
-      lg: "h-11 px-6 text-base",
+      sm: "h-8.5 px-3 text-xs gap-1.5",
+      md: "h-10 px-4 py-2 text-sm gap-2",
+      lg: "h-11.5 px-6 text-base gap-2.5 font-semibold",
       icon: "h-10 w-10 p-2",
     };
 

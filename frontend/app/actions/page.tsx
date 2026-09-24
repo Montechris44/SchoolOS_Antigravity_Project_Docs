@@ -130,56 +130,54 @@ export default function ActionCenterPage() {
         )}
 
         {/* Filters Bar */}
-        <Card className="p-4">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Status:
-              </span>
-              {["all", "OPEN", "IN_PROGRESS", "RESOLVED"].map((st) => (
-                <button
-                  key={st}
-                  onClick={() => setStatusFilter(st)}
-                  className={`rounded-lg px-3 py-1 text-xs font-bold transition-all ${
-                    statusFilter === st
-                      ? "bg-blue-600 text-white shadow-xs"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  }`}
-                >
-                  {st}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Priority:
-              </span>
-              {["all", "P0", "P1", "P2"].map((pr) => (
-                <button
-                  key={pr}
-                  onClick={() => setPriorityFilter(pr)}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-bold transition-all ${
-                    priorityFilter === pr
-                      ? "bg-slate-800 text-white"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  }`}
-                >
-                  {pr}
-                </button>
-              ))}
-            </div>
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-subtle">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Status:
+            </span>
+            {["all", "OPEN", "IN_PROGRESS", "RESOLVED"].map((st) => (
+              <button
+                key={st}
+                onClick={() => setStatusFilter(st)}
+                className={`rounded-xl px-3 py-1.5 text-xs font-bold transition-all ${
+                  statusFilter === st
+                    ? "bg-brand text-white shadow-2xs"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {st}
+              </button>
+            ))}
           </div>
-        </Card>
+
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Priority:
+            </span>
+            {["all", "P0", "P1", "P2"].map((pr) => (
+              <button
+                key={pr}
+                onClick={() => setPriorityFilter(pr)}
+                className={`rounded-xl px-2.5 py-1.5 text-xs font-bold transition-all ${
+                  priorityFilter === pr
+                    ? "bg-slate-900 text-white shadow-2xs"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {pr}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Action Cards Stream */}
         <div className="space-y-4">
           {filteredActions.map((act) => (
-            <Card key={act.id} className="p-6 hover:shadow-xs transition-shadow">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <div key={act.id} className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-subtle hover:shadow-card-hover transition-all">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-3">
                   <Badge
-                    variant={act.priority === "P0" ? "destructive" : "warning"}
+                    variant={act.priority === "P0" ? "destructive" : act.priority === "P1" ? "warning" : "default"}
                     className="font-mono text-xs px-2.5 py-0.5"
                   >
                     {act.priority}
@@ -215,7 +213,7 @@ export default function ActionCenterPage() {
                         setSelectedActionToResolve(act);
                         setResolutionOutcome("");
                       }}
-                      className="gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-xs"
+                      className="gap-1.5 text-xs"
                     >
                       <CheckCircle2 className="h-3.5 w-3.5" /> Resolve Task
                     </Button>
@@ -233,35 +231,35 @@ export default function ActionCenterPage() {
               </div>
 
               {/* Recommended Step & Intervention Details */}
-              <div className="mt-4 space-y-2">
-                <div className="rounded-xl bg-blue-50/50 p-3 border border-blue-100">
-                  <span className="text-xs font-bold text-blue-900 block mb-0.5">
+              <div className="mt-4 space-y-2.5">
+                <div className="rounded-xl bg-brand-soft/50 p-3.5 border border-brand/15">
+                  <span className="text-xs font-bold text-brand block mb-1">
                     Recommended Operational Step:
                   </span>
-                  <p className="text-xs text-blue-800 leading-relaxed">{act.recommendedStep}</p>
+                  <p className="text-xs text-slate-700 leading-relaxed font-medium">{act.recommendedStep}</p>
                 </div>
 
                 {act.notes && (
-                  <p className="text-xs text-slate-500">
-                    <strong>Internal Notes:</strong> {act.notes}
+                  <p className="text-xs text-slate-500 px-1">
+                    <strong className="text-slate-600">Internal Notes:</strong> {act.notes}
                   </p>
                 )}
 
                 {act.outcome && (
-                  <div className="rounded-xl bg-emerald-50/50 p-3 border border-emerald-200 text-xs">
+                  <div className="rounded-xl bg-emerald-50/60 p-3.5 border border-emerald-200 text-xs">
                     <span className="font-bold text-emerald-900 block mb-0.5">
                       Verified Resolution Outcome:
                     </span>
-                    <p className="text-emerald-800">{act.outcome}</p>
+                    <p className="text-emerald-800 leading-relaxed">{act.outcome}</p>
                     {act.resolvedAt && (
-                      <p className="text-[10px] text-emerald-600 mt-1">
+                      <p className="text-[10px] text-emerald-600 mt-1 font-medium">
                         Resolved on {formatDate(act.resolvedAt)}
                       </p>
                     )}
                   </div>
                 )}
               </div>
-            </Card>
+            </div>
           ))}
         </div>
 

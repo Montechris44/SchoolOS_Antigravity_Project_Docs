@@ -64,19 +64,19 @@ export function StudentDashboard() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Panel title="Today's timetable" action={<Link href="/timetable" className="text-xs font-semibold text-brand hover:underline">Full week</Link>}>
+        <Panel title="Today's timetable" action={<Link href="/timetable" className="text-xs font-semibold text-brand hover:underline cursor-pointer">Full week</Link>}>
           {data.today.schedule.length === 0 ? (
-            <p className="py-8 text-center text-sm text-slate-400">{data.today.message ?? "No lessons today."}</p>
+            <p className="py-12 text-center text-sm text-slate-400">{data.today.message ?? "No lessons today."}</p>
           ) : (
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {data.today.schedule.map((lesson) => (
-                <li key={lesson.id} className="flex items-center gap-4 rounded-2xl border border-slate-100 p-3">
-                  <span className="w-24 shrink-0 text-sm font-bold text-brand">
+                <li key={lesson.id} className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-3.5 hover:bg-slate-50 transition-colors">
+                  <span className="w-28 shrink-0 font-mono text-xs font-bold text-brand bg-white px-2.5 py-1.5 rounded-xl border border-slate-200 text-center shadow-2xs">
                     {lesson.startTime}–{lesson.endTime}
                   </span>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-slate-800">{lesson.displayTitle}</p>
-                    <p className="truncate text-xs text-slate-500">{[lesson.teacherName, lesson.room].filter(Boolean).join(" · ")}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-bold text-slate-900">{lesson.displayTitle}</p>
+                    <p className="truncate text-xs text-slate-500 mt-0.5">{[lesson.teacherName, lesson.room ? `Room ${lesson.room}` : null].filter(Boolean).join(" · ")}</p>
                   </div>
                 </li>
               ))}

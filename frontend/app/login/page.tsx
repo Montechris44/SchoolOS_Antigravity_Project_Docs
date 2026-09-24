@@ -43,7 +43,7 @@ export default function LoginPage() {
       footer={
         <>
           Registering your school for the first time?{" "}
-          <Link href="/register" className="font-semibold text-blue-600 hover:underline">
+          <Link href="/register" className="font-semibold text-brand hover:underline">
             Create your school account
           </Link>
         </>
@@ -51,7 +51,7 @@ export default function LoginPage() {
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-1.5">
-          <label htmlFor="email" className="text-sm font-semibold text-slate-700">
+          <label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-slate-700">
             Email address
           </label>
           <div className="relative">
@@ -64,17 +64,17 @@ export default function LoginPage() {
               placeholder="name@school.edu.ng"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 bg-white py-3.5 pl-12 pr-4 text-sm font-medium outline-none transition-all focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-3.5 pl-12 pr-4 text-sm font-medium outline-none transition-all shadow-subtle hover:border-slate-300 focus:bg-white focus:border-brand focus:ring-2 focus:ring-brand/20"
             />
           </div>
         </div>
 
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <label htmlFor="password" className="text-sm font-semibold text-slate-700">
+            <label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider text-slate-700">
               Password
             </label>
-            <Link href="/forgot-password" className="text-xs font-semibold text-blue-600 hover:underline">
+            <Link href="/forgot-password" className="text-xs font-semibold text-brand hover:underline">
               Forgot password?
             </Link>
           </div>
@@ -87,13 +87,13 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 bg-white py-3.5 pl-12 pr-12 text-sm font-medium outline-none transition-all focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-3.5 pl-12 pr-12 text-sm font-medium outline-none transition-all shadow-subtle hover:border-slate-300 focus:bg-white focus:border-brand focus:ring-2 focus:ring-brand/20"
             />
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-blue-600"
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-brand cursor-pointer"
             >
               {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
             </button>
@@ -102,7 +102,7 @@ export default function LoginPage() {
 
         {error && <Alert tone="error">{error}</Alert>}
 
-        <Button type="submit" size="lg" className="w-full rounded-xl" isLoading={isSubmitting}>
+        <Button type="submit" size="lg" className="w-full rounded-2xl font-semibold shadow-sm hover:shadow-md" isLoading={isSubmitting}>
           Sign in <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </form>

@@ -73,22 +73,22 @@ export function TeacherDashboard() {
           </Panel>
         </div>
 
-        <Panel title="Today's lessons" className="lg:col-span-2" action={<Link href="/timetable" className="text-xs font-semibold text-brand hover:underline">Full timetable</Link>}>
+        <Panel title="Today's lessons" className="lg:col-span-2" action={<Link href="/timetable" className="text-xs font-semibold text-brand hover:underline cursor-pointer">Full timetable</Link>}>
           {data.todaySchedule.length === 0 ? (
-            <p className="py-8 text-center text-sm text-slate-400">No lessons scheduled for today.</p>
+            <p className="py-12 text-center text-sm text-slate-400">No lessons scheduled for today.</p>
           ) : (
             <ul className="space-y-3">
               {data.todaySchedule.map((lesson) => (
-                <li key={lesson.id} className="flex items-center gap-4 rounded-2xl border border-slate-100 p-3">
-                  <div className="w-24 shrink-0 text-sm font-bold text-brand">
+                <li key={lesson.id} className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-3.5 hover:bg-slate-50 transition-colors">
+                  <div className="w-28 shrink-0 text-xs font-bold text-brand font-mono bg-white px-2.5 py-1.5 rounded-xl border border-slate-200 shadow-2xs text-center">
                     {lesson.startTime}–{lesson.endTime}
                   </div>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-slate-800">{lesson.displayTitle}</p>
-                    <p className="text-xs text-slate-500">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-bold text-slate-900">{lesson.displayTitle}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">
                       {lesson.className}
                       {lesson.armName ? ` ${lesson.armName}` : ""}
-                      {lesson.room ? ` · ${lesson.room}` : ""}
+                      {lesson.room ? ` · Room ${lesson.room}` : ""}
                     </p>
                   </div>
                 </li>

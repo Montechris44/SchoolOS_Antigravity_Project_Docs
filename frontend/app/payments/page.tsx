@@ -186,21 +186,21 @@ function PaymentsPageContent() {
 
         {/* Interactive Payment Checkout Sandbox */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card className="lg:col-span-1 p-6 border-blue-200 bg-linear-to-b from-blue-50/50 to-white">
-            <div className="flex items-center gap-2 text-blue-800 mb-4">
-              <CreditCard className="h-5 w-5 text-blue-600" />
-              <h3 className="font-bold text-base">Paystack Parent Checkout</h3>
+          <div className="lg:col-span-1 rounded-2xl p-6 border border-slate-200/80 bg-gradient-to-b from-brand-soft/40 via-white to-white shadow-subtle">
+            <div className="flex items-center gap-2 text-brand mb-4">
+              <CreditCard className="h-5 w-5" />
+              <h3 className="font-bold font-heading text-base text-slate-900">Paystack Parent Checkout</h3>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 block">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 block">
                   Select Outstanding Invoice
                 </label>
                 <select
                   value={selectedInvoiceId}
                   onChange={(e) => handleInvoiceSelect(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 outline-none transition-all focus:border-brand focus:ring-4 focus:ring-brand/10"
                 >
                   {invoices.map((inv) => (
                     <option key={inv.id} value={inv.id}>
@@ -211,7 +211,7 @@ function PaymentsPageContent() {
               </div>
 
               {currentInvoice && (
-                <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-2 text-xs">
+                <div className="rounded-xl border border-slate-200/80 bg-white/90 p-4 space-y-2 text-xs shadow-2xs">
                   <div className="flex justify-between">
                     <span className="text-slate-500">Student Scholar:</span>
                     <span className="font-bold text-slate-900">{currentInvoice.studentName}</span>
@@ -224,22 +224,22 @@ function PaymentsPageContent() {
                     <span className="text-slate-500">Paid To Date:</span>
                     <span className="font-bold text-emerald-700">{formatCurrency(currentInvoice.amountPaid)}</span>
                   </div>
-                  <div className="flex justify-between pt-1 border-t border-slate-100">
+                  <div className="flex justify-between pt-2 border-t border-slate-100">
                     <span className="font-bold text-slate-800">Remaining Balance:</span>
-                    <span className="font-bold text-blue-700 text-sm">{formatCurrency(currentInvoice.balanceDue)}</span>
+                    <span className="font-bold text-brand text-sm">{formatCurrency(currentInvoice.balanceDue)}</span>
                   </div>
                 </div>
               )}
 
               <div>
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1 block">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 block">
                   Amount to Settle (NGN)
                 </label>
                 <input
                   type="number"
                   value={customAmount}
                   onChange={(e) => setCustomAmount(Number(e.target.value))}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-base font-bold text-slate-900"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-base font-bold text-slate-900 outline-none transition-all focus:border-brand focus:ring-4 focus:ring-brand/10"
                 />
               </div>
 
@@ -247,7 +247,7 @@ function PaymentsPageContent() {
                 <Button
                   onClick={() => handlePaystackPayment(false)}
                   isLoading={isProcessing}
-                  className="w-full gap-2 bg-blue-600 hover:bg-blue-700 shadow-sm text-sm h-11"
+                  className="w-full gap-2 shadow-sm text-sm h-11"
                 >
                   <CreditCard className="h-4 w-4" />
                   Pay {formatCurrency(customAmount)} with Paystack
@@ -268,16 +268,16 @@ function PaymentsPageContent() {
                 Protected by 256-bit SSL encryption &amp; Paystack webhook signature HMAC SHA-512 verification.
               </p>
             </div>
-          </Card>
+          </div>
 
           {/* Payments Transaction Ledger */}
-          <Card className="lg:col-span-2 overflow-hidden flex flex-col">
-            <CardHeader className="py-4 border-b border-slate-100 bg-slate-50/50 flex flex-row items-center justify-between">
+          <div className="lg:col-span-2 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-subtle flex flex-col">
+            <div className="py-4 px-6 border-b border-slate-100 bg-slate-50/60 flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-base font-bold text-slate-800">
+                <h3 className="text-base font-bold font-heading text-slate-900">
                   Authoritative Payments Ledger
-                </CardTitle>
-                <p className="text-xs text-slate-500">
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
                   Verified server-side transactions &amp; receipt issuance
                 </p>
               </div>
@@ -285,15 +285,15 @@ function PaymentsPageContent() {
                 variant="outline"
                 size="sm"
                 onClick={refreshPayments}
-                className="h-8 gap-1 text-xs"
+                className="h-8 gap-1.5 text-xs"
               >
                 <RefreshCw className="h-3.5 w-3.5" /> Refresh
               </Button>
-            </CardHeader>
+            </div>
 
             <div className="overflow-x-auto flex-1">
               <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 text-xs uppercase font-bold tracking-wider text-slate-500 border-b border-slate-200">
+                <thead className="bg-slate-50/80 text-[11px] uppercase font-bold tracking-wider text-slate-500 border-b border-slate-200/80">
                   <tr>
                     <th className="px-5 py-3.5">Provider Reference</th>
                     <th className="px-5 py-3.5">Amount (NGN)</th>
@@ -306,7 +306,7 @@ function PaymentsPageContent() {
                 <tbody className="divide-y divide-slate-100">
                   {payments.map((p) => (
                     <tr key={p.id} className="hover:bg-slate-50/70 transition-colors">
-                      <td className="px-5 py-4 font-mono text-xs font-bold text-slate-800">
+                      <td className="px-5 py-4 font-mono text-xs font-semibold text-slate-800">
                         {p.providerReference}
                       </td>
                       <td className="px-5 py-4 font-bold text-emerald-700">
@@ -314,10 +314,12 @@ function PaymentsPageContent() {
                       </td>
                       <td className="px-5 py-4">
                         <p className="font-semibold text-slate-900 text-xs">{p.payerName}</p>
-                        <p className="text-[10px] text-slate-400">{p.paymentMethod.toUpperCase()}</p>
+                        <p className="text-[10px] text-slate-400 font-mono mt-0.5">{p.paymentMethod.toUpperCase()}</p>
                       </td>
-                      <td className="px-5 py-4 font-mono text-xs font-bold text-blue-700">
-                        {p.receiptNumber}
+                      <td className="px-5 py-4">
+                        <span className="font-mono text-xs font-semibold text-brand bg-brand-soft px-2 py-0.5 rounded">
+                          {p.receiptNumber}
+                        </span>
                       </td>
                       <td className="px-5 py-4">
                         <Badge variant="success" className="text-[10px] font-bold uppercase">
@@ -332,7 +334,7 @@ function PaymentsPageContent() {
                 </tbody>
               </table>
             </div>
-          </Card>
+          </div>
         </div>
       </div>
     </AppShell>
@@ -346,7 +348,7 @@ export default function PaymentsPage() {
         <AppShell>
           <div className="flex h-96 items-center justify-center">
             <div className="flex items-center gap-3 text-slate-500 font-medium">
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-brand border-t-transparent" />
               Loading Paystack checkout portal...
             </div>
           </div>

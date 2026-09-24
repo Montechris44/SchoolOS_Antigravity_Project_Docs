@@ -94,18 +94,20 @@ export default function SettingsPage() {
 
         <form onSubmit={handleSaveSettings} className="space-y-6">
           {/* Institutional Profile */}
-          <Card className="p-6">
-            <CardHeader className="p-0 pb-4 border-b border-slate-100 flex flex-row items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Building2 className="h-5 w-5 text-blue-600" />
-                <CardTitle className="text-base font-bold text-slate-900">
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-subtle">
+            <div className="pb-4 border-b border-slate-100 flex flex-row items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-xl bg-brand-soft p-2 text-brand">
+                  <Building2 className="h-5 w-5" />
+                </div>
+                <h3 className="text-base font-bold font-heading text-slate-900">
                   School Institutional Identity
-                </CardTitle>
+                </h3>
               </div>
               <Badge variant="default">Lagos State Ministry of Education Approved</Badge>
-            </CardHeader>
+            </div>
 
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
                 id="officialSchoolName"
                 label="Official School Name"
@@ -136,99 +138,103 @@ export default function SettingsPage() {
                 required
               />
             </div>
-          </Card>
+          </div>
 
           {/* Integration Keys */}
-          <Card className="p-6">
-            <CardHeader className="p-0 pb-4 border-b border-slate-100 flex flex-row items-center justify-between">
-              <div className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5 text-emerald-600" />
-                <CardTitle className="text-base font-bold text-slate-900">
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-subtle">
+            <div className="pb-4 border-b border-slate-100 flex flex-row items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-xl bg-emerald-50 p-2 text-emerald-700">
+                  <CreditCard className="h-5 w-5" />
+                </div>
+                <h3 className="text-base font-bold font-heading text-slate-900">
                   Payment &amp; External Integrations
-                </CardTitle>
+                </h3>
               </div>
               <Badge variant="success">Sandbox / Live Ready</Badge>
-            </CardHeader>
+            </div>
 
-            <div className="mt-4 space-y-4">
+            <div className="mt-5 space-y-4">
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-700 block mb-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-600 block mb-1.5">
                   Paystack Public Key
                 </label>
                 <input
                   type="text"
                   readOnly
                   value="pk_test_mock_paystack_schoolos_public_key"
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-600"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2 font-mono text-xs text-slate-700"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-700 block mb-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-600 block mb-1.5">
                   Paystack Webhook URL (Production Endpoint)
                 </label>
                 <input
                   type="text"
                   readOnly
                   value="https://schoolos.app/api/payments/webhook"
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-600"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2 font-mono text-xs text-slate-700"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-700 block mb-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-600 block mb-1.5">
                   WhatsApp Cloud Business API Account
                 </label>
                 <input
                   type="text"
                   readOnly
                   value="waba_act_emerald_crest_primary"
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-600"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2 font-mono text-xs text-slate-700"
                 />
               </div>
             </div>
-          </Card>
+          </div>
 
           {/* Grading Standards */}
-          <Card className="p-6">
-            <CardHeader className="p-0 pb-4 border-b border-slate-100 flex flex-row items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Sliders className="h-5 w-5 text-purple-600" />
-                <CardTitle className="text-base font-bold text-slate-900">
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-subtle">
+            <div className="pb-4 border-b border-slate-100 flex flex-row items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-xl bg-purple-50 p-2 text-purple-700">
+                  <Sliders className="h-5 w-5" />
+                </div>
+                <h3 className="text-base font-bold font-heading text-slate-900">
                   Grading Standard &amp; Currency
-                </CardTitle>
+                </h3>
               </div>
               <Badge variant="secondary">National WAEC Scale</Badge>
-            </CardHeader>
+            </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-4">
+            <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-700 block mb-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-600 block mb-1.5">
                   Operational Currency
                 </label>
                 <input
                   type="text"
                   readOnly
                   value="Nigerian Naira (NGN - ₦)"
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 font-semibold"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-800 font-semibold"
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-700 block mb-1">
-                  Grade Scale
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-600 block mb-1.5">
+                  Academic Grade Scale
                 </label>
                 <input
                   type="text"
                   readOnly
                   value="5-Tier Standard WAEC (A: 75-100, B: 65-74, C: 50-64, D: 40-49, F: 0-39)"
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-xs text-slate-700 font-medium"
                 />
               </div>
             </div>
-          </Card>
+          </div>
 
-          <div className="flex justify-end">
-            <Button type="submit" isLoading={isSaving} className="bg-blue-600 hover:bg-blue-700 text-sm px-6">
+          <div className="flex justify-end pt-2">
+            <Button type="submit" isLoading={isSaving} className="text-sm px-6">
               Save All Settings
             </Button>
           </div>

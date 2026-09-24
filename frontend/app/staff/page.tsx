@@ -121,20 +121,20 @@ export default function StaffPage() {
 
       {notice && <Alert tone="info" className="mb-4">{notice}</Alert>}
 
-      <Panel className="mb-6">
+      <Panel className="mb-6 border-slate-200/80 bg-white/90 shadow-subtle backdrop-blur-sm">
         <div className="flex flex-col gap-3 md:flex-row">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, e-mail or staff ID"
-              className="h-10 w-full rounded-lg border border-slate-300 pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-brand"
+              placeholder="Search by staff name, e-mail or employee ID..."
+              className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-3 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10"
             />
           </div>
           <div className="md:w-56">
             <Select value={role} onChange={(e) => setRole(e.target.value)} aria-label="Filter by role">
-              <option value="all">All roles</option>
+              <option value="all">All staff roles</option>
               {ROLES.map((r) => (
                 <option key={r.value} value={r.value}>
                   {r.label}
@@ -154,28 +154,29 @@ export default function StaffPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {data.map((member) => (
-            <Panel key={member.id} className="!p-5">
+            <Panel key={member.id} className="group relative overflow-hidden !p-5 transition-all hover:shadow-card-hover border-slate-200/80 hover:border-brand/40">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand to-brand-strong opacity-80" />
               <div className="flex items-start gap-3">
-                <Avatar name={`${member.firstName} ${member.lastName}`} size={44} />
+                <Avatar name={`${member.firstName} ${member.lastName}`} size={46} />
                 <div className="min-w-0 flex-1">
-                  <h3 className="truncate font-heading font-bold text-slate-900">
+                  <h3 className="truncate font-heading font-bold text-slate-900 group-hover:text-brand transition-colors">
                     {member.firstName} {member.lastName}
                   </h3>
                   <p className="truncate text-xs text-slate-500">{member.email}</p>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     <Badge variant="default">{ROLE_LABELS[member.role as UserRole] ?? member.role}</Badge>
                     <Badge variant={member.isActive ? "success" : "secondary"}>{member.isActive ? "Active" : "Inactive"}</Badge>
-                    {member.forcePasswordChange && <Badge variant="warning">Awaiting first sign-in</Badge>}
+                    {member.forcePasswordChange && <Badge variant="warning">Awaiting sign-in</Badge>}
                   </div>
                 </div>
               </div>
-              <dl className="mt-4 space-y-1 text-xs text-slate-500">
-                <div className="flex justify-between"><dt>Staff ID</dt><dd className="font-mono text-slate-700">{member.employeeId}</dd></div>
-                {member.subjects.length > 0 && <div className="flex justify-between gap-4"><dt>Subjects</dt><dd className="truncate text-slate-700">{member.subjects.join(", ")}</dd></div>}
+              <dl className="mt-4 space-y-1.5 rounded-xl bg-slate-50/60 p-3 text-xs text-slate-500 border border-slate-100">
+                <div className="flex justify-between items-center"><dt>Staff ID</dt><dd className="font-mono font-semibold text-slate-800 bg-white px-2 py-0.5 rounded border border-slate-200/60">{member.employeeId}</dd></div>
+                {member.subjects.length > 0 && <div className="flex justify-between gap-4"><dt>Subjects</dt><dd className="truncate font-medium text-slate-700">{member.subjects.join(", ")}</dd></div>}
                 {member.classTeacherClassName && (
-                  <div className="flex justify-between"><dt>Class teacher</dt><dd className="text-slate-700">{member.classTeacherClassName}{member.classTeacherArmName ? ` ${member.classTeacherArmName}` : ""}</dd></div>
+                  <div className="flex justify-between"><dt>Class teacher</dt><dd className="font-semibold text-brand">{member.classTeacherClassName}{member.classTeacherArmName ? ` ${member.classTeacherArmName}` : ""}</dd></div>
                 )}
-                <div className="flex justify-between"><dt>Last sign-in</dt><dd className="text-slate-700">{member.lastLoginAt ? formatDate(member.lastLoginAt) : "Never"}</dd></div>
+                <div className="flex justify-between"><dt>Last sign-in</dt><dd className="text-slate-600">{member.lastLoginAt ? formatDate(member.lastLoginAt) : "Never"}</dd></div>
               </dl>
               <div className="mt-4 flex flex-wrap gap-1 border-t border-slate-100 pt-3">
                 <Button size="sm" variant="ghost" onClick={() => open(member)}><Pencil className="mr-1 h-3.5 w-3.5" /> Edit</Button>
@@ -205,7 +206,7 @@ export default function StaffPage() {
                     }
                   }}
                 >
-                  <Trash2 className="mr-1 h-3.5 w-3.5" /> Delete
+                  <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               </div>
             </Panel>

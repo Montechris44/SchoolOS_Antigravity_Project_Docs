@@ -249,12 +249,12 @@ export default function AcademicsPage() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-slate-200">
+        <div className="flex border-b border-slate-200 gap-2">
           <button
             onClick={() => setActiveTab("scores")}
             className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-all ${
               activeTab === "scores"
-                ? "border-blue-600 text-blue-600"
+                ? "border-brand text-brand"
                 : "border-transparent text-slate-500 hover:text-slate-800"
             }`}
           >
@@ -264,7 +264,7 @@ export default function AcademicsPage() {
             onClick={() => setActiveTab("assessments")}
             className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-all ${
               activeTab === "assessments"
-                ? "border-blue-600 text-blue-600"
+                ? "border-brand text-brand"
                 : "border-transparent text-slate-500 hover:text-slate-800"
             }`}
           >
@@ -274,7 +274,7 @@ export default function AcademicsPage() {
             onClick={() => setActiveTab("reportCards")}
             className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-all ${
               activeTab === "reportCards"
-                ? "border-blue-600 text-blue-600"
+                ? "border-brand text-brand"
                 : "border-transparent text-slate-500 hover:text-slate-800"
             }`}
           >
@@ -285,7 +285,7 @@ export default function AcademicsPage() {
         {/* TAB 1: SCORE ENTRY SPREADSHEET */}
         {activeTab === "scores" && (
           <div className="space-y-4">
-            <Card className="p-4">
+            <Card className="p-4 border-slate-200/80 bg-white/90 shadow-subtle backdrop-blur-sm">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 block">
@@ -294,7 +294,7 @@ export default function AcademicsPage() {
                   <select
                     value={selectedClassId}
                     onChange={(e) => setSelectedClassId(e.target.value)}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm font-medium text-slate-800 outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10"
                   >
                     {classes.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -311,7 +311,7 @@ export default function AcademicsPage() {
                   <select
                     value={selectedSubjectId}
                     onChange={(e) => setSelectedSubjectId(e.target.value)}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm font-medium text-slate-800 outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10"
                   >
                     {subjects.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -328,7 +328,7 @@ export default function AcademicsPage() {
                   <select
                     value={selectedAssessmentId}
                     onChange={(e) => setSelectedAssessmentId(e.target.value)}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm font-medium text-slate-800 outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10"
                   >
                     {assessments.map((a) => (
                       <option key={a.id} value={a.id}>
@@ -341,42 +341,42 @@ export default function AcademicsPage() {
             </Card>
 
             {saveSuccessMsg && (
-              <div className="flex items-center gap-2 rounded-lg bg-emerald-50 p-3 text-xs font-semibold text-emerald-700 border border-emerald-200">
-                <CheckCircle2 className="h-4 w-4 shrink-0" />
+              <div className="flex items-center gap-2 rounded-xl bg-emerald-50 p-3.5 text-xs font-semibold text-emerald-800 border border-emerald-200 shadow-2xs">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
                 {saveSuccessMsg}
               </div>
             )}
 
             {saveErrorMsg && (
-              <div className="flex items-center gap-2 rounded-lg bg-rose-50 p-3 text-xs font-semibold text-rose-700 border border-rose-200">
-                <AlertCircle className="h-4 w-4 shrink-0" />
+              <div className="flex items-center gap-2 rounded-xl bg-rose-50 p-3.5 text-xs font-semibold text-rose-800 border border-rose-200 shadow-2xs">
+                <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
                 {saveErrorMsg}
               </div>
             )}
 
-            <Card className="overflow-hidden">
-              <CardHeader className="py-4 border-b border-slate-100 flex flex-row items-center justify-between">
+            <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-subtle">
+              <div className="py-4 px-6 border-b border-slate-100 flex flex-row items-center justify-between bg-slate-50/50">
                 <div>
-                  <CardTitle className="text-base font-bold text-slate-800">
+                  <h3 className="text-base font-bold text-slate-900">
                     {currentAssessment?.name || "Marksheet"} — Score Sheet
-                  </CardTitle>
-                  <p className="text-xs text-slate-500">
-                    Max Marks: {maxScore} pts • Standard WAEC Scale Enforced
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Maximum obtainable: <strong className="text-slate-800">{maxScore} points</strong> • Standard 5-Tier WAEC Scale
                   </p>
                 </div>
                 <Button
                   onClick={handleSaveScores}
                   isLoading={isSavingScores}
                   size="sm"
-                  className="gap-1.5 bg-blue-600 hover:bg-blue-700"
+                  className="gap-1.5"
                 >
                   <Save className="h-4 w-4" /> Save Marksheet
                 </Button>
-              </CardHeader>
+              </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
-                  <thead className="bg-slate-50 text-xs uppercase font-bold tracking-wider text-slate-500 border-b border-slate-200">
+                  <thead className="bg-slate-50/80 text-[11px] uppercase font-bold tracking-wider text-slate-500 border-b border-slate-200/80">
                     <tr>
                       <th className="px-6 py-3.5">Admission No.</th>
                       <th className="px-6 py-3.5">Student Scholar</th>
@@ -394,8 +394,10 @@ export default function AcademicsPage() {
 
                       return (
                         <tr key={std.id} className="hover:bg-slate-50/70 transition-colors">
-                          <td className="px-6 py-3.5 font-mono text-xs font-bold text-blue-700">
-                            {std.admissionNumber}
+                          <td className="px-6 py-3.5">
+                            <span className="font-mono text-xs font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded">
+                              {std.admissionNumber}
+                            </span>
                           </td>
                           <td className="px-6 py-3.5 font-semibold text-slate-900">
                             {std.firstName} {std.lastName}
@@ -407,19 +409,19 @@ export default function AcademicsPage() {
                               max={maxScore}
                               value={scoreInputs[std.id] ?? ""}
                               onChange={(e) => handleScoreChange(std.id, e.target.value, maxScore)}
-                              className="w-20 rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-center text-sm font-bold text-slate-900 focus:outline-blue-600"
+                              className="w-20 rounded-xl border border-slate-200 bg-slate-50/50 px-2.5 py-1.5 text-center text-sm font-bold text-slate-900 focus:border-brand focus:bg-white focus:ring-2 focus:ring-brand/20 outline-none transition-all"
                             />
                           </td>
                           <td className="px-6 py-3.5 text-center">
                             <span
-                              className={`inline-block font-mono font-bold text-sm px-2.5 py-0.5 rounded-full ${
+                              className={`inline-block font-mono font-bold text-xs px-2.5 py-0.5 rounded-full ${
                                 grade === "A"
-                                  ? "bg-emerald-100 text-emerald-800"
+                                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                                   : grade === "B"
-                                  ? "bg-blue-100 text-blue-800"
+                                  ? "bg-blue-50 text-blue-700 border border-blue-200"
                                   : grade === "C"
-                                  ? "bg-amber-100 text-amber-800"
-                                  : "bg-rose-100 text-rose-800"
+                                  ? "bg-amber-50 text-amber-700 border border-amber-200"
+                                  : "bg-rose-50 text-rose-700 border border-rose-200"
                               }`}
                             >
                               {grade}
@@ -434,7 +436,7 @@ export default function AcademicsPage() {
                   </tbody>
                 </table>
               </div>
-            </Card>
+            </div>
           </div>
         )}
 
@@ -460,7 +462,7 @@ export default function AcademicsPage() {
         {/* TAB 3: TERMINAL REPORT CARDS */}
         {activeTab === "reportCards" && (
           <div className="space-y-6">
-            <Card className="p-4">
+            <Card className="p-4 border-slate-200/80 bg-white/90 shadow-subtle backdrop-blur-sm">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <label className="text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">
@@ -469,7 +471,7 @@ export default function AcademicsPage() {
                   <select
                     value={selectedStudentForReport}
                     onChange={(e) => setSelectedStudentForReport(e.target.value)}
-                    className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800"
+                    className="rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm font-medium text-slate-800 outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10"
                   >
                     {students.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -479,12 +481,12 @@ export default function AcademicsPage() {
                   </select>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button onClick={handleGenerateReportCard} className="gap-1.5 bg-blue-600 hover:bg-blue-700">
+                  <Button onClick={handleGenerateReportCard} className="gap-1.5">
                     <Award className="h-4 w-4" /> Generate Official Report Card
                   </Button>
                   {generatedReport && (
                     <Button variant="outline" onClick={() => window.print()} className="gap-1.5">
-                      <Printer className="h-4 w-4" /> Print
+                      <Printer className="h-4 w-4" /> Print PDF
                     </Button>
                   )}
                 </div>
@@ -492,87 +494,90 @@ export default function AcademicsPage() {
             </Card>
 
             {generatedReport ? (
-              <div className="rounded-2xl border-2 border-slate-200 bg-white p-8 shadow-sm">
+              <div className="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-8 md:p-10 shadow-elevated">
+                {/* Gold Top Accent Line */}
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 via-brand to-emerald-500" />
+
                 {/* School Header */}
-                <div className="text-center border-b-2 border-slate-800 pb-6">
-                  <span className="text-xs font-bold uppercase tracking-widest text-blue-700">
+                <div className="text-center border-b-2 border-slate-900 pb-6">
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-brand">
                     FEDERAL REPUBLIC OF NIGERIA
                   </span>
-                  <h2 className="text-2xl font-black tracking-tight text-slate-900 uppercase mt-1">
+                  <h2 className="text-2xl md:text-3xl font-heading font-black tracking-tight text-slate-900 uppercase mt-1">
                     {school?.name}
                   </h2>
-                  <p className="text-xs text-slate-600 mt-0.5">
+                  <p className="text-xs text-slate-600 mt-1 max-w-lg mx-auto">
                     {school?.address}, {school?.city}, {school?.state}
                   </p>
-                  <p className="text-xs font-semibold text-slate-800 mt-1">
+                  <div className="mt-3 inline-block rounded-full bg-slate-900 px-4 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-xs">
                     OFFICIAL STUDENT TERMINAL PROGRESS REPORT
-                  </p>
+                  </div>
                 </div>
 
                 {/* Student Profile Info Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-6 border-b border-slate-200 text-xs">
-                  <div>
-                    <span className="text-slate-400 font-semibold block">Student Name:</span>
-                    <span className="text-sm font-bold text-slate-900">{generatedReport.studentName}</span>
+                  <div className="rounded-xl bg-slate-50/70 p-3 border border-slate-100">
+                    <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">Student Name:</span>
+                    <span className="text-sm font-bold text-slate-900 mt-0.5 block">{generatedReport.studentName}</span>
                   </div>
-                  <div>
-                    <span className="text-slate-400 font-semibold block">Admission No:</span>
-                    <span className="text-sm font-mono font-bold text-blue-700">
+                  <div className="rounded-xl bg-slate-50/70 p-3 border border-slate-100">
+                    <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">Admission No:</span>
+                    <span className="text-sm font-mono font-bold text-brand mt-0.5 block">
                       {generatedReport.admissionNumber}
                     </span>
                   </div>
-                  <div>
-                    <span className="text-slate-400 font-semibold block">Class:</span>
-                    <span className="text-sm font-bold text-slate-900">{generatedReport.className}</span>
+                  <div className="rounded-xl bg-slate-50/70 p-3 border border-slate-100">
+                    <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">Class / Cohort:</span>
+                    <span className="text-sm font-bold text-slate-900 mt-0.5 block">{generatedReport.className}</span>
                   </div>
-                  <div>
-                    <span className="text-slate-400 font-semibold block">Academic Term:</span>
-                    <span className="text-sm font-bold text-slate-900">
+                  <div className="rounded-xl bg-slate-50/70 p-3 border border-slate-100">
+                    <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">Academic Session:</span>
+                    <span className="text-sm font-bold text-slate-900 mt-0.5 block">
                       {generatedReport.termName} ({generatedReport.sessionName})
                     </span>
                   </div>
                 </div>
 
                 {/* Subject Results Table */}
-                <div className="mt-6 overflow-x-auto">
-                  <table className="w-full text-left text-xs border border-slate-300">
-                    <thead className="bg-slate-100 font-bold uppercase tracking-wider text-slate-700 border-b border-slate-300">
+                <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-100/90 font-bold uppercase tracking-wider text-slate-700 border-b border-slate-200">
                       <tr>
-                        <th className="p-3 border-r border-slate-300">Subject</th>
-                        <th className="p-3 text-center border-r border-slate-300">C.A. (40)</th>
-                        <th className="p-3 text-center border-r border-slate-300">Exam (60)</th>
-                        <th className="p-3 text-center border-r border-slate-300">Total (100)</th>
-                        <th className="p-3 text-center border-r border-slate-300">Grade</th>
-                        <th className="p-3">Remark</th>
+                        <th className="p-3.5">Curriculum Subject</th>
+                        <th className="p-3.5 text-center">C.A. (40)</th>
+                        <th className="p-3.5 text-center">Exam (60)</th>
+                        <th className="p-3.5 text-center">Total (100)</th>
+                        <th className="p-3.5 text-center">Grade</th>
+                        <th className="p-3.5">Performance Remark</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200">
                       {generatedReport.results.map((r) => (
-                        <tr key={r.subjectId} className="hover:bg-slate-50">
-                          <td className="p-3 font-semibold text-slate-900 border-r border-slate-200">
+                        <tr key={r.subjectId} className="hover:bg-slate-50/80 transition-colors">
+                          <td className="p-3.5 font-semibold text-slate-900">
                             {r.subjectName}
                           </td>
-                          <td className="p-3 text-center border-r border-slate-200 font-mono">
+                          <td className="p-3.5 text-center font-mono font-medium text-slate-700">
                             {r.caScore}
                           </td>
-                          <td className="p-3 text-center border-r border-slate-200 font-mono">
+                          <td className="p-3.5 text-center font-mono font-medium text-slate-700">
                             {r.examScore}
                           </td>
-                          <td className="p-3 text-center border-r border-slate-200 font-mono font-bold text-slate-900">
+                          <td className="p-3.5 text-center font-mono font-bold text-slate-900">
                             {r.totalScore}
                           </td>
-                          <td className="p-3 text-center border-r border-slate-200 font-bold font-mono">
+                          <td className="p-3.5 text-center font-bold font-mono">
                             <span
-                              className={`px-2 py-0.5 rounded ${
+                              className={`px-2.5 py-0.5 rounded-full text-xs ${
                                 r.grade === "A"
-                                  ? "bg-emerald-100 text-emerald-800"
-                                  : "bg-blue-100 text-blue-800"
+                                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                  : "bg-blue-50 text-blue-700 border border-blue-200"
                               }`}
                             >
                               {r.grade}
                             </span>
                           </td>
-                          <td className="p-3 text-slate-600 font-medium">{r.remark}</td>
+                          <td className="p-3.5 text-slate-600 font-medium">{r.remark}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -580,42 +585,42 @@ export default function AcademicsPage() {
                 </div>
 
                 {/* Summary Metrics */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 p-4 rounded-2xl bg-slate-50/80 border border-slate-200/80 text-center">
                   <div>
-                    <span className="text-[11px] font-bold text-slate-500 uppercase">Term Average</span>
-                    <p className="text-xl font-black text-blue-700 mt-1">
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Term Average</span>
+                    <p className="text-2xl font-black text-brand mt-1 font-heading">
                       {generatedReport.overallAverage}%
                     </p>
                   </div>
                   <div>
-                    <span className="text-[11px] font-bold text-slate-500 uppercase">Class Position</span>
-                    <p className="text-xl font-black text-slate-900 mt-1">
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Class Position</span>
+                    <p className="text-2xl font-black text-slate-900 mt-1 font-heading">
                       1st of {generatedReport.totalStudentsInClass}
                     </p>
                   </div>
                   <div>
-                    <span className="text-[11px] font-bold text-slate-500 uppercase">Total Marks</span>
-                    <p className="text-xl font-black text-slate-900 mt-1">
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Marks</span>
+                    <p className="text-2xl font-black text-slate-900 mt-1 font-heading">
                       {generatedReport.totalScore} / {generatedReport.totalPossibleScore}
                     </p>
                   </div>
                   <div>
-                    <span className="text-[11px] font-bold text-slate-500 uppercase">Attendance</span>
-                    <p className="text-xl font-black text-emerald-700 mt-1">
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Attendance</span>
+                    <p className="text-2xl font-black text-emerald-700 mt-1 font-heading">
                       {generatedReport.attendanceDaysPresent} / {generatedReport.attendanceDaysTotal} days
                     </p>
                   </div>
                 </div>
 
                 {/* Remarks */}
-                <div className="mt-6 space-y-3 text-xs">
-                  <div className="rounded-lg border border-slate-200 p-3">
-                    <span className="font-bold text-slate-800">Form Teacher&apos;s Remarks: </span>
-                    <span className="text-slate-600">{generatedReport.teacherRemarks}</span>
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-4">
+                    <span className="font-bold uppercase tracking-wider text-slate-700 block mb-1">Form Teacher&apos;s Remarks: </span>
+                    <p className="text-slate-600 italic leading-relaxed">&ldquo;{generatedReport.teacherRemarks}&rdquo;</p>
                   </div>
-                  <div className="rounded-lg border border-slate-200 p-3">
-                    <span className="font-bold text-slate-800">Principal / Proprietor&apos;s Remarks: </span>
-                    <span className="text-slate-600">{generatedReport.principalRemarks}</span>
+                  <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-4">
+                    <span className="font-bold uppercase tracking-wider text-slate-700 block mb-1">Principal / Proprietor&apos;s Remarks: </span>
+                    <p className="text-slate-600 italic leading-relaxed">&ldquo;{generatedReport.principalRemarks}&rdquo;</p>
                   </div>
                 </div>
               </div>

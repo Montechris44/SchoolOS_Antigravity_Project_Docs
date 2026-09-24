@@ -123,27 +123,30 @@ export default function FinancePage() {
 
   return (
     <AppShell>
-      <div className="space-y-6">
+      <div className="space-y-6 sm:space-y-8">
         {/* Header */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-              Finance & Fee Collections
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-brand mb-2">
+              Bursar &amp; Finance Console
+            </span>
+            <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900">
+              Finance &amp; Fee Collections
             </h1>
-            <p className="text-sm text-slate-500">
+            <p className="mt-1.5 text-sm sm:text-base text-slate-500 max-w-2xl leading-relaxed">
               Authoritative billings, Paystack collection tracking, invoice issuance, and official receipts.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <Link href="/payments">
-              <Button variant="outline" size="sm" className="gap-1.5 text-blue-700 border-blue-200 hover:bg-blue-50">
-                <CreditCard className="h-4 w-4" /> Paystack Gateway Simulation
+              <Button variant="outline" size="sm" className="gap-1.5 rounded-xl font-semibold border-slate-200">
+                <CreditCard className="h-4 w-4 text-brand" /> Paystack Gateway Simulation
               </Button>
             </Link>
             <Button
               onClick={() => setIsCreateInvoiceModalOpen(true)}
               size="sm"
-              className="gap-1.5 bg-blue-600 hover:bg-blue-700"
+              className="gap-1.5 rounded-xl font-semibold shadow-sm hover:shadow-md"
             >
               <Plus className="h-4 w-4" /> Issue Student Invoice
             </Button>
@@ -151,55 +154,55 @@ export default function FinancePage() {
         </div>
 
         {/* Top KPI Metrics Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-5">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          <Card className="rounded-3xl p-6 shadow-subtle hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-slate-600">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
               Total Term Billed
             </span>
-            <p className="text-2xl font-bold text-slate-900 mt-1">
+            <p className="font-heading text-2xl font-black text-slate-900 mt-2">
               {formatCurrency(totalBilled)}
             </p>
-            <div className="mt-2 flex items-center text-xs text-slate-500 gap-1">
+            <div className="mt-2.5 flex items-center text-xs text-slate-500 gap-1.5">
               <span>{invoices.length} invoices issued</span>
             </div>
           </Card>
 
-          <Card className="p-5 border-emerald-200 bg-emerald-50/30">
-            <span className="text-xs font-semibold text-emerald-700 uppercase tracking-wider">
+          <Card className="rounded-3xl p-6 shadow-subtle hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-emerald-600 bg-emerald-50/20">
+            <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">
               Payments Verified
             </span>
-            <p className="text-2xl font-bold text-emerald-700 mt-1">
+            <p className="font-heading text-2xl font-black text-emerald-700 mt-2">
               {formatCurrency(totalCollected)}
             </p>
-            <div className="mt-2 flex items-center text-xs text-emerald-600 gap-1">
-              <CheckCircle2 className="h-3.5 w-3.5" />
+            <div className="mt-2.5 flex items-center text-xs text-emerald-600 gap-1.5">
+              <CheckCircle2 className="h-4 w-4 shrink-0" />
               <span>{receipts.length} verified transactions</span>
             </div>
           </Card>
 
-          <Card className="p-5 border-rose-200 bg-rose-50/30">
-            <span className="text-xs font-semibold text-rose-700 uppercase tracking-wider">
+          <Card className="rounded-3xl p-6 shadow-subtle hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-rose-600 bg-rose-50/20">
+            <span className="text-[11px] font-bold text-rose-800 uppercase tracking-wider">
               Total Overdue &amp; Unpaid
             </span>
-            <p className="text-2xl font-bold text-rose-700 mt-1">
+            <p className="font-heading text-2xl font-black text-rose-700 mt-2">
               {formatCurrency(totalOutstanding)}
             </p>
-            <div className="mt-2 flex items-center text-xs text-rose-600 gap-1">
-              <AlertCircle className="h-3.5 w-3.5" />
+            <div className="mt-2.5 flex items-center text-xs text-rose-600 gap-1.5">
+              <AlertCircle className="h-4 w-4 shrink-0" />
               <span>Risk signal active</span>
             </div>
           </Card>
 
-          <Card className="p-5 border-blue-200 bg-blue-50/30">
-            <span className="text-xs font-semibold text-blue-700 uppercase tracking-wider">
+          <Card className="rounded-3xl p-6 shadow-subtle hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-brand bg-blue-50/20">
+            <span className="text-[11px] font-bold text-brand uppercase tracking-wider">
               Collection Rate
             </span>
-            <p className="text-2xl font-bold text-blue-700 mt-1">
+            <p className="font-heading text-2xl font-black text-brand mt-2">
               {collectionRate}%
             </p>
-            <div className="w-full bg-blue-200 rounded-full h-2 mt-3 overflow-hidden">
+            <div className="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
               <div
-                className="bg-blue-600 h-2 rounded-full"
+                className="bg-brand h-2 rounded-full transition-all duration-500"
                 style={{ width: `${collectionRate}%` }}
               />
             </div>
@@ -207,33 +210,33 @@ export default function FinancePage() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-slate-200">
+        <div className="flex gap-1.5 overflow-x-auto rounded-2xl border border-slate-200/80 bg-white/80 p-1.5 shadow-subtle">
           <button
             onClick={() => setActiveTab("invoices")}
-            className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-150 cursor-pointer ${
               activeTab === "invoices"
-                ? "border-blue-600 text-blue-600"
-                : "border-transparent text-slate-500 hover:text-slate-800"
+                ? "bg-brand text-white shadow-sm"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
             }`}
           >
             <CreditCard className="h-4 w-4" /> Invoices ({invoices.length})
           </button>
           <button
             onClick={() => setActiveTab("feeStructures")}
-            className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-150 cursor-pointer ${
               activeTab === "feeStructures"
-                ? "border-blue-600 text-blue-600"
-                : "border-transparent text-slate-500 hover:text-slate-800"
+                ? "bg-brand text-white shadow-sm"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
             }`}
           >
-            <TrendingUp className="h-4 w-4" /> Configured Fee Structures
+            <TrendingUp className="h-4 w-4" /> Fee Structures
           </button>
           <button
             onClick={() => setActiveTab("receipts")}
-            className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-150 cursor-pointer ${
               activeTab === "receipts"
-                ? "border-blue-600 text-blue-600"
-                : "border-transparent text-slate-500 hover:text-slate-800"
+                ? "bg-brand text-white shadow-sm"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
             }`}
           >
             <ReceiptIcon className="h-4 w-4" /> Receipts Archive ({receipts.length})
@@ -243,22 +246,22 @@ export default function FinancePage() {
         {/* TAB 1: INVOICES */}
         {activeTab === "invoices" && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-subtle">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Filter by Payment Status:
               </span>
-              <div className="flex items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-1.5">
                 {["all", "PAID", "PARTIAL", "OVERDUE", "ISSUED"].map((st) => (
                   <button
                     key={st}
                     onClick={() => setStatusFilter(st)}
-                    className={`rounded-lg px-3 py-1 text-xs font-semibold transition-colors ${
+                    className={`rounded-xl px-3 py-1 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
                       statusFilter === st
-                        ? "bg-blue-600 text-white"
-                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        ? "bg-brand text-white shadow-2xs"
+                        : "bg-slate-100 text-slate-600 hover:bg-slate-200/70"
                     }`}
                   >
-                    {st.toUpperCase()}
+                    {st}
                   </button>
                 ))}
               </div>

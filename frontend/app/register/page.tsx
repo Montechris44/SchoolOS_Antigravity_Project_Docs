@@ -102,32 +102,34 @@ export default function RegisterSchoolPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50/60 px-4 py-12 relative selection:bg-brand-soft selection:text-brand">
+      <div className="pointer-events-none fixed top-0 right-1/4 -z-10 h-96 w-96 rounded-full bg-brand-soft/40 blur-3xl" />
       <div className="w-full max-w-2xl">
-        <Link href="/" className="mb-8 flex items-center justify-center gap-2 text-slate-900">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white">
+        <Link href="/" className="mb-8 flex items-center justify-center gap-2.5 text-slate-900 group cursor-pointer">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-brand text-white shadow-sm group-hover:scale-105 transition-transform">
             <GraduationCap className="h-5 w-5" />
           </div>
-          <span className="text-lg font-bold">SchoolOS</span>
+          <span className="font-heading text-xl font-black text-slate-900">SchoolOS</span>
         </Link>
 
-        <Card>
-          <CardHeader>
-            <h1 className="text-xl font-bold text-slate-900">Register your school</h1>
-            <p className="text-sm text-slate-500">
+        <Card className="shadow-card border-slate-200/80 rounded-3xl p-2 sm:p-4">
+          <CardHeader className="text-center sm:text-left">
+            <h1 className="font-heading text-2xl sm:text-3xl font-black tracking-tight text-slate-900">Register your school</h1>
+            <p className="text-sm text-slate-500 mt-1 leading-relaxed">
               Set up your school&apos;s workspace and create the owner account that manages it.
             </p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-8">
-              <fieldset className="space-y-4">
-                <legend className="text-xs font-bold uppercase tracking-wider text-blue-700">
-                  School details
+              <fieldset className="space-y-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-5 sm:p-6">
+                <legend className="inline-flex items-center gap-2 rounded-full bg-brand-soft px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-brand">
+                  1. School details
                 </legend>
                 <Input
                   id="schoolName"
                   label="School name"
                   required
+                  placeholder="e.g. Corona Secondary School"
                   value={form.schoolName}
                   onChange={update("schoolName")}
                 />
@@ -137,6 +139,7 @@ export default function RegisterSchoolPage() {
                     label="School email"
                     type="email"
                     required
+                    placeholder="info@school.edu.ng"
                     value={form.schoolEmail}
                     onChange={update("schoolEmail")}
                   />
@@ -145,15 +148,16 @@ export default function RegisterSchoolPage() {
                     label="School phone"
                     type="tel"
                     required
+                    placeholder="08012345678"
                     value={form.schoolPhone}
                     onChange={update("schoolPhone")}
                   />
                 </div>
-                <Input id="address" label="Address" required value={form.address} onChange={update("address")} />
+                <Input id="address" label="Address" required placeholder="e.g. 15 Admiralty Way" value={form.address} onChange={update("address")} />
                 <div className="grid gap-4 sm:grid-cols-3">
-                  <Input id="city" label="City" required value={form.city} onChange={update("city")} />
+                  <Input id="city" label="City" required placeholder="e.g. Lekki" value={form.city} onChange={update("city")} />
                   <div className="w-full space-y-1.5">
-                    <label htmlFor="state" className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                    <label htmlFor="state" className="text-xs font-semibold text-slate-700">
                       State
                     </label>
                     <select
@@ -161,7 +165,7 @@ export default function RegisterSchoolPage() {
                       required
                       value={form.state}
                       onChange={update("state")}
-                      className="flex h-10 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                      className="flex h-10.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 transition-all shadow-subtle hover:border-slate-300 focus-visible:outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/20"
                     >
                       {NIGERIAN_STATES.map((state) => (
                         <option key={state} value={state}>
@@ -174,14 +178,15 @@ export default function RegisterSchoolPage() {
                 </div>
               </fieldset>
 
-              <fieldset className="space-y-4">
-                <legend className="text-xs font-bold uppercase tracking-wider text-blue-700">
-                  Owner account
+              <fieldset className="space-y-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-5 sm:p-6">
+                <legend className="inline-flex items-center gap-2 rounded-full bg-brand-soft px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-brand">
+                  2. Owner account
                 </legend>
                 <Input
                   id="ownerFullName"
                   label="Full name"
                   required
+                  placeholder="e.g. Dr. Ngozi Okonjo"
                   value={form.ownerFullName}
                   onChange={update("ownerFullName")}
                 />
@@ -191,6 +196,7 @@ export default function RegisterSchoolPage() {
                     label="Owner email"
                     type="email"
                     required
+                    placeholder="proprietor@school.edu.ng"
                     value={form.ownerEmail}
                     onChange={update("ownerEmail")}
                   />
@@ -198,6 +204,7 @@ export default function RegisterSchoolPage() {
                     id="ownerPhone"
                     label="Owner phone (optional)"
                     type="tel"
+                    placeholder="08098765432"
                     value={form.ownerPhone}
                     onChange={update("ownerPhone")}
                   />
@@ -208,6 +215,7 @@ export default function RegisterSchoolPage() {
                     label="Password"
                     type="password"
                     required
+                    placeholder="Min. 8 characters"
                     autoComplete="new-password"
                     value={form.password}
                     onChange={update("password")}
@@ -217,6 +225,7 @@ export default function RegisterSchoolPage() {
                     label="Confirm password"
                     type="password"
                     required
+                    placeholder="Repeat password"
                     autoComplete="new-password"
                     value={form.confirmPassword}
                     onChange={update("confirmPassword")}
@@ -225,19 +234,19 @@ export default function RegisterSchoolPage() {
               </fieldset>
 
               {error && (
-                <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 border border-rose-200">
+                <p className="rounded-2xl bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 border border-rose-200/80">
                   {error}
                 </p>
               )}
 
-              <Button type="submit" className="w-full" isLoading={isSubmitting}>
+              <Button type="submit" size="lg" className="w-full rounded-2xl shadow-sm hover:shadow-md font-semibold" isLoading={isSubmitting}>
                 Create school account <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </form>
 
             <p className="mt-6 text-center text-sm text-slate-500">
               Already have an account?{" "}
-              <Link href="/login" className="font-semibold text-blue-600 hover:underline">
+              <Link href="/login" className="font-semibold text-brand hover:underline">
                 Sign in
               </Link>
             </p>

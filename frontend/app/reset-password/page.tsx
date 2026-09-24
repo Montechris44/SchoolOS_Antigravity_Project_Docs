@@ -48,7 +48,7 @@ function ResetForm() {
       <Input id="new-password" label="New password" type="password" autoComplete="new-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
       <Input id="confirm-password" label="Confirm new password" type="password" autoComplete="new-password" required value={confirm} onChange={(e) => setConfirm(e.target.value)} />
       {error && <Alert tone="error">{error}</Alert>}
-      <Button type="submit" size="lg" className="w-full rounded-xl" isLoading={loading}>
+      <Button type="submit" size="lg" className="w-full rounded-2xl shadow-sm hover:shadow-md font-semibold" isLoading={loading}>
         <KeyRound className="mr-2 h-4 w-4" /> Reset password
       </Button>
     </form>
@@ -60,7 +60,7 @@ export default function ResetPasswordPage() {
     <AuthShell
       title="Choose a new password"
       footer={
-        <Link href="/login" className="font-semibold text-blue-600 hover:underline">
+        <Link href="/login" className="font-semibold text-brand hover:underline">
           Back to sign in
         </Link>
       }

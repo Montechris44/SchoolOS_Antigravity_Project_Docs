@@ -222,18 +222,23 @@ export default function StudentsPage() {
         </Alert>
       )}
 
-      <Panel className="mb-6">
+      <Panel className="mb-6 border-slate-200/80 bg-white/90 shadow-subtle backdrop-blur-sm">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
           <div className="relative md:col-span-2">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search name or admission number" className="h-10 w-full rounded-lg border border-slate-300 pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-brand" />
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search name or admission number..."
+              className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-3 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10"
+            />
           </div>
           <Select value={classFilter} onChange={(e) => setClassFilter(e.target.value)} aria-label="Class">
             <option value="">All classes</option>
             {classes.data?.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </Select>
           <Select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
-            <option value="active">Active</option>
+            <option value="active">Active students</option>
             <option value="suspended">Suspended</option>
             <option value="transferred">Transferred</option>
             <option value="graduated">Graduated</option>
@@ -249,32 +254,57 @@ export default function StudentsPage() {
       ) : students.data.length === 0 ? (
         <EmptyState title="No students found" description="Adjust the filters, or enrol a student to get started." />
       ) : (
-        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-subtle transition-all">
           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <thead className="border-b border-slate-200/80 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-500">
               <tr>
-                <th className="px-5 py-3">Student</th>
-                <th className="hidden px-5 py-3 md:table-cell">Admission no.</th>
-                <th className="px-5 py-3">Class</th>
-                <th className="hidden px-5 py-3 lg:table-cell">Guardian</th>
-                <th className="px-5 py-3">Status</th>
+                <th className="px-5 py-3.5">Student Scholar</th>
+                <th className="hidden px-5 py-3.5 md:table-cell">Admission no.</th>
+                <th className="px-5 py-3.5">Class & Arm</th>
+                <th className="hidden px-5 py-3.5 lg:table-cell">Guardian Contact</th>
+                <th className="px-5 py-3.5 text-right">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {students.data.map((student) => (
-                <tr key={student.id} onClick={() => open(student)} className="cursor-pointer transition-colors hover:bg-brand-soft">
-                  <td className="px-5 py-3">
+                <tr
+                  key={student.id}
+                  onClick={() => open(student)}
+                  className="group cursor-pointer transition-colors hover:bg-slate-50/80"
+                >
+                  <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
-                      <Avatar name={`${student.firstName} ${student.lastName}`} src={student.photoUrl} />
-                      <span className="font-semibold text-slate-900">{student.firstName} {student.lastName}</span>
+                      <Avatar name={`${student.firstName} ${student.lastName}`} src={student.photoUrl} size={36} />
+                      <div>
+                        <span className="font-semibold text-slate-900 group-hover:text-brand transition-colors">
+                          {student.firstName} {student.lastName}
+                        </span>
+                        <p className="text-[11px] text-slate-400 capitalize md:hidden">{student.admissionNumber}</p>
+                      </div>
                     </div>
                   </td>
-                  <td className="hidden px-5 py-3 font-mono text-xs text-slate-600 md:table-cell">{student.admissionNumber}</td>
-                  <td className="px-5 py-3 text-slate-700">{student.classLabel}</td>
-                  <td className="hidden px-5 py-3 text-slate-500 lg:table-cell">{student.guardianName ?? "—"}</td>
-                  <td className="px-5 py-3">
-                    <Badge variant={student.enrollmentStatus === "active" ? "success" : "secondary"}>{student.enrollmentStatus}</Badge>
-                    {!student.hasLogin && <Badge variant="outline" className="ml-1">no login</Badge>}
+                  <td className="hidden px-5 py-3.5 md:table-cell">
+                    <span className="font-mono text-xs font-semibold text-slate-700 bg-slate-100/80 px-2 py-0.5 rounded-md">
+                      {student.admissionNumber}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3.5">
+                    <span className="font-medium text-slate-700">{student.classLabel}</span>
+                  </td>
+                  <td className="hidden px-5 py-3.5 text-slate-500 lg:table-cell">
+                    {student.guardianName ? (
+                      <span className="truncate block max-w-xs">{student.guardianName}</span>
+                    ) : (
+                      <span className="text-slate-400">—</span>
+                    )}
+                  </td>
+                  <td className="px-5 py-3.5 text-right">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <Badge variant={student.enrollmentStatus === "active" ? "success" : "secondary"}>
+                        {student.enrollmentStatus}
+                      </Badge>
+                      {!student.hasLogin && <Badge variant="outline" className="text-[10px]">no login</Badge>}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -302,8 +332,8 @@ export default function StudentsPage() {
               {armsOf(form.classId).map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
             </Select>
           </div>
-          <div className="rounded-2xl border border-slate-200 p-4">
-            <p className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">Guardian (optional)</p>
+          <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-4">
+            <p className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">Guardian Details (Optional)</p>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Input label="First name" value={form.guardianFirstName} onChange={(e) => setForm({ ...form, guardianFirstName: e.target.value })} />
               <Input label="Last name" value={form.guardianLastName} onChange={(e) => setForm({ ...form, guardianLastName: e.target.value })} />
@@ -318,7 +348,7 @@ export default function StudentsPage() {
             </div>
           </div>
           {formError && <Alert tone="error">{formError}</Alert>}
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="ghost" onClick={() => setShowForm(false)}>Cancel</Button>
             <Button type="submit" isLoading={saving}>Enrol student</Button>
           </div>
@@ -330,19 +360,28 @@ export default function StudentsPage() {
       <Dialog isOpen={selected !== null} onClose={() => setSelected(null)} title={selected ? `${selected.firstName} ${selected.lastName}` : ""} description={selected ? `${selected.classLabel} · ${selected.admissionNumber}` : ""} maxWidth="xl">
         {selected && (
           <div className="space-y-5">
-            <div className="flex items-center gap-4">
-              <Avatar name={`${selected.firstName} ${selected.lastName}`} src={selected.photoUrl} size={64} />
-              <div className="text-sm text-slate-600">
-                <p>{selected.loginEmail ? <>Sign-in: <span className="font-mono">{selected.loginEmail}</span></> : "No sign-in account yet"}</p>
-                <p>Guardian: {selected.guardianName ?? "—"} {selected.guardianPhone ? `· ${selected.guardianPhone}` : ""}</p>
+            <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
+              <Avatar name={`${selected.firstName} ${selected.lastName}`} src={selected.photoUrl} size={60} />
+              <div className="space-y-0.5 text-sm text-slate-600">
+                <p>{selected.loginEmail ? <>Sign-in Account: <span className="font-mono font-medium text-slate-900">{selected.loginEmail}</span></> : <span className="text-slate-400 italic">No sign-in account created yet</span>}</p>
+                <p>Guardian: <span className="font-semibold text-slate-800">{selected.guardianName ?? "—"}</span> {selected.guardianPhone ? <span className="text-slate-500">· {selected.guardianPhone}</span> : ""}</p>
               </div>
             </div>
 
             {summary ? (
               <div className="grid grid-cols-3 gap-3 text-center">
-                <div className="rounded-2xl bg-slate-50 p-3"><p className="font-heading text-xl font-bold">{summary.attendance.attendancePercentage}%</p><p className="text-[10px] font-bold uppercase text-slate-400">Attendance</p></div>
-                <div className="rounded-2xl bg-slate-50 p-3"><p className="font-heading text-xl font-bold">{summary.metrics.averageScore || "—"}</p><p className="text-[10px] font-bold uppercase text-slate-400">Term average</p></div>
-                <div className="rounded-2xl bg-slate-50 p-3"><p className="font-heading text-xl font-bold">{summary.metrics.subjectsGraded}</p><p className="text-[10px] font-bold uppercase text-slate-400">Subjects graded</p></div>
+                <div className="rounded-2xl border border-slate-200/60 bg-gradient-to-b from-white to-slate-50/50 p-3.5 shadow-2xs">
+                  <p className="font-heading text-2xl font-black text-slate-900">{summary.attendance.attendancePercentage}%</p>
+                  <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">Attendance</p>
+                </div>
+                <div className="rounded-2xl border border-slate-200/60 bg-gradient-to-b from-white to-slate-50/50 p-3.5 shadow-2xs">
+                  <p className="font-heading text-2xl font-black text-slate-900">{summary.metrics.averageScore || "—"}</p>
+                  <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">Term average</p>
+                </div>
+                <div className="rounded-2xl border border-slate-200/60 bg-gradient-to-b from-white to-slate-50/50 p-3.5 shadow-2xs">
+                  <p className="font-heading text-2xl font-black text-slate-900">{summary.metrics.subjectsGraded}</p>
+                  <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">Graded subjects</p>
+                </div>
               </div>
             ) : (
               <LoadingSkeleton count={1} />

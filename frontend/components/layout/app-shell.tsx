@@ -57,21 +57,22 @@ export function AppShell({ children, allow }: AppShellProps) {
   const allowed = !allow || allow.includes(role);
 
   return (
-    <div className="flex min-h-screen bg-slate-50 text-slate-900" style={brandStyle}>
+    <div className="flex min-h-screen bg-[#f8fafc] text-slate-900 relative selection:bg-brand-soft selection:text-brand" style={brandStyle}>
+      <div className="pointer-events-none fixed top-0 right-1/4 -z-10 h-[480px] w-[480px] rounded-full bg-brand-soft/40 blur-3xl" />
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <Header onOpenSidebar={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
-          <div className="mx-auto max-w-7xl">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+          <div className="mx-auto max-w-7xl animate-fade-in">
             {allowed ? (
               children
             ) : (
-              <div className="mx-auto mt-16 flex max-w-md flex-col items-center rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-                <div className="mb-4 rounded-full bg-amber-50 p-4 text-amber-600">
+              <div className="mx-auto mt-16 flex max-w-md flex-col items-center rounded-3xl border border-slate-200/80 bg-white p-10 text-center shadow-card">
+                <div className="mb-4 rounded-2xl bg-amber-50 p-4 text-amber-600 ring-4 ring-amber-500/10 shadow-2xs">
                   <ShieldAlert className="h-8 w-8" />
                 </div>
-                <h2 className="font-heading text-lg font-bold text-slate-900">This page is not available for your role</h2>
-                <p className="mt-2 text-sm text-slate-500">Use the menu to open the tools that are part of your account.</p>
+                <h2 className="font-heading text-xl font-bold text-slate-900">This page is not available for your role</h2>
+                <p className="mt-2 text-sm text-slate-500 leading-relaxed">Use the menu to open the tools that are part of your account.</p>
               </div>
             )}
           </div>

@@ -38,6 +38,7 @@
     --brand: #2563eb;
     --brand-strong: #1d4ed8;
     --brand-soft: #eff6ff;
+    --brand-glow: rgba(37, 99, 235, 0.18);
   }
 
   .dark {
@@ -68,6 +69,8 @@
     --border: #1e293b;
     --input: #334155;
     --ring: #60a5fa;
+
+    --brand-glow: rgba(59, 130, 246, 0.25);
   }
 }
 
@@ -76,12 +79,37 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased min-h-screen font-sans;
+    @apply bg-background text-foreground antialiased min-h-screen font-sans selection:bg-brand-soft selection:text-brand;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-/* Glassmorphic highlights & custom scrollbar */
+/* Custom UI Utility Classes */
+@layer utilities {
+  .glass-header {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+  }
+
+  .school-gradient-subtle {
+    background: radial-gradient(120% 120% at 50% 0%, rgba(37, 99, 235, 0.04) 0%, rgba(248, 250, 252, 1) 100%);
+  }
+
+  .academic-mesh-glow {
+    background: radial-gradient(circle at 15% 15%, rgba(37, 99, 235, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(14, 165, 233, 0.08) 0%, transparent 40%);
+  }
+}
+
+/* Smooth custom scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -92,6 +120,7 @@
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 9999px;
+  transition: background 0.2s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;

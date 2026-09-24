@@ -17,24 +17,28 @@ export function PageHeader({
   eyebrow?: string;
 }) {
   return (
-    <div className="no-print mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <div className="no-print mb-6 sm:mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div>
-        {eyebrow && <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-brand">{eyebrow}</p>}
-        <h1 className="font-heading text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">{title}</h1>
-        {description && <p className="mt-1 max-w-2xl text-sm text-slate-500">{description}</p>}
+        {eyebrow && (
+          <span className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-brand">
+            {eyebrow}
+          </span>
+        )}
+        <h1 className="font-heading text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl md:text-4xl">{title}</h1>
+        {description && <p className="mt-1.5 max-w-2xl text-sm sm:text-base text-slate-500 leading-relaxed">{description}</p>}
       </div>
-      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+      {actions && <div className="flex flex-wrap items-center gap-2.5 shrink-0">{actions}</div>}
     </div>
   );
 }
 
 const TONES = {
-  brand: "bg-brand-soft text-brand",
-  emerald: "bg-emerald-50 text-emerald-600",
-  amber: "bg-amber-50 text-amber-600",
-  rose: "bg-rose-50 text-rose-600",
-  violet: "bg-violet-50 text-violet-600",
-  sky: "bg-sky-50 text-sky-600",
+  brand: "bg-brand-soft text-brand ring-4 ring-brand/5",
+  emerald: "bg-emerald-50 text-emerald-600 ring-4 ring-emerald-500/5",
+  amber: "bg-amber-50 text-amber-600 ring-4 ring-amber-500/5",
+  rose: "bg-rose-50 text-rose-600 ring-4 ring-rose-500/5",
+  violet: "bg-violet-50 text-violet-600 ring-4 ring-violet-500/5",
+  sky: "bg-sky-50 text-sky-600 ring-4 ring-sky-500/5",
 } as const;
 
 export function StatCard({
@@ -55,16 +59,18 @@ export function StatCard({
   const body = (
     <div
       className={cn(
-        "h-full rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all",
-        href && "hover:-translate-y-0.5 hover:border-brand hover:shadow-lg"
+        "group relative h-full rounded-3xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-subtle transition-all duration-200 overflow-hidden",
+        href && "hover:-translate-y-1 hover:border-slate-300 hover:shadow-card-hover cursor-pointer"
       )}
     >
-      <div className={cn("mb-4 flex h-11 w-11 items-center justify-center rounded-2xl", TONES[tone])}>
-        <Icon className="h-5 w-5" />
+      <div className="flex items-center justify-between mb-4">
+        <div className={cn("flex h-12 w-12 items-center justify-center rounded-2xl transition-transform duration-200 group-hover:scale-105", TONES[tone])}>
+          <Icon className="h-5 w-5" />
+        </div>
       </div>
-      <div className="font-heading text-3xl font-bold text-slate-900">{value}</div>
-      <div className="mt-1 text-sm font-semibold text-slate-500">{label}</div>
-      {hint && <div className="mt-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">{hint}</div>}
+      <div className="font-heading text-3xl font-black tracking-tight text-slate-900">{value}</div>
+      <div className="mt-1 text-sm font-semibold text-slate-600">{label}</div>
+      {hint && <div className="mt-2.5 text-[11px] font-medium tracking-wide text-slate-400">{hint}</div>}
     </div>
   );
   return href ? (
@@ -78,9 +84,9 @@ export function StatCard({
 
 export function Panel({ title, action, children, className }: { title?: string; action?: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
-    <section className={cn("rounded-3xl border border-slate-200 bg-white p-6 shadow-sm", className)}>
+    <section className={cn("rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-subtle transition-all", className)}>
       {(title || action) && (
-        <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="mb-5 flex items-center justify-between gap-3 border-b border-slate-100 pb-3">
           {title && <h2 className="font-heading text-lg font-bold text-slate-900">{title}</h2>}
           {action}
         </div>
@@ -92,35 +98,35 @@ export function Panel({ title, action, children, className }: { title?: string; 
 
 export function Alert({ tone = "info", children, className }: { tone?: "info" | "success" | "error" | "warning"; children: React.ReactNode; className?: string }) {
   const styles = {
-    info: "border-sky-200 bg-sky-50 text-sky-800",
-    success: "border-emerald-200 bg-emerald-50 text-emerald-800",
-    error: "border-rose-200 bg-rose-50 text-rose-800",
-    warning: "border-amber-200 bg-amber-50 text-amber-800",
+    info: "border-sky-200/80 bg-sky-50/80 text-sky-900",
+    success: "border-emerald-200/80 bg-emerald-50/80 text-emerald-900",
+    error: "border-rose-200/80 bg-rose-50/80 text-rose-900",
+    warning: "border-amber-200/80 bg-amber-50/80 text-amber-900",
   } as const;
   const Icon = tone === "success" ? CheckCircle2 : tone === "info" ? Info : AlertCircle;
   return (
-    <div className={cn("flex items-start gap-2 rounded-xl border p-3 text-sm font-medium", styles[tone], className)} role={tone === "error" ? "alert" : undefined}>
+    <div className={cn("flex items-start gap-3 rounded-2xl border p-3.5 text-sm font-medium shadow-2xs", styles[tone], className)} role={tone === "error" ? "alert" : undefined}>
       <Icon className="mt-0.5 h-4 w-4 shrink-0" />
-      <div className="min-w-0">{children}</div>
+      <div className="min-w-0 leading-relaxed">{children}</div>
     </div>
   );
 }
 
 export function Tabs<T extends string>({ tabs, active, onChange }: { tabs: Array<{ id: T; label: string; count?: number }>; active: T; onChange: (id: T) => void }) {
   return (
-    <div className="no-print mb-5 flex gap-1 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-1 shadow-sm">
+    <div className="no-print mb-6 flex gap-1.5 overflow-x-auto rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-sm p-1.5 shadow-subtle">
       {tabs.map((tab) => (
         <button
           key={tab.id}
           onClick={() => onChange(tab.id)}
           className={cn(
-            "flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-colors",
-            active === tab.id ? "bg-brand text-white shadow" : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+            "flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-150 cursor-pointer",
+            active === tab.id ? "bg-brand text-white shadow-sm" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
           )}
         >
           {tab.label}
           {tab.count !== undefined && (
-            <span className={cn("rounded-full px-1.5 text-[10px] font-bold", active === tab.id ? "bg-white/20" : "bg-slate-100")}>{tab.count}</span>
+            <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold", active === tab.id ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600")}>{tab.count}</span>
           )}
         </button>
       ))}
@@ -132,7 +138,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTML
   ({ className, label, id, ...props }, ref) => (
     <div className="w-full space-y-1.5">
       {label && (
-        <label htmlFor={id} className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+        <label htmlFor={id} className="text-xs font-semibold text-slate-700">
           {label}
         </label>
       )}
@@ -140,7 +146,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTML
         id={id}
         ref={ref}
         className={cn(
-          "flex min-h-[90px] w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand",
+          "flex min-h-[90px] w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition-all shadow-subtle focus-visible:outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/20",
           className
         )}
         {...props}
@@ -159,9 +165,9 @@ export function Avatar({ name, src, size = 36 }: { name: string; src?: string | 
     .toUpperCase();
   return src ? (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt="" width={size} height={size} className="shrink-0 rounded-full object-cover" style={{ width: size, height: size }} />
+    <img src={src} alt="" width={size} height={size} className="shrink-0 rounded-2xl object-cover ring-2 ring-slate-100 shadow-2xs" style={{ width: size, height: size }} />
   ) : (
-    <div className="flex shrink-0 items-center justify-center rounded-full bg-brand-soft font-bold text-brand" style={{ width: size, height: size, fontSize: size / 2.8 }}>
+    <div className="flex shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-soft to-blue-100 font-bold text-brand ring-2 ring-brand/10 shadow-2xs" style={{ width: size, height: size, fontSize: size / 2.7 }}>
       {initials}
     </div>
   );

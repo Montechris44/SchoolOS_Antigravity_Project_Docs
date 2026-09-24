@@ -38,7 +38,7 @@ export function AdminOverview() {
   const attendancePct = stats.attendanceToday.marked > 0 ? Math.round((stats.attendanceToday.present / stats.attendanceToday.marked) * 100) : null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 sm:space-y-8">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Active students" value={stats.students} icon={GraduationCap} href="/students" hint="Enrolled now" />
         <StatCard label="Teachers" value={stats.teachers} icon={Users} tone="emerald" href="/staff" hint={`${stats.staff} staff in total`} />
@@ -68,12 +68,12 @@ export function AdminOverview() {
           {(stats.results.pendingReview > 0 || stats.results.returned > 0) && (
             <Link
               href="/results/approvals"
-              className="block rounded-3xl border border-amber-200 bg-amber-50 p-5 transition-colors hover:bg-amber-100"
+              className="block rounded-3xl border border-amber-200/80 bg-amber-50/80 p-5.5 transition-all hover:bg-amber-100/80 shadow-subtle group cursor-pointer"
             >
-              <p className="flex items-center gap-2 text-sm font-bold text-amber-900">
-                <Clock className="h-4 w-4" /> Results waiting for you
+              <p className="flex items-center gap-2 text-sm font-bold text-amber-900 font-heading">
+                <Clock className="h-4.5 w-4.5 text-amber-600" /> Results waiting for approval
               </p>
-              <p className="mt-1 text-sm text-amber-800">
+              <p className="mt-1.5 text-xs text-amber-800 leading-relaxed">
                 {stats.results.pendingReview} subject{stats.results.pendingReview === 1 ? "" : "s"} pending review
                 {stats.results.returned > 0 ? `, ${stats.results.returned} returned to teachers` : ""}.
               </p>
@@ -83,13 +83,13 @@ export function AdminOverview() {
 
         <Panel title="Recent activity" className="lg:col-span-2">
           {data.recentActivity.length === 0 ? (
-            <p className="py-8 text-center text-sm text-slate-400">Activity will appear here as your team uses SchoolOS.</p>
+            <p className="py-12 text-center text-sm text-slate-400">Activity will appear here as your team uses SchoolOS.</p>
           ) : (
             <ul className="divide-y divide-slate-100">
               {data.recentActivity.map((entry) => (
-                <li key={entry.id} className="flex items-center gap-3 py-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-soft text-brand">
-                    <Clock className="h-4 w-4" />
+                <li key={entry.id} className="flex items-center gap-3.5 py-3.5">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-soft text-brand ring-2 ring-brand/10 shadow-2xs">
+                    <Clock className="h-4.5 w-4.5" />
                   </span>
                   <p className="min-w-0 flex-1 truncate text-sm text-slate-700">
                     <span className="font-bold text-slate-900">{entry.actorName ?? "System"}</span> {describe(entry.action)}
