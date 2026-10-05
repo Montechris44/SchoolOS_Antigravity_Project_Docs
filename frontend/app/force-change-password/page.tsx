@@ -65,7 +65,7 @@ export default function ForceChangePasswordPage() {
         <Input id="confirm-password" label="Confirm new password" type="password" autoComplete="new-password" required value={confirm} onChange={(e) => setConfirm(e.target.value)} />
         <p className="text-xs text-slate-500">At least 8 characters, with a letter and a number.</p>
         {error && <Alert tone="error">{error}</Alert>}
-        <Button type="submit" size="lg" className="w-full rounded-2xl shadow-sm hover:shadow-md font-semibold" isLoading={saving}>
+        <Button type="submit" size="lg" className="w-full font-semibold" isLoading={saving}>
           <KeyRound className="mr-2 h-4 w-4" /> Save password and continue
         </Button>
       </form>

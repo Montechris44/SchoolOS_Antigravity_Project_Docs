@@ -62,18 +62,18 @@ function NotificationBell() {
 
   return (
     <div className="relative" ref={ref}>
-      <button onClick={toggle} title="Notifications" className="relative rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 cursor-pointer">
-        <Bell className="h-5 w-5" />
+      <button onClick={toggle} title="Notifications" className="relative rounded-full p-2.5 text-slate-500 transition-colors hover:bg-brand-soft hover:text-brand-strong cursor-pointer">
+        <Bell className={cn("h-5 w-5 origin-top", unread > 0 && "animate-wiggle")} />
         {unread > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white ring-2 ring-white shadow-2xs">
+          <span className="absolute -right-0.5 -top-0.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-bold text-white ring-2 ring-card shadow-2xs">
             {unread > 9 ? "9+" : unread}
           </span>
         )}
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2.5 w-84 overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-elevated animate-slide-up">
-          <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3.5 bg-slate-50/50">
+        <div className="absolute right-0 z-50 mt-2.5 w-84 overflow-hidden rounded-3xl border border-slate-200 bg-card shadow-elevated animate-pop-in max-w-[calc(100vw-2rem)]">
+          <div className="flex items-center justify-between border-b border-slate-200 border-t-4 border-t-brand px-5 py-3.5 bg-brand-soft/50">
             <span className="font-heading text-sm font-bold text-slate-900">Notifications</span>
             {unread > 0 && (
               <button onClick={readAll} className="text-xs font-semibold text-brand hover:underline cursor-pointer">
@@ -103,7 +103,7 @@ function NotificationBell() {
               ))
             )}
           </div>
-          <Link href="/messages" onClick={() => setOpen(false)} className="block border-t border-slate-100 bg-slate-50/70 px-4 py-3 text-center text-xs font-semibold text-brand hover:bg-slate-100 transition-colors">
+          <Link href="/messages" onClick={() => setOpen(false)} className="block border-t border-slate-200 bg-slate-50 px-4 py-3 text-center text-xs font-bold text-brand-strong hover:bg-brand-soft transition-colors">
             Open messages inbox
           </Link>
         </div>
@@ -116,37 +116,37 @@ export function Header({ onOpenSidebar }: { onOpenSidebar: () => void }) {
   const { user, school, role, logout } = useAuth();
 
   return (
-    <header className="no-print sticky top-0 z-30 flex h-18 w-full items-center justify-between border-b border-slate-200/80 bg-white/85 px-4 backdrop-blur-md lg:px-8 shadow-2xs">
+    <header className="no-print sticky top-0 z-30 flex h-18 w-full items-center justify-between gap-2 border-b-2 border-brand/15 bg-card/85 px-3 backdrop-blur-md sm:px-4 lg:px-8">
       <div className="flex items-center gap-3">
-        <button onClick={onOpenSidebar} className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 lg:hidden cursor-pointer">
+        <button onClick={onOpenSidebar} aria-label="Open menu" className="rounded-full p-2.5 text-slate-600 hover:bg-brand-soft lg:hidden cursor-pointer">
           <Menu className="h-5 w-5" />
         </button>
 
-        <div className="flex items-center gap-2 rounded-xl border border-slate-200/80 bg-slate-50/80 px-3 py-1.5 text-xs font-semibold text-slate-800 shadow-2xs">
+        <div className="flex min-w-0 items-center gap-2 rounded-full border border-gold/50 bg-gold-soft px-3 py-1.5 text-xs font-semibold text-slate-800">
           <SchoolIcon className="h-4 w-4 text-brand" />
-          <span className="hidden font-bold sm:inline">{school?.name}</span>
+          <span className="hidden max-w-[16rem] truncate font-heading font-bold sm:inline">{school?.name}</span>
         </div>
       </div>
 
-      <div className="flex items-center gap-2.5 sm:gap-3.5">
+      <div className="flex items-center gap-1.5 sm:gap-3">
         <NotificationBell />
 
-        <div className="flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand-soft px-3 py-1 text-xs font-bold text-brand shadow-2xs">
+        <div className="hidden items-center gap-1.5 rounded-full bg-brand px-3 py-1 text-xs font-bold text-white shadow-press-sm md:flex">
           <Shield className="h-3.5 w-3.5" />
           <span>{ROLE_LABELS[role]}</span>
         </div>
 
-        <Link href="/account" title="My account" className="hidden items-center gap-2.5 rounded-2xl border border-slate-200/60 bg-slate-50/60 p-1 pr-3 hover:bg-slate-100/80 transition-all sm:flex shadow-2xs">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand-strong text-[11px] font-bold text-white shadow-2xs">
+        <Link href="/account" title="My account" className="hidden items-center gap-2.5 rounded-full border border-slate-200 bg-card p-1 pr-4 transition-all hover:border-brand/40 hover:bg-brand-soft/50 sm:flex">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-brand to-brand-strong text-[11px] font-bold text-white ring-2 ring-gold/70">
             {user?.fullName.slice(0, 2).toUpperCase() || "SO"}
           </div>
           <div className="flex flex-col text-left">
             <span className="text-xs font-bold leading-tight text-slate-800">{user?.fullName}</span>
-            <span className="text-[10px] font-medium text-slate-400">{user?.email}</span>
+            <span className="max-w-[10rem] truncate text-[10px] font-medium text-slate-400">{user?.email}</span>
           </div>
         </Link>
 
-        <button onClick={logout} title="Sign out" className="rounded-xl p-2 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600 cursor-pointer">
+        <button onClick={logout} title="Sign out" aria-label="Sign out" className="rounded-full p-2.5 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600 cursor-pointer">
           <LogOut className="h-4 w-4" />
         </button>
       </div>

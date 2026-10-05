@@ -155,7 +155,7 @@ export default function ApprovalsPage() {
                 <Button isLoading={busy} onClick={() => act("Subject approved.", () => approveBatch(detail.batch.id))}><CheckCircle2 className="mr-1.5 h-4 w-4" /> Approve</Button>
               )}
               {detail.publishReadiness.canPublish && (
-                <Button className="bg-emerald-600 hover:bg-emerald-700" onClick={() => setReleasing({ item: detail.batch, remark: "" })}><PartyPopper className="mr-1.5 h-4 w-4" /> Release class</Button>
+                <Button className="bg-green-700 hover:bg-green-700 shadow-[0_2px_0_0_#14532d]" onClick={() => setReleasing({ item: detail.batch, remark: "" })}><PartyPopper className="mr-1.5 h-4 w-4" /> Release class</Button>
               )}
             </div>
           </div>
@@ -180,7 +180,7 @@ export default function ApprovalsPage() {
             <Textarea label="Principal's remark (optional)" value={releasing.remark} onChange={(e) => setReleasing({ ...releasing, remark: e.target.value })} />
             <div className="flex justify-end gap-2">
               <Button variant="ghost" onClick={() => setReleasing(null)}>Cancel</Button>
-              <Button className="bg-emerald-600 hover:bg-emerald-700" isLoading={busy} onClick={() => { const r = releasing; setReleasing(null); void act("Class results released.", () => releaseClass({ classId: r.item.classId, armId: r.item.armId, termId: r.item.termId, sessionId: r.item.sessionId, principalRemark: r.remark || undefined })); }}>Release now</Button>
+              <Button className="bg-green-700 hover:bg-green-700 shadow-[0_2px_0_0_#14532d]" isLoading={busy} onClick={() => { const r = releasing; setReleasing(null); void act("Class results released.", () => releaseClass({ classId: r.item.classId, armId: r.item.armId, termId: r.item.termId, sessionId: r.item.sessionId, principalRemark: r.remark || undefined })); }}>Release now</Button>
             </div>
           </div>
         )}

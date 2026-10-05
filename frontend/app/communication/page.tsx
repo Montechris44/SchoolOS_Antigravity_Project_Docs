@@ -122,7 +122,7 @@ export default function CommunicationPage() {
           <div className="flex items-center gap-2">
             <Button
               onClick={() => setIsComposeModalOpen(true)}
-              className="gap-2 rounded-2xl bg-brand font-semibold text-white shadow-sm hover:bg-brand-strong transition-all duration-200"
+              className="gap-2"
             >
               <Plus className="h-4 w-4" /> Compose Broadcast
             </Button>
@@ -383,10 +383,10 @@ export default function CommunicationPage() {
             </div>
 
             <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100">
-              <Button type="button" variant="outline" className="rounded-xl font-semibold" onClick={() => setIsComposeModalOpen(false)}>
+              <Button type="button" variant="outline" className="font-semibold" onClick={() => setIsComposeModalOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" isLoading={isSending} className="gap-2 rounded-xl bg-brand text-white font-semibold shadow-sm hover:bg-brand-strong">
+              <Button type="submit" isLoading={isSending} className="gap-2">
                 <Send className="h-4 w-4" /> Dispatch Broadcast
               </Button>
             </div>

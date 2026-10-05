@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
         <form onSubmit={submit} className="space-y-4">
           <Input id="email" label="Email address" type="email" required placeholder="name@school.edu.ng" value={email} onChange={(e) => setEmail(e.target.value)} />
           {error && <Alert tone="error">{error}</Alert>}
-          <Button type="submit" size="lg" className="w-full rounded-2xl shadow-sm hover:shadow-md font-semibold" isLoading={loading}>
+          <Button type="submit" size="lg" className="w-full font-semibold" isLoading={loading}>
             <Send className="mr-2 h-4 w-4" /> Send reset link
           </Button>
         </form>

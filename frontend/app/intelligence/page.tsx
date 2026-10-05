@@ -115,7 +115,7 @@ export default function IntelligencePage() {
             </p>
           </div>
           <Link href="/actions">
-            <Button size="sm" className="gap-1.5 bg-blue-600 hover:bg-blue-700">
+            <Button size="sm" className="gap-1.5">
               <CheckCircle2 className="h-4 w-4" /> Open Action Center
             </Button>
           </Link>
@@ -162,7 +162,7 @@ export default function IntelligencePage() {
           </div>
 
           <div className="group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-subtle transition-all hover:shadow-card-hover">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-strong to-indigo-600" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-strong to-brand" />
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600">
               Attendance Stability
             </span>
@@ -173,11 +173,11 @@ export default function IntelligencePage() {
           </div>
 
           <div className="group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-subtle transition-all hover:shadow-card-hover">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500" />
-            <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-500 to-brand" />
+            <span className="text-[11px] font-bold uppercase tracking-wider text-violet-700">
               Faculty Compliance
             </span>
-            <p className="font-heading text-3xl font-black text-purple-700 mt-2">
+            <p className="font-heading text-3xl font-black text-violet-700 mt-2">
               {healthScore?.submissionCompliance || 85}%
             </p>
             <p className="text-[11px] text-slate-500 mt-1">Timely assessment submissions</p>

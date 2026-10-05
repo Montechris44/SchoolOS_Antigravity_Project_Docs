@@ -139,7 +139,7 @@ export default function FinancePage() {
           </div>
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <Link href="/payments">
-              <Button variant="outline" size="sm" className="gap-1.5 rounded-xl font-semibold border-slate-200">
+              <Button variant="outline" size="sm" className="gap-1.5 font-semibold">
                 <CreditCard className="h-4 w-4 text-brand" /> Paystack Gateway Simulation
               </Button>
             </Link>
@@ -193,7 +193,7 @@ export default function FinancePage() {
             </div>
           </Card>
 
-          <Card className="rounded-3xl p-6 shadow-subtle hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-brand bg-blue-50/20">
+          <Card className="rounded-3xl p-6 shadow-subtle hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-brand bg-brand-soft/20">
             <span className="text-[11px] font-bold text-brand uppercase tracking-wider">
               Collection Rate
             </span>
@@ -285,7 +285,7 @@ export default function FinancePage() {
                   <tbody className="divide-y divide-slate-100">
                     {filteredInvoices.map((inv) => (
                       <tr key={inv.id} className="hover:bg-slate-50/70 transition-colors">
-                        <td className="px-6 py-4 font-mono font-bold text-xs text-blue-700">
+                        <td className="px-6 py-4 font-mono font-bold text-xs text-brand-strong">
                           {inv.invoiceNumber}
                         </td>
                         <td className="px-6 py-4">
@@ -322,7 +322,7 @@ export default function FinancePage() {
                         <td className="px-6 py-4 text-right">
                           {inv.balanceDue > 0 ? (
                             <Link href={`/payments?invoiceId=${inv.id}&amount=${inv.balanceDue}`}>
-                              <Button size="sm" className="h-8 gap-1 text-xs bg-blue-600 hover:bg-blue-700">
+                              <Button size="sm" className="h-8 gap-1 text-xs">
                                 Pay with Paystack <ArrowUpRight className="h-3 w-3" />
                               </Button>
                             </Link>
@@ -384,7 +384,7 @@ export default function FinancePage() {
                   <tbody className="divide-y divide-slate-100">
                     {receipts.map((r) => (
                       <tr key={r.id} className="hover:bg-slate-50/70 transition-colors">
-                        <td className="px-6 py-4 font-mono font-bold text-xs text-blue-700">
+                        <td className="px-6 py-4 font-mono font-bold text-xs text-brand-strong">
                           {r.receiptNumber}
                         </td>
                         <td className="px-6 py-4 font-semibold text-slate-900">{r.studentName}</td>
@@ -503,7 +503,7 @@ export default function FinancePage() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-slate-500">Receipt Voucher #:</span>
-                  <span className="font-mono font-bold text-blue-700">{viewReceipt.receiptNumber}</span>
+                  <span className="font-mono font-bold text-brand-strong">{viewReceipt.receiptNumber}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Scholar Beneficiary:</span>

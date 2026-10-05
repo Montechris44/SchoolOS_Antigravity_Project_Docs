@@ -239,7 +239,7 @@ export default function RegisterSchoolPage() {
                 </p>
               )}
 
-              <Button type="submit" size="lg" className="w-full rounded-2xl shadow-sm hover:shadow-md font-semibold" isLoading={isSubmitting}>
+              <Button type="submit" size="lg" className="w-full font-semibold" isLoading={isSubmitting}>
                 Create school account <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </form>

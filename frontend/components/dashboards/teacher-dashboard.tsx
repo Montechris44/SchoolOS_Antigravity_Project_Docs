@@ -18,8 +18,9 @@ export function TeacherDashboard() {
   if (error || !data) return <ErrorState message={error ?? "Could not load your dashboard."} onRetry={reload} />;
 
   return (
-    <div className="space-y-6">
+    <div className="stagger space-y-6">
       <Hero
+        variant="notebook"
         eyebrow="Teacher workspace"
         title={`Good day, ${user?.fullName.split(" ")[0] ?? "teacher"}`}
         subtitle={`${data.period.termName ?? "No active term"}${data.period.sessionName ? ` · ${data.period.sessionName}` : ""}${
@@ -29,7 +30,7 @@ export function TeacherDashboard() {
 
       <ClockWidget status={data.staffAttendance} onChange={(next) => setData({ ...data, staffAttendance: next })} />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="stagger grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="My classes" value={data.stats.classes} icon={Users} href="/results/entry" hint="Class & arm groups" />
         <StatCard label="Subjects" value={data.stats.subjects} icon={BookOpen} tone="emerald" hint="I teach" />
         <StatCard label="Students" value={data.stats.students} icon={GraduationCap} tone="amber" href="/attendance" hint="Across my classes" />
@@ -40,20 +41,20 @@ export function TeacherDashboard() {
         <Panel title="Needs your attention">
           <ul className="space-y-3">
             {data.needsAttention.map((item) => (
-              <li key={item.id} className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+              <li key={item.id} className="flex items-start gap-3 rounded-xl border-l-4 border-l-brand border border-brand/20 bg-brand-soft/50 p-4">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-bold text-amber-900">
+                  <p className="text-sm font-bold text-brand-strong">
                     {item.subjectName} · {item.className}
                     {item.armName ? ` ${item.armName}` : ""}
                   </p>
-                  {item.reviewNotes && <p className="mt-0.5 text-sm text-amber-800">{item.reviewNotes}</p>}
+                  {item.reviewNotes && <p className="mt-0.5 text-sm text-slate-700">{item.reviewNotes}</p>}
                 </div>
                 <Badge variant="warning">{formatStatus(item.status)}</Badge>
               </li>
             ))}
           </ul>
-          <Link href="/results/entry" className="mt-4 inline-block text-sm font-semibold text-brand hover:underline">
+          <Link href="/results/entry" className="mt-4 inline-block text-sm font-bold text-brand hover:underline">
             Open results entry
           </Link>
         </Panel>
@@ -73,14 +74,15 @@ export function TeacherDashboard() {
           </Panel>
         </div>
 
-        <Panel title="Today's lessons" className="lg:col-span-2" action={<Link href="/timetable" className="text-xs font-semibold text-brand hover:underline cursor-pointer">Full timetable</Link>}>
+        <Panel title="Today's lessons" className="lg:col-span-2" action={<Link href="/timetable" className="text-xs font-bold text-brand hover:underline cursor-pointer">Full timetable</Link>}>
           {data.todaySchedule.length === 0 ? (
             <p className="py-12 text-center text-sm text-slate-400">No lessons scheduled for today.</p>
           ) : (
-            <ul className="space-y-3">
+            <ul className="relative space-y-3 before:absolute before:bottom-3 before:left-[0.55rem] before:top-3 before:w-0.5 before:bg-brand/20 sm:before:left-[0.6rem]">
               {data.todaySchedule.map((lesson) => (
-                <li key={lesson.id} className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-3.5 hover:bg-slate-50 transition-colors">
-                  <div className="w-28 shrink-0 text-xs font-bold text-brand font-mono bg-white px-2.5 py-1.5 rounded-xl border border-slate-200 shadow-2xs text-center">
+                <li key={lesson.id} className="relative flex flex-col gap-2 rounded-xl border border-slate-200 bg-card p-3.5 pl-8 transition-colors hover:border-brand/40 hover:bg-brand-soft/30 sm:flex-row sm:items-center sm:gap-4 sm:pl-9">
+                  <span className="absolute left-1 top-5 h-3.5 w-3.5 rounded-full border-[3px] border-card bg-brand ring-2 ring-brand/30 sm:left-1.5" />
+                  <div className="w-fit shrink-0 rounded-md bg-brand px-2.5 py-1 text-center font-mono text-xs font-bold text-white sm:w-28">
                     {lesson.startTime}–{lesson.endTime}
                   </div>
                   <div className="min-w-0 flex-1">

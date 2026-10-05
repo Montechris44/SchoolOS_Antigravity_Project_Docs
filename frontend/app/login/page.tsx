@@ -51,7 +51,7 @@ export default function LoginPage() {
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-1.5">
-          <label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+          <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-slate-600">
             Email address
           </label>
           <div className="relative">
@@ -64,14 +64,14 @@ export default function LoginPage() {
               placeholder="name@school.edu.ng"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-3.5 pl-12 pr-4 text-sm font-medium outline-none transition-all shadow-subtle hover:border-slate-300 focus:bg-white focus:border-brand focus:ring-2 focus:ring-brand/20"
+              className="w-full rounded-xl border-2 border-slate-200 bg-card py-3.5 pl-12 pr-4 text-sm font-medium outline-none transition-all shadow-subtle hover:border-slate-300 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/15"
             />
           </div>
         </div>
 
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+            <label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-slate-600">
               Password
             </label>
             <Link href="/forgot-password" className="text-xs font-semibold text-brand hover:underline">
@@ -87,7 +87,7 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-3.5 pl-12 pr-12 text-sm font-medium outline-none transition-all shadow-subtle hover:border-slate-300 focus:bg-white focus:border-brand focus:ring-2 focus:ring-brand/20"
+              className="w-full rounded-xl border-2 border-slate-200 bg-card py-3.5 pl-12 pr-12 text-sm font-medium outline-none transition-all shadow-subtle hover:border-slate-300 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/15"
             />
             <button
               type="button"
@@ -102,7 +102,7 @@ export default function LoginPage() {
 
         {error && <Alert tone="error">{error}</Alert>}
 
-        <Button type="submit" size="lg" className="w-full rounded-2xl font-semibold shadow-sm hover:shadow-md" isLoading={isSubmitting}>
+        <Button type="submit" size="lg" className="w-full" isLoading={isSubmitting}>
           Sign in <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </form>

@@ -38,8 +38,8 @@ export function AdminOverview() {
   const attendancePct = stats.attendanceToday.marked > 0 ? Math.round((stats.attendanceToday.present / stats.attendanceToday.marked) * 100) : null;
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="stagger space-y-6 sm:space-y-8">
+      <div className="stagger grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Active students" value={stats.students} icon={GraduationCap} href="/students" hint="Enrolled now" />
         <StatCard label="Teachers" value={stats.teachers} icon={Users} tone="emerald" href="/staff" hint={`${stats.staff} staff in total`} />
         <StatCard label="Classes" value={stats.classes} icon={Layers} tone="amber" href="/classes" hint="Manage arms & teachers" />
@@ -68,12 +68,12 @@ export function AdminOverview() {
           {(stats.results.pendingReview > 0 || stats.results.returned > 0) && (
             <Link
               href="/results/approvals"
-              className="block rounded-3xl border border-amber-200/80 bg-amber-50/80 p-5.5 transition-all hover:bg-amber-100/80 shadow-subtle group cursor-pointer"
+              className="block rounded-2xl border-2 border-dashed border-gold bg-gold-soft p-5 transition-all hover:bg-gold/30 shadow-subtle group cursor-pointer"
             >
-              <p className="flex items-center gap-2 text-sm font-bold text-amber-900 font-heading">
-                <Clock className="h-4.5 w-4.5 text-amber-600" /> Results waiting for approval
+              <p className="flex items-center gap-2 text-sm font-bold text-slate-900 font-heading">
+                <Clock className="h-4.5 w-4.5 text-brand" /> Results waiting for approval
               </p>
-              <p className="mt-1.5 text-xs text-amber-800 leading-relaxed">
+              <p className="mt-1.5 text-xs text-slate-700 leading-relaxed">
                 {stats.results.pendingReview} subject{stats.results.pendingReview === 1 ? "" : "s"} pending review
                 {stats.results.returned > 0 ? `, ${stats.results.returned} returned to teachers` : ""}.
               </p>
@@ -88,7 +88,7 @@ export function AdminOverview() {
             <ul className="divide-y divide-slate-100">
               {data.recentActivity.map((entry) => (
                 <li key={entry.id} className="flex items-center gap-3.5 py-3.5">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-soft text-brand ring-2 ring-brand/10 shadow-2xs">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-soft text-brand ring-2 ring-brand/10">
                     <Clock className="h-4.5 w-4.5" />
                   </span>
                   <p className="min-w-0 flex-1 truncate text-sm text-slate-700">

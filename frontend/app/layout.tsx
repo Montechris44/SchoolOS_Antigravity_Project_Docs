@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth/auth-context";
+import { Preloader } from "@/components/ui/preloader";
 
 const inter = Inter({ subsets: ["latin"] });
-const outfit = Outfit({ subsets: ["latin"], variable: "--font-heading" });
+// A warm, bookish serif for headings gives the portal a classroom / textbook voice.
+const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-heading", axes: ["opsz"] });
 
 export const metadata: Metadata = {
   title: "SchoolOS — AI-Powered Operating System for Nigerian Schools",
@@ -19,8 +21,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${outfit.variable}`}>
-        <AuthProvider>{children}</AuthProvider>
+      <body className={`${inter.className} ${fraunces.variable}`}>
+        <AuthProvider>
+          <Preloader />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

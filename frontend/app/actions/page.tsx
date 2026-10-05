@@ -287,7 +287,7 @@ export default function ActionCenterPage() {
                   placeholder="e.g. Telephone conference completed with parent. Verified student recovered from malaria, returning tomorrow."
                   value={resolutionOutcome}
                   onChange={(e) => setResolutionOutcome(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 bg-white p-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-blue-600"
+                  className="w-full rounded-lg border border-slate-300 bg-white p-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-brand"
                 />
               </div>
 
@@ -295,7 +295,7 @@ export default function ActionCenterPage() {
                 <Button type="button" variant="outline" onClick={() => setSelectedActionToResolve(null)}>
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700">
+                <Button type="submit" className="bg-green-700 hover:bg-green-700 shadow-[0_2px_0_0_#14532d]">
                   Confirm &amp; Resolve
                 </Button>
               </div>

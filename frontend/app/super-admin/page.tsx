@@ -143,7 +143,7 @@ export default function SuperAdminDashboardPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
         <div className="flex items-center gap-3 text-slate-500 font-medium">
-          <div className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-brand border-t-transparent" />
           Verifying session...
         </div>
       </div>
@@ -156,7 +156,7 @@ export default function SuperAdminDashboardPage() {
     <div className="min-h-screen bg-slate-50/70">
       <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/95 backdrop-blur-md px-4 lg:px-8 shadow-2xs">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-2xs">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-white shadow-2xs">
             <ShieldCheck className="h-5 w-5" />
           </div>
           <span className="font-heading text-lg font-bold text-slate-900 tracking-tight">SchoolOS Platform Admin</span>
@@ -196,7 +196,7 @@ export default function SuperAdminDashboardPage() {
             {/* Platform analytics */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
               {[
-                { label: "Total Schools", value: analytics?.totalSchools, color: "text-indigo-600" },
+                { label: "Total Schools", value: analytics?.totalSchools, color: "text-brand" },
                 { label: "Active", value: analytics?.activeSchools, color: "text-emerald-600" },
                 { label: "Suspended", value: analytics?.suspendedSchools, color: "text-rose-600" },
                 { label: "Students", value: analytics?.totalStudents, color: "text-slate-800" },
@@ -217,7 +217,7 @@ export default function SuperAdminDashboardPage() {
               <button
                 onClick={() => setTab("schools")}
                 className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-heading font-bold transition-all ${
-                  tab === "schools" ? "border-indigo-600 text-indigo-600" : "border-transparent text-slate-500 hover:text-slate-800"
+                  tab === "schools" ? "border-brand text-brand" : "border-transparent text-slate-500 hover:text-slate-800"
                 }`}
               >
                 <Building2 className="h-4 w-4" /> Schools ({schools.length})
@@ -225,7 +225,7 @@ export default function SuperAdminDashboardPage() {
               <button
                 onClick={() => setTab("users")}
                 className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-heading font-bold transition-all ${
-                  tab === "users" ? "border-indigo-600 text-indigo-600" : "border-transparent text-slate-500 hover:text-slate-800"
+                  tab === "users" ? "border-brand text-brand" : "border-transparent text-slate-500 hover:text-slate-800"
                 }`}
               >
                 <Users className="h-4 w-4" /> Users
@@ -233,7 +233,7 @@ export default function SuperAdminDashboardPage() {
               <button
                 onClick={() => setTab("audit")}
                 className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-heading font-bold transition-all ${
-                  tab === "audit" ? "border-indigo-600 text-indigo-600" : "border-transparent text-slate-500 hover:text-slate-800"
+                  tab === "audit" ? "border-brand text-brand" : "border-transparent text-slate-500 hover:text-slate-800"
                 }`}
               >
                 <ScrollText className="h-4 w-4" /> Audit Logs
@@ -379,11 +379,11 @@ export default function SuperAdminDashboardPage() {
                     <tbody className="divide-y divide-slate-100">
                       {auditLogs.map((entry) => (
                         <tr key={entry.id} className="hover:bg-slate-50/80 transition-colors">
-                          <td className="px-6 py-4 font-mono text-xs font-bold text-indigo-700 bg-indigo-50/40">{entry.action}</td>
+                          <td className="px-6 py-4 font-mono text-xs font-bold text-brand-strong bg-brand-soft/40">{entry.action}</td>
                           <td className="px-6 py-4 text-xs font-medium text-slate-600">{entry.schoolName ?? "—"}</td>
                           <td className="px-6 py-4 text-xs text-slate-600">
                             {entry.superAdminName ? (
-                              <span className="font-semibold text-indigo-700">{entry.superAdminName} (platform)</span>
+                              <span className="font-semibold text-brand-strong">{entry.superAdminName} (platform)</span>
                             ) : (
                               entry.userName ?? "System"
                             )}
@@ -425,13 +425,13 @@ export default function SuperAdminDashboardPage() {
                   rows={3}
                   value={suspendReason}
                   onChange={(e) => setSuspendReason(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-200 bg-white p-3.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-600 focus:outline-hidden focus:ring-2 focus:ring-indigo-600/20 shadow-2xs"
+                  className="w-full rounded-2xl border border-slate-200 bg-white p-3.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-hidden focus:ring-2 focus:ring-brand/20 shadow-2xs"
                   placeholder="e.g. Outstanding invoice, policy violation..."
                 />
               </div>
             )}
             <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
-              <Button type="button" variant="outline" className="rounded-xl font-semibold" onClick={() => setSuspendTarget(null)}>
+              <Button type="button" variant="outline" className="font-semibold" onClick={() => setSuspendTarget(null)}>
                 Cancel
               </Button>
               <Button

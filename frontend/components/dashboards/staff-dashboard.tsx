@@ -16,8 +16,8 @@ export function StaffDashboard() {
   if (error || !data) return <ErrorState message={error ?? "Could not load your dashboard."} onRetry={reload} />;
 
   return (
-    <div className="space-y-6">
-      <Hero eyebrow="Staff workspace" title={`Hello, ${user?.fullName.split(" ")[0] ?? "there"}`} subtitle="Sign in for the day, check messages and request leave." />
+    <div className="stagger space-y-6">
+      <Hero variant="ledger" eyebrow="Staff workspace" title={`Hello, ${user?.fullName.split(" ")[0] ?? "there"}`} subtitle="Sign in for the day, check messages and request leave." />
       <ClockWidget status={data.staffAttendance} onChange={(next) => setData({ ...data, staffAttendance: next })} />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <StatCard label="Unread messages" value={data.unread.messages} icon={Mail} href="/messages" />

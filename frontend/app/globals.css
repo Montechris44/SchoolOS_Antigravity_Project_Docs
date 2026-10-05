@@ -4,109 +4,248 @@
 
 @layer base {
   :root {
-    --background: #f8fafc;
-    --foreground: #0f172a;
+    --background: #faf7f0; /* warm exercise-book paper */
+    --foreground: #1c1a15; /* ink */
 
-    --card: #ffffff;
-    --card-foreground: #0f172a;
+    --card: #fffdf9;
+    --card-foreground: #1c1a15;
+    --popover: #fffdf9;
+    --popover-foreground: #1c1a15;
 
-    --popover: #ffffff;
-    --popover-foreground: #0f172a;
-
-    --primary: #1e3a8a; /* Trustworthy deep navy */
+    --primary: rgb(var(--brand-rgb));
     --primary-foreground: #ffffff;
 
-    --secondary: #f1f5f9;
-    --secondary-foreground: #0f172a;
+    --secondary: #f3efe7;
+    --secondary-foreground: #1c1a15;
 
-    --muted: #f8fafc;
-    --muted-foreground: #64748b;
+    --muted: #f3efe7;
+    --muted-foreground: #7a7364;
 
-    --accent: #0284c7; /* Vibrant Nigerian education cyan/sky */
-    --accent-foreground: #ffffff;
+    --accent: rgb(var(--gold-rgb));
+    --accent-foreground: #1c1a15;
 
-    --destructive: #dc2626;
+    --destructive: #c8102e;
     --destructive-foreground: #ffffff;
 
-    --border: #e2e8f0;
-    --input: #cbd5e1;
-    --ring: #2563eb;
+    --border: #e7e1d4;
+    --input: #d4ccbb;
+    --ring: rgb(var(--brand-rgb));
 
     --radius: 0.75rem;
 
-    /* School brand colour — overridden at runtime from the school's theme colour. */
-    --brand: #2563eb;
-    --brand-strong: #1d4ed8;
-    --brand-soft: #eff6ff;
-    --brand-glow: rgba(37, 99, 235, 0.18);
+    /* Default school colours: chalkboard green + pencil gold. Each portal overrides these below. */
+    --brand-rgb: 22 101 52;
+    --brand-strong-rgb: 20 83 45;
+    --brand-soft-rgb: 232 243 232;
+    --gold-rgb: 224 165 38;
+    --gold-soft-rgb: 253 245 220;
+    --chalk-rgb: 19 40 28;
+    --paper-rgb: 250 247 240;
   }
 
-  .dark {
-    --background: #090d16;
-    --foreground: #f8fafc;
+  /* ───────── Portal themes: every role gets its own colours and feel ───────── */
 
-    --card: #0f172a;
-    --card-foreground: #f8fafc;
-
-    --popover: #0f172a;
-    --popover-foreground: #f8fafc;
-
-    --primary: #3b82f6;
-    --primary-foreground: #ffffff;
-
-    --secondary: #1e293b;
-    --secondary-foreground: #f8fafc;
-
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
-
-    --accent: #38bdf8;
-    --accent-foreground: #090d16;
-
-    --destructive: #ef4444;
-    --destructive-foreground: #ffffff;
-
-    --border: #1e293b;
-    --input: #334155;
-    --ring: #60a5fa;
-
-    --brand-glow: rgba(59, 130, 246, 0.25);
+  /* School office (owner / admin): chalkboard green & gold — authority, calm. */
+  [data-role="owner"],
+  [data-role="admin"] {
+    --brand-rgb: 22 101 52;
+    --brand-strong-rgb: 20 83 45;
+    --brand-soft-rgb: 229 241 230;
+    --gold-rgb: 224 165 38;
+    --gold-soft-rgb: 253 245 220;
+    --chalk-rgb: 19 40 28;
+    --paper-rgb: 249 247 241;
   }
-}
 
-@layer base {
+  /* Staffroom (teachers): academic burgundy, like a university crest. */
+  [data-role="teacher"] {
+    --brand-rgb: 159 18 57;
+    --brand-strong-rgb: 128 14 46;
+    --brand-soft-rgb: 252 236 241;
+    --gold-rgb: 202 138 4;
+    --gold-soft-rgb: 254 243 199;
+    --chalk-rgb: 66 12 30;
+    --paper-rgb: 252 248 244;
+  }
+
+  /* Bursar & support staff: deep teal / ledger green-blue, practical and steady. */
+  [data-role="bursar"],
+  [data-role="non_academic"] {
+    --brand-rgb: 15 118 110;
+    --brand-strong-rgb: 17 94 89;
+    --brand-soft-rgb: 223 244 241;
+    --gold-rgb: 217 119 6;
+    --gold-soft-rgb: 255 237 213;
+    --chalk-rgb: 12 50 47;
+    --paper-rgb: 247 249 246;
+  }
+
+  /* Students: bright pencil-orange & sunshine — energetic, playful. */
+  [data-role="student"] {
+    --brand-rgb: 234 88 12;
+    --brand-strong-rgb: 194 65 12;
+    --brand-soft-rgb: 255 237 220;
+    --gold-rgb: 250 204 21;
+    --gold-soft-rgb: 254 249 195;
+    --chalk-rgb: 124 45 18;
+    --paper-rgb: 255 250 240;
+  }
+
+  /* Parents: warm plum & rose — caring, reassuring. */
+  [data-role="parent"] {
+    --brand-rgb: 126 34 206;
+    --brand-strong-rgb: 107 33 168;
+    --brand-soft-rgb: 245 236 253;
+    --gold-rgb: 236 72 153;
+    --gold-soft-rgb: 252 231 243;
+    --chalk-rgb: 59 20 96;
+    --paper-rgb: 253 249 252;
+  }
+
   * {
     @apply border-border;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
-    @apply bg-background text-foreground antialiased min-h-screen font-sans selection:bg-brand-soft selection:text-brand;
+    @apply bg-background text-foreground antialiased min-h-screen font-sans selection:bg-brand-soft selection:text-brand-strong;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading;
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--brand-rgb) / 0.55);
+    outline-offset: 2px;
   }
 }
 
 /* Custom UI Utility Classes */
 @layer utilities {
   .glass-header {
-    background: rgba(255, 255, 255, 0.88);
+    background: rgba(255, 253, 249, 0.86);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 253, 249, 0.92);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(226, 232, 240, 0.8);
+    border: 1px solid rgba(231, 225, 212, 0.9);
   }
 
   .school-gradient-subtle {
-    background: radial-gradient(120% 120% at 50% 0%, rgba(37, 99, 235, 0.04) 0%, rgba(248, 250, 252, 1) 100%);
+    background: radial-gradient(120% 120% at 50% 0%, rgb(var(--brand-rgb) / 0.06) 0%, rgb(var(--paper-rgb)) 100%);
   }
 
   .academic-mesh-glow {
-    background: radial-gradient(circle at 15% 15%, rgba(37, 99, 235, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, rgba(14, 165, 233, 0.08) 0%, transparent 40%);
+    background: radial-gradient(circle at 15% 15%, rgb(var(--brand-rgb) / 0.1) 0%, transparent 40%),
+      radial-gradient(circle at 85% 85%, rgb(var(--gold-rgb) / 0.12) 0%, transparent 40%);
   }
+
+  /* Page textures — each portal paints its own stationery. */
+  .bg-ruled {
+    background-color: rgb(var(--paper-rgb));
+    background-image: linear-gradient(to bottom, transparent 31px, rgb(var(--brand-rgb) / 0.07) 32px);
+    background-size: 100% 32px;
+  }
+  .bg-grid-paper {
+    background-color: rgb(var(--paper-rgb));
+    background-image: linear-gradient(rgb(var(--brand-rgb) / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--brand-rgb) / 0.05) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .bg-dotted {
+    background-color: rgb(var(--paper-rgb));
+    background-image: radial-gradient(rgb(var(--brand-rgb) / 0.14) 1.2px, transparent 1.2px);
+    background-size: 20px 20px;
+  }
+  .bg-doodle {
+    background-color: rgb(var(--paper-rgb));
+    background-image: radial-gradient(circle at 12% 18%, rgb(var(--gold-rgb) / 0.22) 0 14px, transparent 15px),
+      radial-gradient(circle at 88% 12%, rgb(var(--brand-rgb) / 0.12) 0 22px, transparent 23px),
+      radial-gradient(circle at 78% 82%, rgb(var(--gold-rgb) / 0.18) 0 18px, transparent 19px),
+      radial-gradient(circle at 20% 90%, rgb(var(--brand-rgb) / 0.1) 0 12px, transparent 13px);
+  }
+  .bg-warm-wash {
+    background-color: rgb(var(--paper-rgb));
+    background-image: radial-gradient(70% 50% at 100% 0%, rgb(var(--gold-rgb) / 0.14), transparent 70%),
+      radial-gradient(60% 50% at 0% 100%, rgb(var(--brand-rgb) / 0.09), transparent 70%);
+  }
+
+  /* Chalkboard surface for admin hero & sidebar */
+  .chalkboard {
+    background-color: rgb(var(--chalk-rgb));
+    background-image: radial-gradient(120% 90% at 0% 0%, rgb(255 255 255 / 0.07), transparent 55%),
+      repeating-linear-gradient(115deg, rgb(255 255 255 / 0.018) 0 2px, transparent 2px 7px);
+  }
+
+  /* Hand-drawn underline for headline highlights */
+  .scribble {
+    background-image: linear-gradient(transparent 62%, rgb(var(--gold-rgb) / 0.55) 62%, rgb(var(--gold-rgb) / 0.55) 90%, transparent 90%);
+    padding: 0 0.15em;
+    border-radius: 2px;
+  }
+
+  /* Wavy ruler stripe along tops of cards */
+  .ruler-edge {
+    background-image: repeating-linear-gradient(90deg, rgb(var(--brand-rgb) / 0.55) 0 2px, transparent 2px 10px);
+    background-size: 100% 6px;
+    background-repeat: no-repeat;
+    background-position: top;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* ───────── Motion ───────── */
+
+/* Children of a .stagger container rise in one after another. */
+.stagger > * {
+  animation: riseIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.stagger > *:nth-child(1) { animation-delay: 0.04s; }
+.stagger > *:nth-child(2) { animation-delay: 0.12s; }
+.stagger > *:nth-child(3) { animation-delay: 0.2s; }
+.stagger > *:nth-child(4) { animation-delay: 0.28s; }
+.stagger > *:nth-child(5) { animation-delay: 0.36s; }
+.stagger > *:nth-child(6) { animation-delay: 0.44s; }
+.stagger > *:nth-child(n + 7) { animation-delay: 0.5s; }
+
+/* Scroll reveal (see components/ui/reveal.tsx) */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1; transform: none; }
 }
 
 /* Smooth custom scrollbars */
@@ -118,12 +257,12 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #d4ccbb;
   border-radius: 9999px;
   transition: background 0.2s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #a39b8a;
 }
 
 @media print {

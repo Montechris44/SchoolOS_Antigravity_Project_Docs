@@ -418,7 +418,7 @@ export default function PeopleAndClassesPage() {
                     </div>
                     <div className="flex items-center justify-between text-sm py-2 border-t border-slate-100">
                       <span className="text-slate-500">Class Form Tutor:</span>
-                      <span className="font-medium text-blue-600">
+                      <span className="font-medium text-brand">
                         {cls.classTeacherName || "Pending Assignment"}
                       </span>
                     </div>
@@ -435,7 +435,7 @@ export default function PeopleAndClassesPage() {
             {staff.map((st) => (
               <Card key={st.id} className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-700 font-bold text-base">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-soft text-brand-strong font-bold text-base">
                     {st.firstName[0]}
                     {st.lastName[0]}
                   </div>
@@ -448,7 +448,7 @@ export default function PeopleAndClassesPage() {
                         {st.role}
                       </Badge>
                     </div>
-                    <p className="text-xs font-medium text-blue-700">{st.title}</p>
+                    <p className="text-xs font-medium text-brand-strong">{st.title}</p>
                     <p className="text-xs text-slate-400">{st.email} • {st.phone}</p>
                     <p className="text-xs font-mono text-slate-500 pt-1">ID: {st.employeeId}</p>
                   </div>
@@ -461,10 +461,10 @@ export default function PeopleAndClassesPage() {
         {/* Tab Content: SESSIONS & TERMS */}
         {activeTab === "sessions" && (
           <div className="space-y-6">
-            <Card className="p-6 border-l-4 border-l-blue-600">
+            <Card className="p-6 border-l-4 border-l-brand">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                  <span className="text-xs font-bold uppercase tracking-wider text-brand">
                     Active Academic Calendar
                   </span>
                   <h3 className="text-xl font-bold text-slate-900 mt-1">
@@ -476,12 +476,12 @@ export default function PeopleAndClassesPage() {
               </div>
 
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-4">
+                <div className="rounded-xl border border-brand/30 bg-brand-soft/50 p-4">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-blue-900">First Term</span>
+                    <span className="font-bold text-brand-strong">First Term</span>
                     <Badge variant="default">In Session</Badge>
                   </div>
-                  <p className="text-xs text-blue-700 mt-2">15 Sep 2026 – 18 Dec 2026</p>
+                  <p className="text-xs text-brand-strong mt-2">15 Sep 2026 – 18 Dec 2026</p>
                 </div>
                 <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 opacity-75">
                   <div className="flex items-center justify-between">
@@ -523,7 +523,7 @@ export default function PeopleAndClassesPage() {
                       key={sbj.id}
                       className="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 bg-white text-center hover:bg-slate-50"
                     >
-                      <BookOpen className="h-5 w-5 text-blue-600 mb-1" />
+                      <BookOpen className="h-5 w-5 text-brand mb-1" />
                       <span className="text-xs font-bold text-slate-800">{sbj.name}</span>
                       <span className="text-[10px] font-mono text-slate-400">{sbj.code}</span>
                     </div>
@@ -648,7 +648,7 @@ export default function PeopleAndClassesPage() {
               <Button type="button" variant="outline" onClick={() => setIsEnrollModalOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+              <Button type="submit" >
                 Complete Enrollment
               </Button>
             </div>

@@ -197,7 +197,7 @@ export default function SettingsPage() {
           <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-subtle">
             <div className="pb-4 border-b border-slate-100 flex flex-row items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="rounded-xl bg-purple-50 p-2 text-purple-700">
+                <div className="rounded-xl bg-violet-50 p-2 text-violet-700">
                   <Sliders className="h-5 w-5" />
                 </div>
                 <h3 className="text-base font-bold font-heading text-slate-900">

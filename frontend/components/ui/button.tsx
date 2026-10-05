@@ -9,22 +9,28 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", isLoading, children, disabled, ...props }, ref) => {
+    // "Pressed paper" buttons: a solid ledge underneath that squashes on click, like a classroom stamp.
     const baseStyles =
-      "inline-flex items-center justify-center font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 disabled:pointer-events-none disabled:opacity-50 rounded-xl select-none cursor-pointer active:scale-[0.98]";
+      "relative inline-flex items-center justify-center whitespace-nowrap font-semibold tracking-tight transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 rounded-full select-none cursor-pointer";
 
     const variants = {
-      primary: "bg-brand text-white hover:bg-brand-strong shadow-sm hover:shadow-md hover:shadow-brand/20 active:bg-brand-strong",
-      secondary: "bg-slate-100/90 text-slate-800 hover:bg-slate-200/90 hover:text-slate-900 border border-slate-200/60",
-      outline: "border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:border-slate-300 shadow-xs",
-      ghost: "hover:bg-slate-100/80 text-slate-600 hover:text-slate-900",
-      destructive: "bg-rose-600 text-white hover:bg-rose-700 shadow-sm hover:shadow-rose-500/20 active:bg-rose-800",
-      accent: "bg-sky-600 text-white hover:bg-sky-700 shadow-sm hover:shadow-sky-500/20 active:bg-sky-800",
+      primary:
+        "bg-brand text-white shadow-press-sm hover:-translate-y-px hover:bg-brand hover:brightness-110 hover:shadow-press active:translate-y-[2px] active:shadow-none",
+      secondary:
+        "bg-gold-soft text-slate-900 border border-gold/40 shadow-[0_2px_0_0_rgb(var(--gold-rgb)/0.55)] hover:-translate-y-px hover:bg-gold/30 active:translate-y-[2px] active:shadow-none",
+      outline:
+        "border-2 border-brand/25 bg-card text-brand-strong hover:border-brand hover:bg-brand-soft active:scale-[0.98]",
+      ghost: "text-slate-600 hover:bg-brand-soft hover:text-brand-strong active:scale-[0.98]",
+      destructive:
+        "bg-rose-700 text-white shadow-[0_2px_0_0_#881337] hover:-translate-y-px hover:bg-rose-600 active:translate-y-[2px] active:shadow-none",
+      accent:
+        "bg-gold text-slate-900 shadow-[0_2px_0_0_rgb(0_0_0/0.28)] hover:-translate-y-px hover:brightness-105 active:translate-y-[2px] active:shadow-none",
     };
 
     const sizes = {
-      sm: "h-8.5 px-3 text-xs gap-1.5",
-      md: "h-10 px-4 py-2 text-sm gap-2",
-      lg: "h-11.5 px-6 text-base gap-2.5 font-semibold",
+      sm: "h-8.5 px-3.5 text-xs gap-1.5",
+      md: "h-10.5 px-5 text-sm gap-2",
+      lg: "h-12 px-7 text-base gap-2.5",
       icon: "h-10 w-10 p-2",
     };
 

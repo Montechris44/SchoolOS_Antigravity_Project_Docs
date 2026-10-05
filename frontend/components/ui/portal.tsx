@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { AlertCircle, CheckCircle2, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CountUp } from "./reveal";
 
 export function PageHeader({
   title,
@@ -17,14 +18,15 @@ export function PageHeader({
   eyebrow?: string;
 }) {
   return (
-    <div className="no-print mb-6 sm:mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-      <div>
+    <div className="no-print mb-6 sm:mb-8 flex flex-col gap-4 border-b-2 border-dashed border-brand/20 pb-5 md:flex-row md:items-end md:justify-between">
+      <div className="min-w-0">
         {eyebrow && (
-          <span className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-brand">
+          <span className="mb-2.5 inline-flex -rotate-1 items-center gap-1.5 rounded-md bg-gold-soft px-3 py-1 text-[11px] font-black uppercase tracking-widest text-slate-800 ring-1 ring-gold/50">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand" />
             {eyebrow}
           </span>
         )}
-        <h1 className="font-heading text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl md:text-4xl">{title}</h1>
+        <h1 className="font-heading text-2xl font-extrabold tracking-tight text-slate-900 text-balance sm:text-3xl md:text-4xl">{title}</h1>
         {description && <p className="mt-1.5 max-w-2xl text-sm sm:text-base text-slate-500 leading-relaxed">{description}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2.5 shrink-0">{actions}</div>}
@@ -33,12 +35,12 @@ export function PageHeader({
 }
 
 const TONES = {
-  brand: "bg-brand-soft text-brand ring-4 ring-brand/5",
-  emerald: "bg-emerald-50 text-emerald-600 ring-4 ring-emerald-500/5",
-  amber: "bg-amber-50 text-amber-600 ring-4 ring-amber-500/5",
-  rose: "bg-rose-50 text-rose-600 ring-4 ring-rose-500/5",
-  violet: "bg-violet-50 text-violet-600 ring-4 ring-violet-500/5",
-  sky: "bg-sky-50 text-sky-600 ring-4 ring-sky-500/5",
+  brand: { chip: "bg-brand text-white", tab: "bg-brand", soft: "bg-brand-soft" },
+  emerald: { chip: "bg-green-600 text-white", tab: "bg-green-600", soft: "bg-green-50" },
+  amber: { chip: "bg-gold text-slate-900", tab: "bg-gold", soft: "bg-gold-soft" },
+  rose: { chip: "bg-rose-600 text-white", tab: "bg-rose-600", soft: "bg-rose-50" },
+  violet: { chip: "bg-violet-600 text-white", tab: "bg-violet-600", soft: "bg-violet-50" },
+  sky: { chip: "bg-teal-600 text-white", tab: "bg-teal-600", soft: "bg-teal-50" },
 } as const;
 
 export function StatCard({
@@ -56,21 +58,27 @@ export function StatCard({
   tone?: keyof typeof TONES;
   href?: string;
 }) {
+  const t = TONES[tone];
+  // Styled like a folder / report-card tab: coloured edge along the top, icon stamped in the corner.
   const body = (
     <div
       className={cn(
-        "group relative h-full rounded-3xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-subtle transition-all duration-200 overflow-hidden",
-        href && "hover:-translate-y-1 hover:border-slate-300 hover:shadow-card-hover cursor-pointer"
+        "group relative h-full animate-rise-in overflow-hidden rounded-2xl border border-slate-200 bg-card p-5 pt-6 shadow-subtle transition-all duration-200",
+        href && "hover:-translate-y-1 hover:border-brand/40 hover:shadow-card-hover cursor-pointer"
       )}
     >
-      <div className="flex items-center justify-between mb-4">
-        <div className={cn("flex h-12 w-12 items-center justify-center rounded-2xl transition-transform duration-200 group-hover:scale-105", TONES[tone])}>
+      <div className={cn("absolute inset-x-0 top-0 h-1.5", t.tab)} />
+      <div className={cn("pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-60 transition-transform duration-300 group-hover:scale-125", t.soft)} />
+      <div className="relative flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{label}</div>
+          <div className="mt-1.5 break-words font-heading text-3xl font-black tracking-tight text-slate-900">{typeof value === "number" ? <CountUp value={value} /> : value}</div>
+        </div>
+        <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl shadow-xs transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-110", t.chip)}>
           <Icon className="h-5 w-5" />
         </div>
       </div>
-      <div className="font-heading text-3xl font-black tracking-tight text-slate-900">{value}</div>
-      <div className="mt-1 text-sm font-semibold text-slate-600">{label}</div>
-      {hint && <div className="mt-2.5 text-[11px] font-medium tracking-wide text-slate-400">{hint}</div>}
+      {hint && <div className="relative mt-3 text-xs font-medium text-slate-500">{hint}</div>}
     </div>
   );
   return href ? (
@@ -84,10 +92,15 @@ export function StatCard({
 
 export function Panel({ title, action, children, className }: { title?: string; action?: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
-    <section className={cn("rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-subtle transition-all", className)}>
+    <section className={cn("animate-rise-in rounded-2xl border border-slate-200 bg-card p-5 sm:p-6 shadow-subtle transition-all", className)}>
       {(title || action) && (
-        <div className="mb-5 flex items-center justify-between gap-3 border-b border-slate-100 pb-3">
-          {title && <h2 className="font-heading text-lg font-bold text-slate-900">{title}</h2>}
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-slate-200 pb-3">
+          {title && (
+            <h2 className="flex items-center gap-2.5 font-heading text-lg font-bold text-slate-900">
+              <span className="h-5 w-1.5 rounded-full bg-gold" />
+              {title}
+            </h2>
+          )}
           {action}
         </div>
       )}
@@ -98,35 +111,38 @@ export function Panel({ title, action, children, className }: { title?: string; 
 
 export function Alert({ tone = "info", children, className }: { tone?: "info" | "success" | "error" | "warning"; children: React.ReactNode; className?: string }) {
   const styles = {
-    info: "border-sky-200/80 bg-sky-50/80 text-sky-900",
-    success: "border-emerald-200/80 bg-emerald-50/80 text-emerald-900",
-    error: "border-rose-200/80 bg-rose-50/80 text-rose-900",
-    warning: "border-amber-200/80 bg-amber-50/80 text-amber-900",
+    info: "border-gold/60 border-l-gold bg-gold-soft text-slate-900",
+    success: "border-green-300/70 border-l-green-600 bg-green-50 text-green-900",
+    error: "border-rose-300/70 border-l-rose-600 bg-rose-50 text-rose-900",
+    warning: "border-amber-300/70 border-l-amber-500 bg-amber-50 text-amber-900",
   } as const;
   const Icon = tone === "success" ? CheckCircle2 : tone === "info" ? Info : AlertCircle;
   return (
-    <div className={cn("flex items-start gap-3 rounded-2xl border p-3.5 text-sm font-medium shadow-2xs", styles[tone], className)} role={tone === "error" ? "alert" : undefined}>
+    <div className={cn("flex items-start gap-3 rounded-xl border border-l-4 p-3.5 text-sm font-medium shadow-2xs", styles[tone], className)} role={tone === "error" ? "alert" : undefined}>
       <Icon className="mt-0.5 h-4 w-4 shrink-0" />
       <div className="min-w-0 leading-relaxed">{children}</div>
     </div>
   );
 }
 
+/** Folder-tab navigation: the active tab "opens" into the page below it. */
 export function Tabs<T extends string>({ tabs, active, onChange }: { tabs: Array<{ id: T; label: string; count?: number }>; active: T; onChange: (id: T) => void }) {
   return (
-    <div className="no-print mb-6 flex gap-1.5 overflow-x-auto rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-sm p-1.5 shadow-subtle">
+    <div className="no-print mb-6 flex gap-1 overflow-x-auto border-b-2 border-slate-200 [scrollbar-width:none]">
       {tabs.map((tab) => (
         <button
           key={tab.id}
           onClick={() => onChange(tab.id)}
           className={cn(
-            "flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-150 cursor-pointer",
-            active === tab.id ? "bg-brand text-white shadow-sm" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            "relative -mb-0.5 flex shrink-0 cursor-pointer items-center gap-2 rounded-t-xl border-2 border-b-0 px-4 py-2.5 text-sm font-bold transition-all duration-150",
+            active === tab.id
+              ? "border-slate-200 bg-card text-brand-strong shadow-[inset_0_3px_0_0_rgb(var(--brand-rgb))] after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:bg-card"
+              : "border-transparent text-slate-500 hover:bg-brand-soft/60 hover:text-slate-900"
           )}
         >
           {tab.label}
           {tab.count !== undefined && (
-            <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-bold", active === tab.id ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600")}>{tab.count}</span>
+            <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-black", active === tab.id ? "bg-brand text-white" : "bg-slate-200 text-slate-600")}>{tab.count}</span>
           )}
         </button>
       ))}
@@ -138,7 +154,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTML
   ({ className, label, id, ...props }, ref) => (
     <div className="w-full space-y-1.5">
       {label && (
-        <label htmlFor={id} className="text-xs font-semibold text-slate-700">
+        <label htmlFor={id} className="text-xs font-bold uppercase tracking-wider text-slate-600">
           {label}
         </label>
       )}
@@ -146,7 +162,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTML
         id={id}
         ref={ref}
         className={cn(
-          "flex min-h-[90px] w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition-all shadow-subtle focus-visible:outline-none focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/20",
+          "flex min-h-[90px] w-full rounded-xl border-2 border-slate-200 bg-card px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition-all shadow-subtle hover:border-slate-300 focus-visible:outline-none focus-visible:border-brand focus-visible:ring-4 focus-visible:ring-brand/15",
           className
         )}
         {...props}
@@ -165,9 +181,9 @@ export function Avatar({ name, src, size = 36 }: { name: string; src?: string | 
     .toUpperCase();
   return src ? (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt="" width={size} height={size} className="shrink-0 rounded-2xl object-cover ring-2 ring-slate-100 shadow-2xs" style={{ width: size, height: size }} />
+    <img src={src} alt="" width={size} height={size} className="shrink-0 rounded-full object-cover ring-2 ring-gold/60 shadow-2xs" style={{ width: size, height: size }} />
   ) : (
-    <div className="flex shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-soft to-blue-100 font-bold text-brand ring-2 ring-brand/10 shadow-2xs" style={{ width: size, height: size, fontSize: size / 2.7 }}>
+    <div className="flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-soft to-gold-soft font-black text-brand-strong ring-2 ring-gold/60 shadow-2xs" style={{ width: size, height: size, fontSize: size / 2.7 }}>
       {initials}
     </div>
   );

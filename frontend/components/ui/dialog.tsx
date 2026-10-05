@@ -31,7 +31,7 @@ export function Dialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       <div
-        className="fixed inset-0 bg-slate-950/60 backdrop-blur-md transition-opacity animate-fade-in"
+        className="fixed inset-0 bg-slate-950/55 backdrop-blur-sm transition-opacity animate-fade-in"
         onClick={onClose}
       />
       <div
@@ -39,7 +39,7 @@ export function Dialog({
         aria-modal="true"
         aria-labelledby="dialog-title"
         className={cn(
-          "relative z-50 w-full rounded-3xl bg-white p-6 sm:p-7 shadow-elevated transition-all border border-slate-200/80 animate-slide-up",
+          "relative z-50 w-full rounded-3xl bg-card p-5 sm:p-7 shadow-elevated transition-all border border-slate-200 border-t-[6px] border-t-brand animate-pop-in max-h-[92vh] overflow-y-auto",
           maxWidths[maxWidth]
         )}
       >
@@ -50,7 +50,8 @@ export function Dialog({
           </div>
           <button
             onClick={onClose}
-            className="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+            aria-label="Close"
+            className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>

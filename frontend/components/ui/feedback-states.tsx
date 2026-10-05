@@ -6,7 +6,7 @@ export function LoadingSkeleton({ count = 3 }: { count?: number }) {
   return (
     <div className="w-full space-y-3.5 animate-pulse">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="h-20 rounded-2xl bg-gradient-to-r from-slate-100 via-slate-200/60 to-slate-100 w-full border border-slate-200/50" />
+        <div key={i} className="h-20 rounded-2xl bg-gradient-to-r from-slate-100 via-brand-soft to-slate-100 w-full border border-slate-200/50" />
       ))}
     </div>
   );
@@ -26,8 +26,8 @@ export function EmptyState({
   onAction?: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200/80 bg-slate-50/50 p-10 sm:p-12 text-center my-6">
-      <div className="rounded-2xl bg-brand-soft p-4 text-brand mb-4 shadow-subtle ring-4 ring-brand/5">
+    <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-brand/25 bg-brand-soft/40 p-10 sm:p-12 text-center my-6">
+      <div className="rounded-full bg-card p-4 text-brand mb-4 shadow-subtle ring-4 ring-brand/10 animate-float">
         <Icon className="h-8 w-8" />
       </div>
       <h4 className="font-heading text-lg font-bold text-slate-800">{title}</h4>

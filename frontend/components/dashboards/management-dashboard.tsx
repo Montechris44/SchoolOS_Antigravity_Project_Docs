@@ -83,38 +83,37 @@ export function ManagementDashboard() {
 
   return (
     <>
-      <div className="space-y-6 sm:space-y-8">
+      <div className="stagger space-y-6 sm:space-y-8">
         {/* Welcome & School Status Banner */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white p-6 sm:p-8 shadow-card">
-          <div className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl" />
-          <div className="pointer-events-none absolute -left-16 -bottom-16 h-64 w-64 rounded-full bg-indigo-500/15 blur-3xl" />
+        <div className="chalkboard relative overflow-hidden rounded-2xl border-[6px] border-[#8a6a3d] text-white p-6 sm:p-8 shadow-card">
+          <GraduationCap className="pointer-events-none absolute -right-4 -top-4 h-40 w-40 -rotate-12 text-white/[0.06] sm:h-56 sm:w-56" />
 
           <div className="relative z-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-sky-300 bg-white/10 px-2.5 py-0.5 rounded-full backdrop-blur-xs border border-white/10">
+                <span className="text-[11px] font-black uppercase tracking-widest text-gold border border-dashed border-gold/60 px-2.5 py-0.5 rounded-md">
                   School Executive Console
                 </span>
-                <span className="bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full">
+                <span className="bg-green-500/20 border border-green-400/30 text-green-200 text-[10px] font-bold px-2.5 py-0.5 rounded-md">
                   Active Session 2026/2027
                 </span>
               </div>
               <h1 className="font-heading text-2xl sm:text-3xl font-black tracking-tight text-white">
                 Welcome back, {user?.fullName}
               </h1>
-              <p className="text-xs sm:text-sm text-blue-200 mt-1 max-w-xl leading-relaxed">
+              <p className="text-xs sm:text-sm text-white/80 mt-1 max-w-xl leading-relaxed">
                 SchoolOS is monitoring {school?.name} across academics, fee collections, student welfare, and staff compliance.
               </p>
             </div>
 
             <div className="flex items-center gap-4 border-t md:border-t-0 md:border-l border-white/15 pt-4 md:pt-0 md:pl-8 shrink-0">
               <div className="flex flex-col items-start md:items-center">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-sky-300">School Health Score</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-gold">School Health Score</span>
                 <div className="flex items-baseline gap-1 mt-1">
-                  <span className="font-heading text-4xl font-black text-white">{healthScore?.overallScore || 82}</span>
-                  <span className="text-xs text-blue-300 font-semibold">/ 100</span>
+                  <span className="font-heading text-5xl font-black text-gold">{healthScore?.overallScore || 82}</span>
+                  <span className="text-xs text-white/60 font-semibold">/ 100</span>
                 </div>
-                <span className="text-[11px] text-emerald-300 font-semibold mt-0.5 flex items-center gap-1.5">
+                <span className="text-[11px] text-green-200 font-semibold mt-0.5 flex items-center gap-1.5">
                   <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" /> Strong Operational Stability
                 </span>
               </div>
@@ -125,12 +124,12 @@ export function ManagementDashboard() {
         {/* 4 Core Authoritative KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {/* Finance KPI */}
-          <Card className="rounded-3xl p-6 hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-blue-600">
+          <Card className="rounded-2xl p-6 hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-brand">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Fee Collections
               </span>
-              <div className="rounded-xl bg-blue-50 p-2.5 text-blue-600 ring-4 ring-blue-500/5">
+              <div className="rounded-xl bg-brand-soft p-2.5 text-brand ring-4 ring-brand/10">
                 <CreditCard className="h-4.5 w-4.5" />
               </div>
             </div>
@@ -144,17 +143,17 @@ export function ManagementDashboard() {
               </span>
             </div>
             <div className="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
-              <div className="bg-blue-600 h-2 rounded-full transition-all duration-500" style={{ width: `${collectionRate}%` }} />
+              <div className="bg-brand h-2 rounded-full transition-all duration-500" style={{ width: `${collectionRate}%` }} />
             </div>
           </Card>
 
           {/* Attendance KPI */}
-          <Card className="rounded-3xl p-6 hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-emerald-600">
+          <Card className="rounded-2xl p-6 hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-green-600">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Daily Attendance
               </span>
-              <div className="rounded-xl bg-emerald-50 p-2.5 text-emerald-600 ring-4 ring-emerald-500/5">
+              <div className="rounded-xl bg-green-50 p-2.5 text-green-700 ring-4 ring-green-500/10">
                 <CalendarCheck className="h-4.5 w-4.5" />
               </div>
             </div>
@@ -164,47 +163,47 @@ export function ManagementDashboard() {
               <span className="text-rose-600 font-medium">1 risk detected</span>
             </div>
             <div className="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
-              <div className="bg-emerald-600 h-2 rounded-full transition-all duration-500" style={{ width: `88%` }} />
+              <div className="bg-green-600 h-2 rounded-full transition-all duration-500" style={{ width: `88%` }} />
             </div>
           </Card>
 
           {/* Academics KPI */}
-          <Card className="rounded-3xl p-6 hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-purple-600">
+          <Card className="rounded-2xl p-6 hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-gold">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Academic Pass Rate
               </span>
-              <div className="rounded-xl bg-purple-50 p-2.5 text-purple-600 ring-4 ring-purple-500/5">
+              <div className="rounded-xl bg-gold-soft p-2.5 text-slate-800 ring-4 ring-gold/20">
                 <GraduationCap className="h-4.5 w-4.5" />
               </div>
             </div>
             <p className="font-heading text-2xl font-black text-slate-900 mt-3">84.2%</p>
             <div className="mt-2.5 flex items-center justify-between text-xs text-slate-500">
               <span>WAEC Scale: Credit+</span>
-              <span className="font-semibold text-purple-700">Top: 88%</span>
+              <span className="font-semibold text-slate-800">Top: 88%</span>
             </div>
             <div className="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
-              <div className="bg-purple-600 h-2 rounded-full transition-all duration-500" style={{ width: `84%` }} />
+              <div className="bg-gold h-2 rounded-full transition-all duration-500" style={{ width: `84%` }} />
             </div>
           </Card>
 
           {/* Enrollment KPI */}
-          <Card className="rounded-3xl p-6 hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-amber-600">
+          <Card className="rounded-2xl p-6 hover:shadow-card-hover transition-all duration-200 border-l-4 border-l-teal-600">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Total Enrollment
               </span>
-              <div className="rounded-xl bg-amber-50 p-2.5 text-amber-600 ring-4 ring-amber-500/5">
+              <div className="rounded-xl bg-teal-50 p-2.5 text-teal-700 ring-4 ring-teal-500/10">
                 <Users className="h-4.5 w-4.5" />
               </div>
             </div>
             <p className="font-heading text-2xl font-black text-slate-900 mt-3">{studentCount} Scholars</p>
             <div className="mt-2.5 flex items-center justify-between text-xs text-slate-500">
               <span>Across 4 Active Classes</span>
-              <span className="text-amber-700 font-semibold">100% Assigned</span>
+              <span className="text-teal-700 font-semibold">100% Assigned</span>
             </div>
             <div className="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
-              <div className="bg-amber-600 h-2 rounded-full transition-all duration-500" style={{ width: `92%` }} />
+              <div className="bg-teal-600 h-2 rounded-full transition-all duration-500" style={{ width: `92%` }} />
             </div>
           </Card>
         </div>
@@ -212,11 +211,11 @@ export function ManagementDashboard() {
         {/* Intelligence Signals & Action Center Priority Summary */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Intelligence Signal Stream */}
-          <Card className="lg:col-span-2 rounded-3xl p-6 sm:p-7 flex flex-col justify-between shadow-subtle">
+          <Card className="lg:col-span-2 rounded-2xl p-6 sm:p-7 flex flex-col justify-between shadow-subtle">
             <div>
               <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-soft text-brand">
                     <Activity className="h-5 w-5" />
                   </div>
                   <h3 className="font-heading font-bold text-lg text-slate-900">
@@ -243,7 +242,7 @@ export function ManagementDashboard() {
                             ? "bg-rose-100 text-rose-700"
                             : sig.severity === "high"
                             ? "bg-amber-100 text-amber-700"
-                            : "bg-blue-100 text-blue-700"
+                            : "bg-brand-soft text-brand-strong"
                         }`}
                       >
                         <AlertTriangle className="h-4 w-4" />
@@ -284,11 +283,11 @@ export function ManagementDashboard() {
           </Card>
 
           {/* Action Center Priority Summary */}
-          <Card className="rounded-3xl p-6 sm:p-7 flex flex-col justify-between shadow-subtle">
+          <Card className="rounded-2xl p-6 sm:p-7 flex flex-col justify-between shadow-subtle">
             <div>
               <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 text-green-700">
                     <CheckCircle2 className="h-5 w-5" />
                   </div>
                   <h3 className="font-heading font-bold text-lg text-slate-900">
@@ -321,7 +320,7 @@ export function ManagementDashboard() {
 
             <div className="mt-5 pt-3.5 border-t border-slate-100">
               <Link href="/actions">
-                <Button className="w-full gap-1.5 text-xs font-semibold rounded-xl">
+                <Button className="w-full gap-1.5 text-xs font-semibold">
                   Manage Action Center <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               </Link>
@@ -330,9 +329,9 @@ export function ManagementDashboard() {
         </div>
 
         {/* AI Assistant Quick Prompt Banner */}
-        <div className="rounded-3xl border border-purple-200/80 bg-gradient-to-r from-purple-50/90 via-indigo-50/80 to-blue-50/90 p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-subtle">
+        <div className="rounded-2xl border-2 border-dashed border-gold/70 bg-gold-soft p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-subtle">
           <div className="flex items-center gap-4">
-            <div className="rounded-2xl bg-purple-600 p-3.5 text-white shadow-md shadow-purple-500/20 ring-4 ring-purple-500/10">
+            <div className="rounded-xl bg-brand p-3.5 text-white shadow-press-sm">
               <Sparkles className="h-6 w-6" />
             </div>
             <div>
@@ -345,7 +344,7 @@ export function ManagementDashboard() {
             </div>
           </div>
           <Link href="/ai">
-            <Button className="bg-purple-600 hover:bg-purple-700 text-white gap-2 shadow-sm text-xs font-semibold rounded-xl shrink-0">
+            <Button className="gap-2 text-xs font-semibold shrink-0">
               <Sparkles className="h-4 w-4" /> Ask: &ldquo;How is my school doing?&rdquo;
             </Button>
           </Link>
