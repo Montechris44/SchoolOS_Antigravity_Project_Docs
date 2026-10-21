@@ -43,7 +43,21 @@ const { pool } = require("../src/db/pool.ts");
         console.log("Settings save status:", r.status(), body.message ?? body.error ?? "OK", body.details ?? "");
       }
     });
+    // Reproduce the hosted server's older response, then verify Retry recovers.
+    await page.route("**/api/v1/school-settings", async (route) => {
+      const response = await route.fetch();
+      const body = await response.json();
+      delete body.data.studentFields;
+      delete body.data.teacherFields;
+      await route.fulfill({ response, json: body });
+    });
     await page.goto("http://localhost:3011/settings");
+    await page.getByText(/Student and teacher field settings are unavailable/).waitFor();
+    assert.equal(await page.getByRole("group", { name: "student form and CSV fields", exact: true }).count(), 0);
+    assert.deepEqual(errors, []);
+    await page.unroute("**/api/v1/school-settings");
+    await page.getByRole("button", { name: "Retry", exact: true }).click();
+    console.log("PASS: missing API field arrays show a recoverable error, produce no runtime crash, and recover on Retry");
     console.log("Browser opened settings; waiting for school field configuration");
     const students = page.getByRole("group", { name: "student form and CSV fields", exact: true });
     await students.waitFor();
