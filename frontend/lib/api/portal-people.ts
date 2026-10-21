@@ -8,6 +8,8 @@ const qs = (params: Record<string, string | undefined>): string => {
 
 // ---- Staff -----------------------------------------------------------------------
 export interface CreateStaffBody {
+  employeeId?: string;
+  customFields?: Record<string, string | number>;
   firstName: string;
   lastName: string;
   email: string;
@@ -43,6 +45,7 @@ export const getStaffSchedule = (userId: string) =>
 
 // ---- Students -----------------------------------------------------------------------
 export interface CreateStudentBody {
+  customFields?: Record<string, string | number>;
   admissionNumber?: string;
   firstName: string;
   lastName: string;

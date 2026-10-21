@@ -90,6 +90,7 @@ export interface TeacherAssignment {
 
 // ---- People ---------------------------------------------------------------------
 export interface StaffMember {
+  customFields?: Record<string, string | number>;
   id: string;
   userId: string;
   employeeId: string;
@@ -116,6 +117,7 @@ export interface StaffMember {
 }
 
 export interface StudentRecord {
+  customFields?: Record<string, string | number>;
   id: string;
   userId: string | null;
   admissionNumber: string;
@@ -573,6 +575,8 @@ export interface StaffLeave {
 
 // ---- Settings & dashboards ---------------------------------------------------------
 export interface PortalSettings {
+  studentFields: import("./people-fields").PeopleField[];
+  teacherFields: import("./people-fields").PeopleField[];
   passMark: number;
   maxScore: number;
   rankingMode: "AUTO" | "AVERAGE" | "SSS_GRADE_COUNTS";

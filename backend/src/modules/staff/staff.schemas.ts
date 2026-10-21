@@ -7,6 +7,7 @@ const date = z.string().refine((v) => !Number.isNaN(Date.parse(v)), "Invalid dat
 export const STAFF_ROLES = ["admin", "bursar", "teacher", "non_academic"] as const;
 
 export const createStaffSchema = z.object({
+  customFields: z.record(z.string(), z.union([z.string().max(2000), z.number().finite()])).optional(),
   employeeId: z.string().min(1).max(60).optional(),
   firstName: z.string().min(1).max(120),
   lastName: z.string().min(1).max(120),
@@ -30,6 +31,7 @@ export const createStaffSchema = z.object({
 export type CreateStaffInput = z.infer<typeof createStaffSchema>;
 
 export const updateStaffSchema = z.object({
+  customFields: z.record(z.string(), z.union([z.string().max(2000), z.number().finite()])).optional(),
   firstName: z.string().min(1).max(120).optional(),
   lastName: z.string().min(1).max(120).optional(),
   email: z.string().email().optional(),

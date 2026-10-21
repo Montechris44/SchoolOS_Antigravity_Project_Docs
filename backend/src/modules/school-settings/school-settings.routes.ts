@@ -11,10 +11,13 @@ import { requirePermission, requireRole } from "../../shared/security/tenant-gua
 import { schoolFolder, uploadToStorage } from "../../shared/storage/cloudinary";
 import { validateBody } from "../../shared/validation/validate";
 import { ADMIN_ROLES } from "../../config/rbac";
+import { fieldsSchema, resolveFields } from "./people-fields";
 
 const time = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/, "Use HH:MM");
 
 const updateSchema = z.object({
+  studentFields: fieldsSchema.optional(),
+  teacherFields: fieldsSchema.optional(),
   passMark: z.number().min(0).max(100).optional(),
   rankingMode: z.enum(["AUTO", "AVERAGE", "SSS_GRADE_COUNTS"]).optional(),
   allowParentPortal: z.boolean().optional(),
@@ -35,7 +38,7 @@ const updateSchema = z.object({
 
 const SETTINGS_SELECT = `
   SELECT ss.pass_mark, ss.max_score, ss.ranking_mode, ss.allow_parent_portal, ss.allow_student_portal, ss.timezone,
-         ss.staff_sign_in_cutoff, ss.staff_very_late_cutoff,
+         ss.staff_sign_in_cutoff, ss.staff_very_late_cutoff, ss.student_fields, ss.teacher_fields,
          s.id AS school_id, s.name AS school_name, s.slug, s.logo_url, s.theme_color, s.school_code, s.student_email_domain
   FROM schools s LEFT JOIN school_settings ss ON ss.school_id = s.id
   WHERE s.id = $1`;
@@ -43,7 +46,8 @@ const SETTINGS_SELECT = `
 async function loadSettings(schoolId: string) {
   await query("INSERT INTO school_settings (school_id) VALUES ($1) ON CONFLICT (school_id) DO NOTHING", [schoolId]);
   const result = await query(SETTINGS_SELECT, [schoolId]);
-  return result.rows[0];
+  const row = result.rows[0];
+  return { ...row, student_fields: resolveFields("student", row.student_fields), teacher_fields: resolveFields("teacher", row.teacher_fields) };
 }
 
 async function getHandler(request: FastifyRequest, reply: FastifyReply): Promise<void> {
@@ -56,6 +60,8 @@ async function updateHandler(request: FastifyRequest, reply: FastifyReply): Prom
   requireRole(actor, ADMIN_ROLES);
 
   const input = validateBody(request, updateSchema);
+  if (input.studentFields) resolveFields("student", input.studentFields);
+  if (input.teacherFields) resolveFields("teacher", input.teacherFields);
   if (input.staffSignInCutoff && input.staffVeryLateCutoff && input.staffVeryLateCutoff <= input.staffSignInCutoff) {
     throw new BadRequestError("The very-late cutoff must be after the sign-in cutoff.");
   }
@@ -68,7 +74,9 @@ async function updateHandler(request: FastifyRequest, reply: FastifyReply): Prom
        allow_parent_portal = COALESCE($4, allow_parent_portal),
        allow_student_portal = COALESCE($5, allow_student_portal),
        staff_sign_in_cutoff = COALESCE($6::time, staff_sign_in_cutoff),
-       staff_very_late_cutoff = COALESCE($7::time, staff_very_late_cutoff)
+       staff_very_late_cutoff = COALESCE($7::time, staff_very_late_cutoff),
+       student_fields = COALESCE($8::jsonb, student_fields),
+       teacher_fields = COALESCE($9::jsonb, teacher_fields)
      WHERE school_id = $1`,
     [
       actor.schoolId,
@@ -78,6 +86,8 @@ async function updateHandler(request: FastifyRequest, reply: FastifyReply): Prom
       input.allowStudentPortal ?? null,
       input.staffSignInCutoff ?? null,
       input.staffVeryLateCutoff ?? null,
+      input.studentFields ? JSON.stringify(input.studentFields) : null,
+      input.teacherFields ? JSON.stringify(input.teacherFields) : null,
     ]
   );
 

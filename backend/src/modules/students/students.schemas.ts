@@ -12,6 +12,7 @@ const guardianSchema = z.object({
 });
 
 export const createStudentSchema = z.object({
+  customFields: z.record(z.string(), z.union([z.string().max(2000), z.number().finite()])).optional(),
   /** Optional: generated as {SCHOOLCODE}/{year}/{sequence} when omitted. */
   admissionNumber: z.string().min(1).max(60).optional(),
   firstName: z.string().min(1).max(120),
@@ -34,6 +35,7 @@ export const createStudentSchema = z.object({
 export type CreateStudentInput = z.infer<typeof createStudentSchema>;
 
 export const updateStudentSchema = z.object({
+  customFields: z.record(z.string(), z.union([z.string().max(2000), z.number().finite()])).optional(),
   firstName: z.string().min(1).max(120).optional(),
   lastName: z.string().min(1).max(120).optional(),
   middleName: z.string().max(120).nullable().optional(),

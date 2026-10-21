@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { Camera, KeyRound, Plus, Search, Upload, UserCheck } from "lucide-react";
+import { Camera, KeyRound, Plus, Search, UserCheck } from "lucide-react";
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,10 +13,9 @@ import { Alert, Avatar, PageHeader, Panel, useLoader } from "@/components/ui/por
 import { CredentialsDialog, CredentialRow } from "@/components/portal/credentials-dialog";
 import { useAuth } from "@/lib/auth/auth-context";
 import { ApiError } from "@/lib/api/client";
-import { listPortalClasses } from "@/lib/api/portal-academics";
+import { getPortalSettings, listPortalClasses } from "@/lib/api/portal-academics";
 import {
   CreateStudentBody,
-  bulkImportStudents,
   createStudentPortalAccount,
   enrollStudent,
   getStudentSummary,
@@ -25,57 +24,13 @@ import {
   updateStudentRecord,
   uploadStudentPhoto,
 } from "@/lib/api/portal-people";
-import { PortalClass, StudentRecord } from "@/types/portal";
-
-const blank = {
-  firstName: "",
-  lastName: "",
-  gender: "male" as "male" | "female",
-  dateOfBirth: "",
-  classId: "",
-  armId: "",
-  guardianFirstName: "",
-  guardianLastName: "",
-  guardianPhone: "",
-  guardianEmail: "",
-  guardianRelationship: "father" as "father" | "mother" | "guardian" | "other",
-};
-
-/** Minimal CSV reader: handles quoted cells and commas inside quotes. */
-function parseCsv(text: string): string[][] {
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let cell = "";
-  let quoted = false;
-  for (let i = 0; i < text.length; i += 1) {
-    const char = text[i];
-    if (quoted) {
-      if (char === '"' && text[i + 1] === '"') {
-        cell += '"';
-        i += 1;
-      } else if (char === '"') quoted = false;
-      else cell += char;
-    } else if (char === '"') quoted = true;
-    else if (char === ",") {
-      row.push(cell.trim());
-      cell = "";
-    } else if (char === "\n" || char === "\r") {
-      if (char === "\r" && text[i + 1] === "\n") i += 1;
-      row.push(cell.trim());
-      if (row.some(Boolean)) rows.push(row);
-      row = [];
-      cell = "";
-    } else cell += char;
-  }
-  row.push(cell.trim());
-  if (row.some(Boolean)) rows.push(row);
-  return rows;
-}
+import { PeopleFormFields, peopleFormBody } from "@/components/portal/people-form-fields";
+import { PeopleImport } from "@/components/portal/people-import";
+import { StudentRecord } from "@/types/portal";
 
 export default function StudentsPage() {
   const { can } = useAuth();
   const canManage = can("students:manage");
-  const fileInput = useRef<HTMLInputElement>(null);
   const photoInput = useRef<HTMLInputElement>(null);
 
   const [classFilter, setClassFilter] = useState("");
@@ -83,93 +38,34 @@ export default function StudentsPage() {
   const [search, setSearch] = useState("");
 
   const classes = useLoader(listPortalClasses, []);
+  const settings = useLoader(getPortalSettings, []);
   const students = useLoader(() => listStudentRecords({ classId: classFilter || undefined, status: status || undefined, search: search || undefined }), [classFilter, status, search]);
 
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState(blank);
+  const [form, setForm] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [credentials, setCredentials] = useState<CredentialRow[] | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [importReport, setImportReport] = useState<{ ok: number; failed: Array<{ index: number; error: string }> } | null>(null);
   const [selected, setSelected] = useState<StudentRecord | null>(null);
   const [summary, setSummary] = useState<Awaited<ReturnType<typeof getStudentSummary>> | null>(null);
-
-  const armsOf = (classId: string): PortalClass["arms"] => classes.data?.find((c) => c.id === classId)?.arms ?? [];
 
   const enroll = async (event: React.FormEvent) => {
     event.preventDefault();
     setFormError(null);
     setSaving(true);
     try {
-      const guardian = form.guardianFirstName && form.guardianLastName && form.guardianPhone && form.guardianEmail
-        ? { firstName: form.guardianFirstName, lastName: form.guardianLastName, relationship: form.guardianRelationship, phone: form.guardianPhone, email: form.guardianEmail }
-        : undefined;
-      const created = await enrollStudent({
-        firstName: form.firstName.trim(),
-        lastName: form.lastName.trim(),
-        gender: form.gender,
-        dateOfBirth: form.dateOfBirth || undefined,
-        classId: form.classId,
-        armId: form.armId || null,
-        guardian,
-      });
+      const created = await enrollStudent(peopleFormBody("student", settings.data!.studentFields, form) as CreateStudentBody);
       if (created.credentials) {
         setCredentials([{ label: `${created.firstName} ${created.lastName} · ${created.admissionNumber}`, email: created.credentials.email, password: created.credentials.temporaryPassword }]);
       }
       setShowForm(false);
-      setForm(blank);
+      setForm({});
       students.reload();
     } catch (err) {
       setFormError(err instanceof ApiError ? err.message : "Could not enrol this student.");
     } finally {
       setSaving(false);
-    }
-  };
-
-  const importCsv = async (file: File) => {
-    setNotice(null);
-    const rows = parseCsv(await file.text());
-    if (rows.length < 2) return setNotice("The file needs a header row and at least one student.");
-
-    const header = rows[0].map((h) => h.toLowerCase().replace(/[^a-z]/g, ""));
-    const col = (name: string) => header.indexOf(name);
-    const required = ["firstname", "lastname", "gender", "class"];
-    const missing = required.filter((name) => col(name) === -1);
-    if (missing.length) return setNotice(`Missing columns: ${missing.join(", ")}. Expected: firstName, lastName, gender, class, arm, dateOfBirth, guardianName, guardianPhone, guardianEmail.`);
-
-    const payload: CreateStudentBody[] = [];
-    const problems: Array<{ index: number; error: string }> = [];
-    rows.slice(1).forEach((row, i) => {
-      const get = (name: string) => (col(name) >= 0 ? row[col(name)] ?? "" : "");
-      const cls = classes.data?.find((c) => c.name.toLowerCase() === get("class").toLowerCase());
-      if (!cls) return problems.push({ index: i, error: `Unknown class "${get("class")}"` });
-      const arm = get("arm") ? cls.arms.find((a) => a.name.toLowerCase() === get("arm").toLowerCase()) : undefined;
-      if (get("arm") && !arm) return problems.push({ index: i, error: `Unknown arm "${get("arm")}" in ${cls.name}` });
-      const gender = get("gender").toLowerCase().startsWith("f") ? "female" : "male";
-      const [gFirst, ...gRest] = get("guardianname").split(" ");
-      payload.push({
-        firstName: get("firstname"),
-        lastName: get("lastname"),
-        gender,
-        classId: cls.id,
-        armId: arm?.id ?? null,
-        dateOfBirth: get("dateofbirth") || undefined,
-        guardian: get("guardianemail") && get("guardianphone")
-          ? { firstName: gFirst || "Guardian", lastName: gRest.join(" ") || get("lastname"), relationship: "guardian", phone: get("guardianphone"), email: get("guardianemail") }
-          : undefined,
-      });
-    });
-
-    if (payload.length === 0) return setImportReport({ ok: 0, failed: problems });
-    try {
-      const result = await bulkImportStudents(payload);
-      setImportReport({ ok: result.success.length, failed: [...problems, ...result.failed.map((f) => ({ index: f.index, error: f.error }))] });
-      const rowsOut = result.success.filter((s) => s.credentials).map((s) => ({ label: `${s.student.firstName} ${s.student.lastName} · ${s.student.admissionNumber}`, email: s.credentials!.email, password: s.credentials!.temporaryPassword }));
-      if (rowsOut.length) setCredentials(rowsOut);
-      students.reload();
-    } catch (err) {
-      setNotice(err instanceof ApiError ? err.message : "Import failed.");
     }
   };
 
@@ -203,11 +99,8 @@ export default function StudentsPage() {
         actions={
           canManage && (
             <>
-              <input ref={fileInput} type="file" accept=".csv,text/csv" hidden onChange={(e) => e.target.files?.[0] && importCsv(e.target.files[0])} />
-              <Button variant="outline" onClick={() => fileInput.current?.click()}>
-                <Upload className="mr-2 h-4 w-4" /> Import CSV
-              </Button>
-              <Button onClick={() => { setForm({ ...blank, classId: classes.data?.[0]?.id ?? "" }); setShowForm(true); }}>
+              <PeopleImport kind="student" fields={settings.data?.studentFields ?? []} disabled={!settings.data} onSaved={students.reload} />
+              <Button disabled={!settings.data || !classes.data} onClick={() => { setForm({ classId: classes.data?.[0]?.id ?? "" }); setFormError(null); setShowForm(true); }}>
                 <Plus className="mr-2 h-4 w-4" /> Enrol student
               </Button>
             </>
@@ -215,12 +108,8 @@ export default function StudentsPage() {
         }
       />
 
+      {settings.error && <Alert tone="error">Could not load school fields: {settings.error}</Alert>}
       {notice && <Alert tone="info" className="mb-4">{notice}</Alert>}
-      {importReport && (
-        <Alert tone={importReport.failed.length ? "warning" : "success"} className="mb-4">
-          Imported {importReport.ok} student(s).{importReport.failed.length > 0 && ` ${importReport.failed.length} row(s) skipped: ${importReport.failed.slice(0, 5).map((f) => `row ${f.index + 2} — ${f.error}`).join("; ")}`}
-        </Alert>
-      )}
 
       <Panel className="mb-6 border-slate-200/80 bg-white/90 shadow-subtle backdrop-blur-sm">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
@@ -315,38 +204,7 @@ export default function StudentsPage() {
 
       <Dialog isOpen={showForm} onClose={() => setShowForm(false)} title="Enrol a student" description="An admission number and a sign-in account are generated automatically." maxWidth="xl">
         <form onSubmit={enroll} className="space-y-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <Input label="First name" required value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} />
-            <Input label="Last name" required value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} />
-            <Select label="Gender" value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value as "male" | "female" })}>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </Select>
-            <Input label="Date of birth" type="date" value={form.dateOfBirth} onChange={(e) => setForm({ ...form, dateOfBirth: e.target.value })} />
-            <Select label="Class" required value={form.classId} onChange={(e) => setForm({ ...form, classId: e.target.value, armId: "" })}>
-              <option value="" disabled>Select class</option>
-              {classes.data?.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </Select>
-            <Select label="Arm" value={form.armId} onChange={(e) => setForm({ ...form, armId: e.target.value })} disabled={armsOf(form.classId).length === 0}>
-              <option value="">{armsOf(form.classId).length ? "Select arm" : "No arms"}</option>
-              {armsOf(form.classId).map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-            </Select>
-          </div>
-          <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-4">
-            <p className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">Guardian Details (Optional)</p>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Input label="First name" value={form.guardianFirstName} onChange={(e) => setForm({ ...form, guardianFirstName: e.target.value })} />
-              <Input label="Last name" value={form.guardianLastName} onChange={(e) => setForm({ ...form, guardianLastName: e.target.value })} />
-              <Input label="Phone" value={form.guardianPhone} onChange={(e) => setForm({ ...form, guardianPhone: e.target.value })} />
-              <Input label="E-mail" type="email" value={form.guardianEmail} onChange={(e) => setForm({ ...form, guardianEmail: e.target.value })} />
-              <Select label="Relationship" value={form.guardianRelationship} onChange={(e) => setForm({ ...form, guardianRelationship: e.target.value as typeof form.guardianRelationship })}>
-                <option value="father">Father</option>
-                <option value="mother">Mother</option>
-                <option value="guardian">Guardian</option>
-                <option value="other">Other</option>
-              </Select>
-            </div>
-          </div>
+          <PeopleFormFields fields={settings.data?.studentFields ?? []} values={form} onChange={setForm} classes={classes.data ?? []} />
           {formError && <Alert tone="error">{formError}</Alert>}
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="ghost" onClick={() => setShowForm(false)}>Cancel</Button>
@@ -360,6 +218,8 @@ export default function StudentsPage() {
       <Dialog isOpen={selected !== null} onClose={() => setSelected(null)} title={selected ? `${selected.firstName} ${selected.lastName}` : ""} description={selected ? `${selected.classLabel} · ${selected.admissionNumber}` : ""} maxWidth="xl">
         {selected && (
           <div className="space-y-5">
+            {selected.customFields && Object.keys(selected.customFields).length > 0 && <dl className="grid grid-cols-2 gap-3 text-sm">{Object.entries(selected.customFields).map(([key, value]) => <div key={key}><dt className="text-slate-500">{settings.data?.studentFields.find((f) => f.key === key)?.label ?? key}</dt><dd>{String(value)}</dd></div>)}</dl>}
+
             <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
               <Avatar name={`${selected.firstName} ${selected.lastName}`} src={selected.photoUrl} size={60} />
               <div className="space-y-0.5 text-sm text-slate-600">

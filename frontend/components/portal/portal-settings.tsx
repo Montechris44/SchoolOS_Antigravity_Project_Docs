@@ -9,6 +9,8 @@ import { Alert, Panel, useLoader } from "@/components/ui/portal";
 import { ApiError } from "@/lib/api/client";
 import { getPortalSettings, updatePortalSettings, uploadSchoolLogo } from "@/lib/api/portal-academics";
 import { useAuth } from "@/lib/auth/auth-context";
+import { PeopleFieldEditor } from "./people-field-editor";
+import { PeopleField } from "@/types/people-fields";
 
 /** School-portal switches: branding, sign-in domain for students, staff time rules and portal access. */
 export function PortalSettings() {
@@ -25,11 +27,15 @@ export function PortalSettings() {
     allowParentPortal: true,
   });
   const [busy, setBusy] = useState(false);
+  const [studentFields, setStudentFields] = useState<PeopleField[]>([]);
+  const [teacherFields, setTeacherFields] = useState<PeopleField[]>([]);
   const [notice, setNotice] = useState<{ tone: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
     const s = settings.data;
     if (!s) return;
+    setStudentFields(s.studentFields ?? []);
+    setTeacherFields(s.teacherFields ?? []);
     setForm({
       themeColor: s.themeColor ?? "#2563eb",
       studentEmailDomain: s.studentEmailDomain ?? "",
@@ -47,9 +53,12 @@ export function PortalSettings() {
     setNotice(null);
     try {
       const updated = await updatePortalSettings({
+        studentFields,
+        teacherFields,
         themeColor: form.themeColor,
         studentEmailDomain: form.studentEmailDomain.trim() || null,
-        schoolCode: form.schoolCode.trim() || null,
+        // Older generated codes can exceed today's edit limit. Preserve them when only fields change.
+        schoolCode: form.schoolCode.trim() === (settings.data?.schoolCode ?? "") ? undefined : form.schoolCode.trim() || null,
         staffSignInCutoff: form.staffSignInCutoff,
         staffVeryLateCutoff: form.staffVeryLateCutoff,
         allowStudentPortal: form.allowStudentPortal,
@@ -123,6 +132,8 @@ export function PortalSettings() {
           </label>
         </div>
 
+        <PeopleFieldEditor kind="student" fields={studentFields} onChange={setStudentFields} />
+        <PeopleFieldEditor kind="teacher" fields={teacherFields} onChange={setTeacherFields} />
         <div className="flex justify-end"><Button type="submit" isLoading={busy}><Save className="mr-2 h-4 w-4" /> Save portal settings</Button></div>
       </form>
     </Panel>

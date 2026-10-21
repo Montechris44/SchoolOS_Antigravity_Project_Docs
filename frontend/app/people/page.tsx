@@ -3,10 +3,15 @@
 import React, { useState, useEffect } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { useAuth } from "@/lib/auth/auth-context";
-import { listStudents, createStudent } from "@/lib/api/students";
+import { listStudents } from "@/lib/api/students";
 import { listClasses, createClass } from "@/lib/api/classes";
 import { listStaff } from "@/lib/api/staff";
 import { listSubjects, createSubject } from "@/lib/api/subjects";
+import { getPortalSettings, listPortalClasses } from "@/lib/api/portal-academics";
+import { CreateStudentBody, enrollStudent } from "@/lib/api/portal-people";
+import { PeopleFormFields, peopleFormBody } from "@/components/portal/people-form-fields";
+import { CredentialsDialog, CredentialRow } from "@/components/portal/credentials-dialog";
+import { useLoader } from "@/components/ui/portal";
 import { ApiError } from "@/lib/api/client";
 import { Student, SchoolClass, Staff, Subject } from "@/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -30,6 +35,10 @@ import {
 
 export default function PeopleAndClassesPage() {
   const { school } = useAuth();
+  const fieldSettings = useLoader(getPortalSettings, []);
+  const portalClasses = useLoader(listPortalClasses, []);
+  const [credentials, setCredentials] = useState<CredentialRow[] | null>(null);
+  const [enrolling, setEnrolling] = useState(false);
   const [activeTab, setActiveTab] = useState<"students" | "classes" | "staff" | "sessions">("students");
   const [students, setStudents] = useState<Student[]>([]);
   const [classes, setClasses] = useState<SchoolClass[]>([]);
@@ -47,19 +56,7 @@ export default function PeopleAndClassesPage() {
   const [modalErrorMsg, setModalErrorMsg] = useState("");
 
   // Enrollment Form State
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    gender: "male" as "male" | "female",
-    dateOfBirth: "2014-01-15",
-    classId: "",
-    admissionNumber: "",
-    guardianFirstName: "",
-    guardianLastName: "",
-    guardianPhone: "",
-    guardianEmail: "",
-    guardianRelationship: "father" as "father" | "mother" | "guardian",
-  });
+  const [formData, setFormData] = useState<Record<string, string>>({});
 
   // Class Form State
   const [classFormData, setClassFormData] = useState({
@@ -105,67 +102,23 @@ export default function PeopleAndClassesPage() {
     if (classes.length > 0 && !formData.classId) {
       setFormData((prev) => ({ ...prev, classId: classes[0].id }));
     }
-  }, [classes]);
+  }, [classes, formData.classId]);
 
   const handleEnrollStudent = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!fieldSettings.data || enrolling) return;
     setModalErrorMsg("");
-    setModalSuccessMsg("");
-
-    if (!formData.firstName || !formData.lastName || !formData.admissionNumber) {
-      setModalErrorMsg("Please provide first name, last name, and admission number.");
-      return;
-    }
-
-    const targetClass = classes.find((c) => c.id === formData.classId) || classes[0];
-    if (!targetClass) {
-      setModalErrorMsg("Please create a class before enrolling students.");
-      return;
-    }
-
-    const hasGuardianDetails = formData.guardianFirstName && formData.guardianLastName && formData.guardianPhone && formData.guardianEmail;
-
+    setEnrolling(true);
     try {
-      await createStudent({
-        admissionNumber: formData.admissionNumber.trim().toUpperCase(),
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim(),
-        gender: formData.gender,
-        dateOfBirth: formData.dateOfBirth,
-        classId: targetClass.id,
-        enrollmentStatus: "active",
-        guardian: hasGuardianDetails
-          ? {
-              firstName: formData.guardianFirstName.trim(),
-              lastName: formData.guardianLastName.trim(),
-              relationship: formData.guardianRelationship,
-              phone: formData.guardianPhone.trim(),
-              email: formData.guardianEmail.trim(),
-            }
-          : undefined,
-      });
-
+      const created = await enrollStudent(peopleFormBody("student", fieldSettings.data.studentFields, formData) as CreateStudentBody);
       await refreshData();
-      setModalSuccessMsg(`Student ${formData.firstName} ${formData.lastName} enrolled successfully!`);
-      setTimeout(() => {
-        setIsEnrollModalOpen(false);
-        setModalSuccessMsg("");
-        setFormData({
-          firstName: "",
-          lastName: "",
-          gender: "male",
-          dateOfBirth: "2014-01-15",
-          classId: classes[0]?.id || "",
-          admissionNumber: "",
-          guardianFirstName: "",
-          guardianLastName: "",
-          guardianPhone: "",
-          guardianEmail: "",
-          guardianRelationship: "father",
-        });
-      }, 1200);
+      setIsEnrollModalOpen(false);
+      setFormData({ classId: classes[0]?.id ?? "" });
+      if (created.credentials) setCredentials([{ label: `${created.firstName} ${created.lastName}`, email: created.credentials.email, password: created.credentials.temporaryPassword }]);
     } catch (err) {
-      setModalErrorMsg(err instanceof ApiError ? err.message : "Failed to enroll student. Please try again.");
+      setModalErrorMsg(err instanceof ApiError ? err.message : "Failed to enroll student.");
+    } finally {
+      setEnrolling(false);
     }
   };
 
@@ -534,6 +487,8 @@ export default function PeopleAndClassesPage() {
           </div>
         )}
 
+        <CredentialsDialog rows={credentials} onClose={() => setCredentials(null)} />
+
         {/* Modal: Enroll Student */}
         <Dialog
           isOpen={isEnrollModalOpen}
@@ -556,99 +511,13 @@ export default function PeopleAndClassesPage() {
               </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <Input
-                id="firstName"
-                label="First Name"
-                placeholder="e.g. Babatunde"
-                required
-                value={formData.firstName}
-                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-              />
-              <Input
-                id="lastName"
-                label="Last Name"
-                placeholder="e.g. Adeleke"
-                required
-                value={formData.lastName}
-                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <Input
-                id="admissionNumber"
-                label="Admission Number"
-                placeholder="e.g. ECA/2026/015"
-                required
-                value={formData.admissionNumber}
-                onChange={(e) => setFormData({ ...formData, admissionNumber: e.target.value })}
-              />
-              <Select
-                id="gender"
-                label="Gender"
-                value={formData.gender}
-                onChange={(e) => setFormData({ ...formData, gender: e.target.value as "male" | "female" })}
-              >
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </Select>
-              <Select
-                id="classId"
-                label="Class Allocation"
-                value={formData.classId}
-                onChange={(e) => setFormData({ ...formData, classId: e.target.value })}
-              >
-                {classes.map((cls) => (
-                  <option key={cls.id} value={cls.id}>
-                    {cls.name}
-                  </option>
-                ))}
-              </Select>
-            </div>
-
-            <div className="border-t border-slate-100 pt-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-                Primary Guardian / Parent Details
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <Input
-                  id="guardianFirstName"
-                  label="Guardian First Name"
-                  placeholder="e.g. Samuel"
-                  value={formData.guardianFirstName}
-                  onChange={(e) => setFormData({ ...formData, guardianFirstName: e.target.value })}
-                />
-                <Input
-                  id="guardianLastName"
-                  label="Guardian Last Name"
-                  placeholder="e.g. Adeleke"
-                  value={formData.guardianLastName}
-                  onChange={(e) => setFormData({ ...formData, guardianLastName: e.target.value })}
-                />
-                <Input
-                  id="guardianPhone"
-                  label="Phone (WhatsApp enabled)"
-                  placeholder="+234 803 000 0000"
-                  value={formData.guardianPhone}
-                  onChange={(e) => setFormData({ ...formData, guardianPhone: e.target.value })}
-                />
-                <Input
-                  id="guardianEmail"
-                  label="Email Address"
-                  type="email"
-                  placeholder="guardian@example.com"
-                  value={formData.guardianEmail}
-                  onChange={(e) => setFormData({ ...formData, guardianEmail: e.target.value })}
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
+            {fieldSettings.error && <p className="text-sm text-rose-600">Could not load school fields: {fieldSettings.error}</p>}
+            <PeopleFormFields fields={fieldSettings.data?.studentFields ?? []} values={formData} onChange={setFormData} classes={portalClasses.data ?? []} />
+            <div className="flex justify-end gap-2 pt-4">
               <Button type="button" variant="outline" onClick={() => setIsEnrollModalOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" >
+              <Button type="submit" disabled={!fieldSettings.data || enrolling} isLoading={enrolling}>
                 Complete Enrollment
               </Button>
             </div>

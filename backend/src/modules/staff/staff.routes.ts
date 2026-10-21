@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import { peopleImportRoutes } from "../school-settings/people-import.routes";
 
 import { authenticate } from "../../middleware/auth";
 import {
@@ -13,6 +14,7 @@ import {
 } from "./staff.controller";
 
 export async function staffRoutes(app: FastifyInstance): Promise<void> {
+  await peopleImportRoutes(app, "teacher");
   app.get("/staff", { preHandler: authenticate }, listStaffHandler);
   app.post("/staff", { preHandler: authenticate }, createStaffHandler);
   app.get("/staff/:userId", { preHandler: authenticate }, getStaffHandler);

@@ -17,6 +17,9 @@ import { StaffMember } from "@/types/portal";
 import { formatDate } from "@/lib/utils";
 import { ROLE_LABELS } from "@/lib/auth/types";
 import { UserRole } from "@/types";
+import { getPortalSettings } from "@/lib/api/portal-academics";
+import { PeopleFormFields, peopleFormBody } from "@/components/portal/people-form-fields";
+import { PeopleImport } from "@/components/portal/people-import";
 import { DAYS } from "@/components/portal/days";
 
 const ROLES: Array<{ value: CreateStaffBody["role"]; label: string }> = [
@@ -29,6 +32,8 @@ const ROLES: Array<{ value: CreateStaffBody["role"]; label: string }> = [
 const blank: CreateStaffBody = { firstName: "", lastName: "", email: "", phone: "", role: "teacher", title: "", gender: undefined, qualification: "", department: "" };
 
 export default function StaffPage() {
+  const settings = useLoader(getPortalSettings, []);
+  const [teacherForm, setTeacherForm] = useState<Record<string, string>>({});
   const [role, setRole] = useState("all");
   const [search, setSearch] = useState("");
   const { data, error, loading, reload } = useLoader(() => listStaffMembers({ role: role === "all" ? undefined : role, search: search || undefined }), [role, search]);
@@ -43,7 +48,12 @@ export default function StaffPage() {
   const [schedule, setSchedule] = useState<Awaited<ReturnType<typeof getStaffSchedule>> | null>(null);
 
   const open = (member: StaffMember | null) => {
+    if (!settings.data) {
+      setNotice(settings.error ? "Could not load school fields. Reload the page and try again." : "School fields are still loading. Please try again in a moment.");
+      return;
+    }
     setFormError(null);
+    setTeacherForm(member ? Object.fromEntries(Object.entries({ ...member, ...member.customFields }).filter(([, value]) => value !== null && value !== undefined && typeof value !== "object").map(([key, value]) => [key, String(value)])) : {});
     setEditing(member);
     setCreating(member === null);
     setForm(
@@ -67,7 +77,7 @@ export default function StaffPage() {
     setSaving(true);
     setFormError(null);
     try {
-      const body = { ...form, phone: form.phone || undefined, title: form.title || undefined, qualification: form.qualification || undefined, department: form.department || undefined };
+      const body = form.role === "teacher" ? peopleFormBody("teacher", settings.data!.teacherFields, teacherForm) as CreateStaffBody : { ...form, phone: form.phone || undefined, title: form.title || undefined, qualification: form.qualification || undefined, department: form.department || undefined };
       if (editing) {
         await updateStaffMember(editing.userId, body);
         setNotice("Staff details updated.");
@@ -113,12 +123,14 @@ export default function StaffPage() {
         title="Staff"
         description="Teachers, bursars and support staff. New accounts get a temporary password they must change on first sign-in."
         actions={
-          <Button onClick={() => open(null)}>
-            <Plus className="mr-2 h-4 w-4" /> Add staff
-          </Button>
+          <>
+            <PeopleImport kind="teacher" fields={settings.data?.teacherFields ?? []} disabled={!settings.data} onSaved={reload} />
+            <Button disabled={!settings.data} onClick={() => open(null)}><Plus className="mr-2 h-4 w-4" /> Add staff</Button>
+          </>
         }
       />
 
+      {settings.error && <Alert tone="error">Could not load school fields: {settings.error}</Alert>}
       {notice && <Alert tone="info" className="mb-4">{notice}</Alert>}
 
       <Panel className="mb-6 border-slate-200/80 bg-white/90 shadow-subtle backdrop-blur-sm">
@@ -216,18 +228,20 @@ export default function StaffPage() {
 
       <Dialog isOpen={creating || editing !== null} onClose={() => { setCreating(false); setEditing(null); }} title={editing ? "Edit staff member" : "Add staff member"} maxWidth="xl">
         <form onSubmit={save} className="space-y-4">
+          <Select id="staff-role" label="Role" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value as CreateStaffBody["role"] })}>
+            {ROLES.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
+          </Select>
+          {form.role === "teacher" ? <PeopleFormFields fields={settings.data?.teacherFields ?? []} values={teacherForm} onChange={setTeacherForm} /> : <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Input label="First name" required value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} />
             <Input label="Last name" required value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} />
             <Input label="E-mail (used to sign in)" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
             <Input label="Phone" value={form.phone ?? ""} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-            <Select label="Role" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value as CreateStaffBody["role"] })}>
-              {ROLES.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
-            </Select>
             <Input label={form.role === "non_academic" ? "Job title (required)" : "Job title"} value={form.title ?? ""} onChange={(e) => setForm({ ...form, title: e.target.value })} />
             <Input label="Qualification" value={form.qualification ?? ""} onChange={(e) => setForm({ ...form, qualification: e.target.value })} />
             <Input label="Department" value={form.department ?? ""} onChange={(e) => setForm({ ...form, department: e.target.value })} />
           </div>
+          </>}
           {!editing && <p className="text-xs text-slate-500">A random temporary password is generated and shown once after you save.</p>}
           {formError && <Alert tone="error">{formError}</Alert>}
           <div className="flex justify-end gap-2">

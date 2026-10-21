@@ -19,7 +19,7 @@ import {
   SubjectItem,
   TeacherAssignment,
 } from "@/types/portal";
-import { apiRequest, apiUpload } from "./client";
+import { ApiError, apiRequest, apiUpload } from "./client";
 
 const qs = (params: Record<string, string | number | boolean | null | undefined>): string => {
   const entries = Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== "");
@@ -76,8 +76,17 @@ export const saveGradeBands = (bands: GradeBand[]) =>
     body: { bands: bands.map((b) => ({ minScore: b.minScore, maxScore: b.maxScore, grade: b.grade, remark: b.remark, isPass: b.isPass })) },
   });
 
-export const getPortalSettings = () => apiRequest<PortalSettings>("/school-settings");
+function requirePeopleFieldSettings(settings: PortalSettings): PortalSettings {
+  if (!settings || !Array.isArray(settings.studentFields) || !Array.isArray(settings.teacherFields)) {
+    throw new ApiError(503, "Student and teacher field settings are unavailable. Ask your system administrator to update the server, then retry.");
+  }
+  return settings;
+}
+
+export const getPortalSettings = async () => requirePeopleFieldSettings(await apiRequest<PortalSettings>("/school-settings"));
 export interface PortalSettingsPatch {
+  studentFields?: import("@/types/people-fields").PeopleField[];
+  teacherFields?: import("@/types/people-fields").PeopleField[];
   passMark?: number;
   rankingMode?: PortalSettings["rankingMode"];
   allowParentPortal?: boolean;
@@ -88,8 +97,8 @@ export interface PortalSettingsPatch {
   studentEmailDomain?: string | null;
   schoolCode?: string | null;
 }
-export const updatePortalSettings = (body: PortalSettingsPatch) =>
-  apiRequest<PortalSettings>("/school-settings", { method: "PATCH", body });
+export const updatePortalSettings = async (body: PortalSettingsPatch) =>
+  requirePeopleFieldSettings(await apiRequest<PortalSettings>("/school-settings", { method: "PATCH", body }));
 export const uploadSchoolLogo = (file: File) => {
   const form = new FormData();
   form.append("file", file);

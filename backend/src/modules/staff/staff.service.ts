@@ -8,6 +8,8 @@ import { BadRequestError, ConflictError, ForbiddenError, NotFoundError } from ".
 import { generateTemporaryPassword } from "../../shared/security/credentials";
 import { assertOwned } from "../../shared/security/ownership";
 import { CreateStaffInput, UpdateStaffInput } from "./staff.schemas";
+import { loadPeopleFields } from "../school-settings/people-fields.service";
+import { validatePeopleFields } from "../school-settings/people-fields";
 
 const BCRYPT_ROUNDS = 12;
 
@@ -25,7 +27,7 @@ const STAFF_SELECT = `
     st.id, st.school_id, st.user_id, st.employee_id, st.first_name, st.last_name,
     st.role, st.title, st.phone, st.email, m.is_active, st.created_at AS hire_date,
     st.gender, st.address, st.date_of_birth, st.join_date, st.department, st.qualification,
-    st.years_of_experience, st.photo_url, p.last_login_at, p.force_password_change,
+    st.years_of_experience, st.photo_url, st.custom_fields, p.last_login_at, p.force_password_change,
     COALESCE(array_agg(DISTINCT ta.class_id) FILTER (WHERE ta.class_id IS NOT NULL), '{}') AS assigned_class_ids,
     COALESCE(array_agg(DISTINCT ta.subject_id) FILTER (WHERE ta.subject_id IS NOT NULL), '{}') AS assigned_subject_ids,
     COALESCE(array_agg(DISTINCT s.name) FILTER (WHERE s.name IS NOT NULL), '{}') AS subjects,
@@ -78,6 +80,7 @@ async function allocateEmployeeId(schoolId: string, role: string): Promise<strin
 }
 
 export async function createStaff(schoolId: string, actorId: string, input: CreateStaffInput) {
+  if (input.role === "teacher") validatePeopleFields("teacher", await loadPeopleFields(schoolId, "teacher"), input);
   const email = input.email.toLowerCase();
 
   const existingProfile = await query<{ id: string }>("SELECT id FROM profiles WHERE email = $1", [email]);
@@ -115,8 +118,8 @@ export async function createStaff(schoolId: string, actorId: string, input: Crea
 
     const staff = await client.query<{ id: string }>(
       `INSERT INTO staff (school_id, user_id, employee_id, first_name, last_name, role, title, phone, email, is_active,
-                          gender, address, date_of_birth, join_date, department, qualification, years_of_experience)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, TRUE, $10, $11, $12, $13, $14, $15, $16)
+                          gender, address, date_of_birth, join_date, department, qualification, years_of_experience, custom_fields)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, TRUE, $10, $11, $12, $13, $14, $15, $16, $17::jsonb)
        RETURNING id`,
       [
         schoolId,
@@ -135,6 +138,7 @@ export async function createStaff(schoolId: string, actorId: string, input: Crea
         input.department ?? null,
         input.qualification ?? null,
         input.yearsOfExperience ?? null,
+        JSON.stringify(input.customFields ?? {}),
       ]
     );
 
@@ -175,6 +179,7 @@ export async function createStaff(schoolId: string, actorId: string, input: Crea
 }
 
 const UPDATE_COLUMNS: Record<keyof UpdateStaffInput, string | null> = {
+  customFields: "custom_fields",
   firstName: "first_name",
   lastName: "last_name",
   email: "email",
@@ -194,14 +199,17 @@ const UPDATE_COLUMNS: Record<keyof UpdateStaffInput, string | null> = {
 export async function updateStaff(schoolId: string, actorId: string, idOrUserId: string, input: UpdateStaffInput) {
   const current = await getStaff(schoolId, idOrUserId);
   if (current.role === "owner") throw new ForbiddenError("The school owner account cannot be edited here.");
+  if (input.customFields && (input.role ?? current.role) === "teacher") {
+    validatePeopleFields("teacher", (await loadPeopleFields(schoolId, "teacher")).filter((f) => !f.required || Object.hasOwn(input.customFields!, f.key)), { ...input, customFields: input.customFields });
+  }
 
   const sets: string[] = [];
   const params: unknown[] = [current.id, schoolId];
   for (const [key, value] of Object.entries(input) as Array<[keyof UpdateStaffInput, unknown]>) {
     const column = UPDATE_COLUMNS[key];
     if (!column || value === undefined) continue;
-    params.push(key === "email" ? String(value).toLowerCase() : value);
-    sets.push(`${column} = $${params.length}`);
+    params.push(key === "customFields" ? JSON.stringify(value) : key === "email" ? String(value).toLowerCase() : value);
+    sets.push(key === "customFields" ? `${column} = ${column} || $${params.length}::jsonb` : `${column} = $${params.length}`);
   }
   if (sets.length === 0) return current;
 

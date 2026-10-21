@@ -13,13 +13,15 @@ import { buildStudentEmail } from "../../shared/text/names";
 import { getCurrentPeriod } from "../../shared/academics/period";
 import { findOrCreateGuardian } from "../guardians/guardians.service";
 import { CreateStudentInput, UpdateStudentInput } from "./students.schemas";
+import { loadPeopleFields } from "../school-settings/people-fields.service";
+import { validatePeopleFields } from "../school-settings/people-fields";
 
 const BCRYPT_ROUNDS = 12;
 
 const STUDENT_SELECT = `
   SELECT
     s.id, s.school_id, s.user_id, s.admission_number, s.first_name, s.last_name, s.middle_name,
-    s.gender, s.date_of_birth, s.current_class_id, s.arm_id, s.guardian_id,
+    s.gender, s.date_of_birth, s.current_class_id, s.arm_id, s.guardian_id, s.custom_fields,
     s.enrollment_status, s.enrolled_date, s.photo_url, s.address, s.blood_group, s.genotype,
     c.name AS current_class_name, ca.name AS arm_name,
     CASE WHEN ca.name IS NOT NULL THEN c.name || ' ' || ca.name ELSE c.name END AS class_label,
@@ -34,6 +36,7 @@ const STUDENT_SELECT = `
 `;
 
 interface StudentRow {
+  custom_fields: Record<string, string | number>;
   id: string;
   school_id: string;
   user_id: string | null;
@@ -67,6 +70,7 @@ interface StudentRow {
 
 function toStudentRecord(row: StudentRow) {
   return {
+    custom_fields: row.custom_fields,
     id: row.id,
     school_id: row.school_id,
     user_id: row.user_id,
@@ -259,6 +263,7 @@ export interface StudentCredentials {
 }
 
 export async function createStudent(schoolId: string, actorId: string, input: CreateStudentInput) {
+  validatePeopleFields("student", await loadPeopleFields(schoolId, "student"), input);
   await assertClassArm(schoolId, input.classId, input.armId);
 
   if (input.admissionNumber) {
@@ -283,8 +288,8 @@ export async function createStudent(schoolId: string, actorId: string, input: Cr
     const result = await client.query<{ id: string }>(
       `INSERT INTO students (
          school_id, admission_number, first_name, last_name, middle_name, gender, date_of_birth,
-         current_class_id, arm_id, guardian_id, enrollment_status, enrolled_date, address, blood_group, genotype
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, COALESCE($12, CURRENT_DATE), $13, $14, $15)
+         current_class_id, arm_id, guardian_id, enrollment_status, enrolled_date, address, blood_group, genotype, custom_fields
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, COALESCE($12, CURRENT_DATE), $13, $14, $15, $16::jsonb)
        RETURNING id`,
       [
         schoolId,
@@ -302,6 +307,7 @@ export async function createStudent(schoolId: string, actorId: string, input: Cr
         input.address ?? null,
         input.bloodGroup ?? null,
         input.genotype ?? null,
+        JSON.stringify(input.customFields ?? {}),
       ]
     );
     const id = result.rows[0].id;
@@ -338,6 +344,10 @@ export async function bulkImportStudents(schoolId: string, actorId: string, stud
 
 export async function updateStudent(schoolId: string, actorId: string, studentId: string, input: UpdateStudentInput) {
   const current = await getStudentRecord(schoolId, studentId);
+  if (input.customFields) {
+    const { customFields, ...rest } = input;
+    validatePeopleFields("student", (await loadPeopleFields(schoolId, "student")).filter((f) => !f.required || Object.hasOwn(customFields, f.key)), { ...rest, customFields });
+  }
 
   const classId = input.classId ?? current.current_class_id;
   // Moving to another class clears the arm unless a new one is given.
@@ -361,7 +371,8 @@ export async function updateStudent(schoolId: string, actorId: string, studentId
          blood_group = CASE WHEN $14::boolean THEN $15 ELSE blood_group END,
          genotype = CASE WHEN $16::boolean THEN $17 ELSE genotype END,
          enrollment_status = COALESCE($18, enrollment_status),
-         guardian_id = COALESCE($19, guardian_id)
+         guardian_id = COALESCE($19, guardian_id),
+         custom_fields = custom_fields || COALESCE($20::jsonb, '{}'::jsonb)
        WHERE id = $1 AND school_id = $2`,
       [
         studentId,
@@ -383,6 +394,7 @@ export async function updateStudent(schoolId: string, actorId: string, studentId
         input.genotype ?? null,
         input.enrollmentStatus ?? null,
         guardianId ?? null,
+        input.customFields ? JSON.stringify(input.customFields) : null,
       ]
     );
 

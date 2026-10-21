@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import { peopleImportRoutes } from "../school-settings/people-import.routes";
 
 import { authenticate } from "../../middleware/auth";
 import {
@@ -14,6 +15,7 @@ import {
 } from "./students.controller";
 
 export async function studentsRoutes(app: FastifyInstance): Promise<void> {
+  await peopleImportRoutes(app, "student");
   app.get("/students", { preHandler: authenticate }, listStudentsHandler);
   app.post("/students", { preHandler: authenticate }, createStudentHandler);
   app.post("/students/bulk-import", { preHandler: authenticate }, bulkImportHandler);
