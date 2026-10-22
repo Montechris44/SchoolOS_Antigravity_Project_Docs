@@ -218,7 +218,7 @@ export default function StudentsPage() {
       <Dialog isOpen={selected !== null} onClose={() => setSelected(null)} title={selected ? `${selected.firstName} ${selected.lastName}` : ""} description={selected ? `${selected.classLabel} · ${selected.admissionNumber}` : ""} maxWidth="xl">
         {selected && (
           <div className="space-y-5">
-            {selected.customFields && Object.keys(selected.customFields).length > 0 && <dl className="grid grid-cols-2 gap-3 text-sm">{Object.entries(selected.customFields).map(([key, value]) => <div key={key}><dt className="text-slate-500">{settings.data?.studentFields.find((f) => f.key === key)?.label ?? key}</dt><dd>{String(value)}</dd></div>)}</dl>}
+            {selected.customFields && Object.keys(selected.customFields).length > 0 && <dl className="grid grid-cols-2 gap-3 text-sm">{Object.entries(selected.customFields).map(([key, value]) => <div key={key}><dt className="text-slate-500">{settings.data?.studentFields?.find((f) => f.key === key)?.label ?? key}</dt><dd>{String(value)}</dd></div>)}</dl>}
 
             <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
               <Avatar name={`${selected.firstName} ${selected.lastName}`} src={selected.photoUrl} size={60} />
